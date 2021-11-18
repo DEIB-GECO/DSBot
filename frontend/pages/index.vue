@@ -22,6 +22,12 @@
           <v-divider></v-divider>
 
           <v-stepper-step :complete="e1 > 4" step="4">
+            View your results
+          </v-stepper-step>
+
+          <v-divider></v-divider>
+
+          <v-stepper-step :complete="e1 > 5" step="5">
             Tune your pipeline
           </v-stepper-step>
         </v-stepper-header>
@@ -36,6 +42,10 @@
           </v-stepper-content>
 
           <v-stepper-content step="3" class="px-10 pb-8">
+            <tuning-chat :destination="'echo'" />
+          </v-stepper-content>
+
+          <v-stepper-content step="4" class="px-10 pb-8">
             <results></results>
 
             <v-btn color="secondary" @click="restart()"> Restart </v-btn>
@@ -48,7 +58,7 @@
             </v-btn>
           </v-stepper-content>
 
-          <v-stepper-content step="4" class="px-10 pb-8">
+          <v-stepper-content step="5" class="px-10 pb-8">
             <tuning></tuning>
 
             <v-btn color="secondary" @click="restart()"> Restart </v-btn>
@@ -68,8 +78,10 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex'
+import TuningChat from '../components/TuningChat.vue'
 
 export default {
+  components: { TuningChat },
   data() {
     return {
       polling: null,
