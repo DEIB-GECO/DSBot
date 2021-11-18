@@ -189,4 +189,4 @@ def re_execute_algorithm(ir, session_id):
     threading.Thread(target=execute_algorithm, kwargs={'ir': ir, 'session_id': session_id}).start()
 
 
-app.run(host='0.0.0.0', port=5000, debug=True)
+app.run(host='localhost', port=5000, debug=True)

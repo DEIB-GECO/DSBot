@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <v-col :cols="9" :xl="7">
-      <img :src="`data:image/png;base64,${imageBase64}`" alt="" height="700" />
+      <img :src="`data:image/png;base64,${imageBase64}`" alt="" height="600" />
     </v-col>
     <v-col :cols="3" :xl="5">
       <tuning-chat />
