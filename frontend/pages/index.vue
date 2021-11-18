@@ -16,7 +16,7 @@
           <v-divider></v-divider>
 
           <v-stepper-step :complete="e1 > 3" step="3">
-            View your results
+            Refine your question
           </v-stepper-step>
 
           <v-divider></v-divider>

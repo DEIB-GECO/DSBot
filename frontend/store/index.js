@@ -83,6 +83,9 @@ export const actions = {
   async sendUtterance(context, sentence) {
     if (sentence === '') return null
 
+    context.commit('receiveChat', 'What do you want to obtain?')
+    context.commit('sendChat', sentence)
+
     const bodyRequest = {
       session_id: this.state.sessionId,
       message: sentence,
@@ -194,7 +197,10 @@ export const actions = {
         console.log('response:', response.data)
         // Add the response to the chat panel
         context.commit('receiveChat', response.data.message)
-        if (response.data.complete) context.commit('receiveChat', 'AAAAAAAAA')
+        if (response.data.complete) {
+          context.commit('receiveChat', 'Ok, we can proceed')
+          context.commit('setStep', 4)
+        }
 
         // Do something with the response if necessary, for example:
         // console.log(response)
