@@ -42,7 +42,7 @@
           </v-stepper-content>
 
           <v-stepper-content step="3" class="px-10 pb-8">
-            <tuning-chat :destination="'echo'" />
+            <tuning-chat :destination="'comprehension'" />
           </v-stepper-content>
 
           <v-stepper-content step="4" class="px-10 pb-8">

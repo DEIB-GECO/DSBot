@@ -93,13 +93,14 @@ export const actions = {
       .then(function (response) {
         context.commit('setRequestDescription', response.data.request)
         context.commit('setStep', 3)
+        context.commit('receiveChat', response.data.comprehension_sentence)
       })
     return res
   },
 
   async waitForResults(context) {
     console.log('WAIT FOR RESULTS', this.state.e1)
-    if (this.state.e1 === 3 && !this.state.resultsReady) {
+    if (this.state.e1 === 4 && !this.state.resultsReady) {
       console.log('GET RESULTS CALLED')
       const pollingResponse = await this.$axios
         .get(`/results/${this.state.sessionId}`)
@@ -190,8 +191,10 @@ export const actions = {
     const res = await this.$axios
       .post(data.destination, bodyRequest)
       .then(function (response) {
+        console.log('response:', response.data)
         // Add the response to the chat panel
-        context.commit('receiveChat', response.data)
+        context.commit('receiveChat', response.data.message)
+        if (response.data.complete) context.commit('receiveChat', 'AAAAAAAAA')
 
         // Do something with the response if necessary, for example:
         // console.log(response)

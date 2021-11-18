@@ -7,9 +7,10 @@ from flask_cors import CORS
 from flask_restful import reqparse
 
 from ir.ir import create_IR, run
+from comprehension.summary_producer import summary_producer
 from log_helpers import setup_logger
 from main import Dataset
-#from flask_session import Session
+# from flask_session import Session
 from needleman_wunsch import NW
 from kb import KnowledgeBase
 import os
@@ -32,14 +33,14 @@ app = Flask(__name__)
 cors = CORS(app, supports_credentials=True)
 app.config['SECRET_KEY'] = 'secret!'
 app.config['CORS_HEADERS'] = 'application/json'
-app.config['CORS_SUPPORTS_CREDENTIALS']  = True
+app.config['CORS_SUPPORTS_CREDENTIALS'] = True
 
-#app.config['SESSION_TYPE'] = 'filesystem'
-#session config
-#app.config['SESSION_FILE_DIR'] = 'flask_session'
+# app.config['SESSION_TYPE'] = 'filesystem'
+# session config
+# app.config['SESSION_FILE_DIR'] = 'flask_session'
 # DEFAULT 31 days
-#app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31)
-#Session(app)
+# app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31)
+# Session(app)
 session_serializer = SecureCookieSessionInterface().get_signing_serializer(app)
 data = {}
 
@@ -48,31 +49,32 @@ data = {}
 def receive_ds():
     session_id = session_serializer.dumps(dict(session))
     data[session_id] = {}
-    has_index = 0 if request.form['has_index']=='true' else None
-    has_columns_name = 0 if request.form['has_column_names']=='true' else None
+    has_index = 0 if request.form['has_index'] == 'true' else None
+    has_columns_name = 0 if request.form['has_column_names'] == 'true' else None
     sep = request.form['separator']
     label = request.form['label']
-    #format = request.form['format']
-    #print('sep', sep)
+    # format = request.form['format']
+    # print('sep', sep)
     uploaded_file = request.files['ds']
     if uploaded_file.filename != '':
-        #uploaded_file.save(uploaded_file.filename)
+        # uploaded_file.save(uploaded_file.filename)
         try:
-            os.makedirs('./temp/temp_'+str(session_id))
+            os.makedirs('./temp/temp_' + str(session_id))
         except:
             pass
-        uploaded_file.save('./temp/temp_'+str(session_id)+'/' + uploaded_file.filename)
-        dataset = pd.read_csv('./temp/temp_'+str(session_id)+'/'+str(uploaded_file.filename), header=has_columns_name, index_col=has_index,  sep=sep, engine='python')
-        #print(dataset)
-        dataset.to_csv('./temp/temp_'+str(session_id)+'/' + uploaded_file.filename)
+        uploaded_file.save('./temp/temp_' + str(session_id) + '/' + uploaded_file.filename)
+        dataset = pd.read_csv('./temp/temp_' + str(session_id) + '/' + str(uploaded_file.filename),
+                              header=has_columns_name, index_col=has_index, sep=sep, engine='python')
+        # print(dataset)
+        dataset.to_csv('./temp/temp_' + str(session_id) + '/' + uploaded_file.filename)
         dataset = Dataset(dataset)
         dataset.session = session_id
         print(label)
 
         if label is not None and label != '':
             dataset.set_label(label)
-            #dataset.label = label
-            #dataset.hasLabel = True
+            # dataset.label = label
+            # dataset.hasLabel = True
             print('dslabel', dataset.label, dataset.hasLabel)
         dataset.set_characteristics()
         kb = KnowledgeBase()
@@ -82,25 +84,28 @@ def receive_ds():
 
     print(kb.kb)
     print("SESSION ID", session_id)
-    #print('label', label, dataset.label, dataset.hasLabel)
+    # print('label', label, dataset.label, dataset.hasLabel)
     return jsonify({"session_id": session_id})
 
 
 @app.route('/utterance', methods=['POST'])
 def receive_utterance():
-    #print(dataset.dataset)
+    # print(dataset.dataset)
 
-    #ds = copy.deepcopy(dataset)
+    # ds = copy.deepcopy(dataset)
     parser = reqparse.RequestParser()
     parser.add_argument('session_id', required=True, help='No session provided')
     parser.add_argument('message', required=True)
     args = parser.parse_args()
     session_id = args['session_id']
     if session_id in data:
-        with open('./temp/temp_'+str(session_id)+'/message'+str(session_id)+'.txt', 'w') as f:
+        with open('./temp/temp_' + str(session_id) + '/message' + str(session_id) + '.txt', 'w') as f:
             f.write(args['message'])
 
-        os.system('onmt_translate -model wf/run/model1_step_1000.pt -src temp/temp_'+str(session_id)+'/message'+str(session_id)+'.txt -output ./temp/temp_'+str(session_id)+'/pred'+str(session_id)+'.txt -gpu -1 -verbose')
+        os.system(
+            'onmt_translate -model wf/run/model1_step_1000.pt -src temp/temp_' + str(session_id) + '/message' + str(
+                session_id) + '.txt -output ./temp/temp_' + str(session_id) + '/pred' + str(
+                session_id) + '.txt -gpu -1 -verbose')
 
         with open('./temp/temp_' + str(session_id) + '/pred' + str(session_id) + '.txt', 'r') as f:
             wf = f.readlines()[0].strip().split(' ')
@@ -109,12 +114,14 @@ def receive_utterance():
             wf = f.readlines()[0].strip().split(' ')
         scores = {}
 
+        comprehension_sentence = summary_producer(wf)
+
         kb = data[session_id]['kb']
         print(kb.kb)
         for i in range(len(kb.kb)):
             sent = [x for x in kb.kb.values[i, 1:] if str(x) != 'nan']
             print(sent)
-            scores[i] = NW(wf, sent, kb.voc)/len(sent)
+            scores[i] = NW(wf, sent, kb.voc) / len(sent)
             print(scores[i])
 
         print(scores)
@@ -124,9 +131,10 @@ def receive_utterance():
 
         ir_tuning = create_IR(max_key)
         data[session_id]['ir_tuning'] = ir_tuning
-        threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id':session_id}).start()
+        threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
         return jsonify({"session_id": session_id,
-                        "request": wf})
+                        "request": wf,
+                        "comprehension_sentence": comprehension_sentence})
     return jsonify({"message": "Errore"})
 
 
@@ -176,7 +184,7 @@ def execute_algorithm(ir, session_id):
     app.logger.info('Executing pipeline: %s', [i.to_json() for i in ir])
     dataset = data[session_id]['dataset']
     if hasattr(dataset, 'label'):
-        results = {'original_dataset': dataset, 'labels':dataset.label}
+        results = {'original_dataset': dataset, 'labels': dataset.label}
     else:
         results = {'original_dataset': dataset}
     result = run(ir, results, session_id)
@@ -198,6 +206,20 @@ def echo():
 
     # Return a response
     return f"echo -> {json_data['payload']}"
+
+
+@app.route('/comprehension', methods=['POST'])
+def comprehension_chat():
+    json_data = request.get_json(force=True)
+
+    # Do stuff with the data received
+    print(json_data)
+
+    if json_data['payload'] == "yes\n":
+        return jsonify({'complete': True})
+
+    # Return a response
+    return jsonify({'message': 'ciao'})
 
 
 app.run(host='localhost', port=5000, debug=True)
