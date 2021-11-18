@@ -132,3 +132,13 @@ dmypy.json
 .pyre/
 
 DSBot/temp/
+
+DSBot/wf/glove_new_300.txt
+
+DSBot/wf/run/example.dec_embeddings.pt
+
+DSBot/wf/run/example.enc_embeddings.pt
+
+DSBot/wf/run/model1_step_1000.pt
+
+DSBot/wf/run/model1_step_500.pt
