@@ -87,7 +87,7 @@ export default {
         else
           this.sendChatMessage({
             destination: this.destination,
-            payload: this.utterance,
+            message: this.utterance,
           })
         this.utterance = ''
       }

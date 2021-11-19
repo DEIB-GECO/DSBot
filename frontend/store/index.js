@@ -9,6 +9,8 @@ export const state = () => ({
   tuningPipeline: [],
   backendAvailable: true,
   pipelineEdited: false,
+  comprehensionConversationState: '',
+  comprehensionPipeline: '',
 })
 
 export const mutations = {
@@ -45,6 +47,14 @@ export const mutations = {
 
   setPipelineEdited(state, edited) {
     state.pipelineEdited = edited
+  },
+
+  setComprehensionConversationState(state, newState) {
+    state.comprehensionConversationState = newState
+  },
+
+  setComprehensionPipeline(state, newPipeline) {
+    state.comprehensionPipeline = newPipeline
   },
 }
 
@@ -90,14 +100,27 @@ export const actions = {
       session_id: this.state.sessionId,
       message: sentence,
     }
-    console.log(bodyRequest)
+    console.log('Ho ricevuto questo', bodyRequest)
     const res = await this.$axios
       .post('/utterance', bodyRequest)
       .then(function (response) {
+        console.log('ho ricevuto questo', response.data)
         context.commit('setRequestDescription', response.data.request)
         context.commit('setStep', 3)
         context.commit('receiveChat', response.data.comprehension_sentence)
+        context.commit(
+          'setComprehensionConversationState',
+          response.data.comprehension_state
+        )
+        context.commit(
+          'setComprehensionPipeline',
+          response.data.comprehension_pipeline
+        )
       })
+    console.log(
+      'Ora comprehension vale: ',
+      this.state.comprehensionConversationState
+    )
     return res
   },
 
@@ -182,29 +205,53 @@ export const actions = {
   },
 
   async sendChatMessage(context, data) {
-    // The data can be {destination: '/yourDestination', payload: userUtterance}
+    // The data can be {destination: '/yourDestination', message: userUtterance}
 
     // Add the message to the chat panel
-    context.commit('sendChat', data.payload)
+    context.commit('sendChat', data.message)
+
+    let res = null
 
     // This is the data sent to the backend
-    const bodyRequest = {
-      payload: data.payload,
+    if (data.destination === 'comprehension') {
+      console.log('Eseguito comprehension')
+      const bodyRequest = {
+        message: data.message,
+        comprehension_state: this.state.comprehensionConversationState,
+        session_id: this.state.sessionId,
+        comprehension_pipeline: this.state.comprehensionPipeline,
+      }
+      res = await this.$axios
+        .post(data.destination, bodyRequest)
+        .then(function (response) {
+          console.log('response:', response.data)
+          // Add the response to the chat panel
+          context.commit('receiveChat', response.data.message)
+          context.commit(
+            'setComprehensionConversationState',
+            response.data.comprehension_state
+          )
+          if (response.data.complete) {
+            context.commit('setStep', 4)
+          }
+          // Do something with the response if necessary, for example:
+          // console.log(response)
+        })
+    } else {
+      console.log('eseguito else')
+      const bodyRequest = {
+        message: data.message,
+      }
+      res = await this.$axios
+        .post(data.destination, bodyRequest)
+        .then(function (response) {
+          console.log('response:', response.data)
+          // Add the response to the chat panel
+          context.commit('receiveChat', response.data.message)
+          // Do something with the response if necessary, for example:
+          // console.log(response)
+        })
     }
-    const res = await this.$axios
-      .post(data.destination, bodyRequest)
-      .then(function (response) {
-        console.log('response:', response.data)
-        // Add the response to the chat panel
-        context.commit('receiveChat', response.data.message)
-        if (response.data.complete) {
-          context.commit('receiveChat', 'Ok, we can proceed')
-          context.commit('setStep', 4)
-        }
-
-        // Do something with the response if necessary, for example:
-        // console.log(response)
-      })
     return res
   },
 }

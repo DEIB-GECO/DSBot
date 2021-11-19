@@ -11,7 +11,7 @@ def summary_producer(operations_array):
 
     #operations_array = dsl_operation.split(' ')
 
-    sentences_array = [producible_sentences[sentence] for sentence in operations_array]
+    sentences_array = [producible_sentences[sentence]["summary"] for sentence in operations_array]
     sentences_array = list(filter(None, sentences_array))
     sentences_number = len(sentences_array)
 

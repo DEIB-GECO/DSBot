@@ -8,6 +8,7 @@ from flask_restful import reqparse
 
 from ir.ir import create_IR, run
 from comprehension.summary_producer import summary_producer
+from comprehension.comprehension_conversation_handler import comprehension_conversation_handler
 from log_helpers import setup_logger
 from main import Dataset
 # from flask_session import Session
@@ -134,7 +135,9 @@ def receive_utterance():
         threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
         return jsonify({"session_id": session_id,
                         "request": wf,
-                        "comprehension_sentence": comprehension_sentence})
+                        "comprehension_sentence": comprehension_sentence,
+                        "comprehension_state": "reformulation",
+                        'comprehension_pipeline': wf})
     return jsonify({"message": "Errore"})
 
 
@@ -214,12 +217,18 @@ def comprehension_chat():
 
     # Do stuff with the data received
     print(json_data)
-
+    return jsonify(comprehension_conversation_handler(json_data))
+"""
     if json_data['payload'] == "yes\n":
         return jsonify({'complete': True})
+        # TODO qui dobbiamo iniziare a creare la pipeline, non prima!
+    if json_data['payload'] == "yes\n":
+        return jsonify({'complete': True})
+"""
+    # TODO altrimenti dobbiamo iniziare a capire cosa non va
 
     # Return a response
-    return jsonify({'message': 'ciao'})
+
 
 
 app.run(host='localhost', port=5000, debug=True)
