@@ -1,79 +1,38 @@
 {
   "classification": {
-    "summary" : "your objective is to create a model to predict the value of the label of your dataset containing a discrete value.",
+    "summary" : "your objective is to predict the value of the the column ##LABEL## using the other data in your table.",
+    "example": "suppose you are the owner of a , you want to bla bla bla",
+    "explanation" : "from your request I understood you want to apply classification, an analysis that tries to predict the value of a column of your dataset, called label, from the other data in the table. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict the value of that column",
     "readableName" : "classification"
   },
   "plot": {
-    "summary": "you want to visualize graphically the result, I will decide for the best method to show the obtained results."
+    "summary": "you want to visualize the results in a plot."
   },
   "clustering": {
-    "summary": "you want to define a model able to detect similar groups in your data.",
+    "summary": "you want to group your data in such a way that objects in the same group (called a cluster) are more similar (in some sense) to each other than to those in other groups (clusters).",
+    "explanation": "from your request I understood you want to apply classification, an analysis that aims at finding groups of data similar each other (clusters). This kind of analysis doesn't require any additional information from you, it works in total autonomy.",
     "readableName" : "clustering"
   },
   "outliersDetection": {
-    "summary": "you want to identify the outliers, a sample that differs from all the others."
-
-  },
-  "kmeans": {
-    "summary": "you want to cluster, that means finding groups of data that are similar, using kMeans algorithm."
+    "summary": "you want to identify the outliers, that are rare items, events or observations which raise suspicions by differing significantly from the majority of the data."
   },
   "featureSelection": {
-    "summary": "you want to extract a subset of columns of the dataset (features)."
-  },
-  "performance": {
-    "summary": "your aim aim is to measure the performances of your model."
+    "summary": "you want to select the columns of the dataset (features) that are most relevant to your problem."
   },
   "correlation": {
-    "summary": "you want to see how the features are related to each other, that is, the degree to which two variables move in coordination with one another."
+    "summary": "you want to see how the features are statistically related to each other.",
+    "explanation": "from your request I understood you want to apply correlation, a statistical tool that find relations between pairs of columns in the dataset. Finding correlated variables (columns) means that the value of one increases, the other one increases as well, and vice versa. The two variables can be also anti-correlated: when one increases the other decreases and viceversa."
   },
   "associationRules": {
-    "summary": "you want to find some \"if-then\" rules that describe the relation between the features (the columns) in your dataset.",
+    "summary": "you want to find some \"if-then\" rules that describe the relationship between the features (the columns) in your dataset.",
+    "explanation": "from your request I understood you want to apply association rules. It is a machine learning algorithm that scans your table to try to elicit rules that describe the data in your table. That rules are in the form of \"if-then\" clauses, for example \"if the customer buys a shirt and a pair of trousers, then he buy also a pair of socks\"",
     "readableName" : "association rules"
   },
   "featureImportance": {
-    "summary": "you want to see how much important is each column in the final model. It describes how much a feature influences the classification of your target variable."
-  },
-  "ds": {
-    "summary": ""
-  },
-  "statistics": {
-    "summary": "you want to see some statistics that describes your dataset."
-  },
-  "range": {
-    "summary": ""
-  },
-  "distplot": {
-    "summary": "you want to visualize your data in a plot representing its distribution."
-  },
-  "preprocessing": {
-    "summary": ""
-  },
-  "pca": {
-    "summary": "you want to reduce the dimensionality of the dataset creating fictional variables that are a combination of the existing ones."
-  },
-  "logisticRegression": {
-    "summary": "you want create a model to predict the value of  the target label of your dataset containing a discrete value, using Logistic Regression algorithm.",
-    "readableName" : "logistic regression"
-  },
-  "randomForest": {
-    "summary": "you want create a model to predict the value of  the target label of your dataset containing a discrete value, using Random Forest algorithm."
-  },
-  "scatterplot": {
-    "summary": "you want to visualize your data through a scatterplot. It uses dots to represent the relation between two variables of your dataset."
-  },
-  "pearson": {
-    "summary": ""
+    "summary": "you want to see which are the most influencing features (columns of the table) in the final prediction."
   },
   "regression": {
-    "summary": "your objective is to create a model to predict the value of the label of your dataset containing a numerical value."
-  },
-  "boxplot": {
-    "summary": "you want to visualize your data through through a boxplot. It is a plot in which a rectangle is drawn to represent the second and third quartiles, usually with a line inside to indicate the median value."
-  },
-  "spearman": {
-    "summary": ""
-  },
-  "clustermap": {
-    "summary": "you want to visualize your data through as a hierarchically-clustered heatmap. It uses a hierarchical clusters to order data by similarity. This reorganizes the data for the rows and columns and displays similar content next to one another for even more depth of understanding the data."
+    "summary": "your objective is to predict the value of ##LABEL## column using the others data in the table.",
+    "explanation": "from your request I understood you want to apply regression, an analysis that tries to predict a numerical value from your dataset. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict that column."
   }
 }

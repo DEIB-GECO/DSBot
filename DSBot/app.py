@@ -115,7 +115,7 @@ def receive_utterance():
             wf = f.readlines()[0].strip().split(' ')
         scores = {}
 
-        comprehension_sentence = summary_producer(wf)
+        comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
 
         kb = data[session_id]['kb']
         print(kb.kb)

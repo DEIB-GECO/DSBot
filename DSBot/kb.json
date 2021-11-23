@@ -7,4 +7,5 @@
 "crossValidation":  ["crossValidation", "trainTestSplit", "kFold"],
 "featureImportance":  ["featureImportance"],
 "performance":  ["roc"],
-"regression": ["regression", "linearRegression"]}
+"regression": ["regression", "linearRegression"],
+"outliersDetection": ["outliersDetection"]}
