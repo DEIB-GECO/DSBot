@@ -60,11 +60,11 @@ class IRMissingValuesHandle(IROp):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-        if len(dataset)>100:
-            if (dataset.isna().sum(axis=1)>0).sum()>0.05*len(dataset):
-                result = IRMissingValuesRemove().run(result, session_id)
-            else:
-                result = IRMissingValuesFill().run(result, session_id)
+
+        if (dataset.isna().sum(axis=1)>0).sum()>0.1*len(dataset):
+            result = IRMissingValuesRemove().run(result, session_id)
+        else:
+            result = IRMissingValuesFill().run(result, session_id)
         return result
 
 
@@ -102,7 +102,7 @@ class IRMissingValuesFill(IRMissingValuesHandle):
         else:
             dataset = result['original_dataset'].ds
 
-        imp = IterativeImputer(max_iter=10, random_state=0)
+        imp = IterativeImputer(max_iter=10, random_state=0, initial_strategy='median')
         if len(result['original_dataset'].cat_cols) > 0:
             values_col = dataset.columns.difference(result['original_dataset'].cat_cols)
             if len(values_col)>0:
@@ -209,15 +209,24 @@ class IROutliersRemove(IRPreprocessing):
             dataset = result['original_dataset'].ds
         dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
-        df = dataset.T
-        mean = df.mean()
-        std = df.std()
-        print(df.index)
-        print(df.columns)
-        ds = df[(np.abs(df - mean) <= (5 * std)).all(axis=1)].T
+        old_index = dataset.index
+        dataset.index = np.arange(len(dataset))
+        ds = dataset[((np.abs(dataset-dataset.mean()))<=(3*dataset.std())).sum(axis=1)>0.9*dataset.shape[1]]
         if ds.shape[1]!=0 and ds.shape[0]!=0:
             print('len', ds.shape)
+            index_new = list(pd.DataFrame(old_index).drop(dataset[((np.abs(dataset - dataset.mean())) <= (
+                        3 * dataset.std())).sum(axis=1) <= 0.9 * dataset.shape[1]].index).T.values)
+            ds.index = index_new
             result['new_dataset'] = ds
+            if result['original_dataset'].hasLabel:
+                #old_index = ds.index
+                #dataset.index = np.arange(len(dataset))
+                label = pd.DataFrame(result['labels'])
+                label = label.drop(dataset[((np.abs(dataset-dataset.mean()))<=(3*dataset.std())).sum(axis=1)<=0.9*dataset.shape[1]].index).T.values[0]
+
+                result['labels'] = label
+                #print( result['labels'] )
+
 
         return result
 

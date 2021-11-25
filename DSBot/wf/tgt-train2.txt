@@ -231,3 +231,7 @@ featureSelection classification featureImportance
 prediction
 regression
 pca
+pca classification
+pca classification performance plot
+classification performance
+classification

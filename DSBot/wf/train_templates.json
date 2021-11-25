@@ -1,0 +1,15 @@
+{
+  "I want to cluster data": "clustering",
+  "Find groups": "clustering",
+  "classify data": "classification",
+  "please find the frequent itemsets in the data": "associationRules",
+  "Which are the characteristics that mostly influence the $LABEL$?": "classification ( $LABEL$ ) featureImportance",
+  "What is related to the $LABEL$?": "correlation ( $LABEL$ )",
+  "Which are the characteristics that mostly influence the $LABEL$?": "associationRules ( $LABEL$ )",
+  "If a person $F$, is she prone to have $LABEL$?": "featureSelection ( $F$, $LABEL$ ) correlation",
+  "do you find anomalies?": "outliersDetection",
+  "can you predict if there is a person that will have $LABEL$?": "classification ( $lABEL$ )",
+  "i want you to predict according to the features $F$ and $F$": "featureSelection ( $F$ , $F$ ) classification",
+  "i want you to predict according to the features $F$, $F$, $F$, $F$": "featureSelection ( $F$ , $F$ , $F$, $F$ ) classification",
+  "can you remove the $F$  and only after it predict the illness of a sample": "featureRemoval ($F$) classification"
+}

@@ -324,12 +324,14 @@ class IRROC(IRPlot):
         print(n_classes)
 
         pred = np.array(result['y_score'])
-        y = np.array(result['y_test']).flatten()
-
+        y = [y for x in result['y_test'] for y in x]
+        print(y)
         #for i, j in zip(pred,y):
          #   print(i,j)
         if len(n_classes) > 2:
+            print('MORE THAN 2 CLASSES')
             y = label_binarize(y, classes=list(n_classes))
+            print(y)
             plt.figure()
             fpr = dict()
             tpr = dict()
@@ -344,9 +346,11 @@ class IRROC(IRPlot):
                                ''.format(i, roc_auc[i]))
         else:
             plt.figure()
-            for z in zip(y, pred):
-                print(z)
-            fpr, tpr, _ = roc_curve(y, pred[:,1])
+
+            try:
+                fpr, tpr, _ = roc_curve(y, pred[:,1])
+            except:
+                fpr, tpr, _ = roc_curve(y, pred)
             roc_auc = auc(fpr, tpr)
             plt.plot(fpr, tpr, lw=2,
                      label='ROC curve of class 0 (area = {0:0.2f})'

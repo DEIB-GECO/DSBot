@@ -42,7 +42,36 @@ app.config['CORS_SUPPORTS_CREDENTIALS']  = True
 #Session(app)
 session_serializer = SecureCookieSessionInterface().get_signing_serializer(app)
 data = {}
+import json
+import random
 
+# Opening JSON file
+
+def build_sentences(dataset, label):
+    features = dataset.columns.values
+    f = open('wf/train_templates.json')
+    data = json.load(f)
+    print(data)
+    with open('wf/src-train_try.txt', 'w') as f1:
+        with open('wf/tgt-train_try.txt', 'w') as f2:
+            for k,v in data.items():
+                if '$F$' not in k:
+                    f1.write(k.replace('$LABEL$', label)+'\n')
+                    f2.write(v.replace('$LABEL$', label)+'\n')
+                else:
+                    x = []
+                    y = []
+                    for c in features:
+                        x.append(k.replace('$LABEL$', label).replace('$F$',c, 1))
+                        y.append(v.replace('$LABEL$', label).replace('$F$', c, 1))
+                    while '$F$' in x[-1]:
+                        for i in range(len(x)):
+                            col = random.choice(features)
+                            x[i] = x[i].replace('$F$',col,1)
+                            y[i] = y[i].replace('$F$', col, 1)
+                    for i in range(len(x)):
+                        f1.write(x[i]+'\n')
+                        f2.write(y[i]+'\n')
 
 @app.route('/receiveds', methods=['POST'])
 def receive_ds():
@@ -80,6 +109,10 @@ def receive_ds():
         data[session_id]['kb'] = kb
         data[session_id]['dataset'] = dataset
 
+    build_sentences(dataset.ds, label)
+    os.system('rm wf/run/example1.vocab.*')
+    os.system('onmt_build_vocab -config wf/en_wf_try.yaml -n_sample 10000')
+    os.system('onmt_train -config wf/en_wf_try.yaml')
     print(kb.kb)
     print("SESSION ID", session_id)
     #print('label', label, dataset.label, dataset.hasLabel)
@@ -97,10 +130,12 @@ def receive_utterance():
     args = parser.parse_args()
     session_id = args['session_id']
     if session_id in data:
+
         with open('./temp/temp_'+str(session_id)+'/message'+str(session_id)+'.txt', 'w') as f:
             f.write(args['message'])
 
-        os.system('onmt_translate -model wf/run/model1_step_1000.pt -src temp/temp_'+str(session_id)+'/message'+str(session_id)+'.txt -output ./temp/temp_'+str(session_id)+'/pred'+str(session_id)+'.txt -gpu -1 -verbose')
+
+        os.system('onmt_translate -model wf/run/modeltry_step_1000.pt -src temp/temp_'+str(session_id)+'/message'+str(session_id)+'.txt -output ./temp/temp_'+str(session_id)+'/pred'+str(session_id)+'.txt -gpu -1 -verbose')
 
         with open('./temp/temp_' + str(session_id) + '/pred' + str(session_id) + '.txt', 'r') as f:
             wf = f.readlines()[0].strip().split(' ')

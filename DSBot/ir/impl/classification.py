@@ -55,6 +55,17 @@ class IRClassification(IROp):
         for x_train, x_test, y_train,y_test in zip(result['x_train'],result['x_test'],result['y_train'],result['y_test']):
             result['predicted_labels'] += list(self._model.fit(x_train, y_train).predict(x_test))
             result['y_score'] += list(self._model.predict_proba(x_test))
+
+        score=[]
+        n_classes = len({y for x in result['y_train'] for y in x})
+        for i in range(len(result['y_score'])) :
+            if len(result['y_score'][i]) == n_classes:
+                score.append(result['y_score'][i])
+            else:
+                new = np.zeros(n_classes)
+                new[result['predicted_labels'][i]]=1
+                score.append(new)
+        result['y_score'] = score
         result['classifier'] = self._model
         self._param_setted = False
         return result
@@ -62,8 +73,8 @@ class IRClassification(IROp):
 class IRRandomForest(IRClassification):
     def __init__(self):
         super(IRRandomForest, self).__init__("randomForest",
-                                             [IRNumPar("n_estimators", 100, "int", 100, 150, 10),  # TODO: what is the maximum? Which first value give?
-                                              IRNumPar("max_depth", 10, "int", 10, 22, 11),  # TODO: what is the maximum?
+                                             [IRNumPar("n_estimators", 100, "int", 1, 150, 10),  # TODO: what is the maximum? Which first value give?
+                                              IRNumPar("max_depth", 10, "int", 10, 22, 2),  # TODO: what is the maximum?
                                               IRNumPar("min_samples_split", 2, "int", 2, 9, 3),
                                               IRNumPar("min_samples_leaf", 1, "int", 1, 5, 1)],  # TODO: if I want to pass a list of values?
                                              RandomForestClassifier)

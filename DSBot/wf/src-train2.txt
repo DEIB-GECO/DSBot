@@ -231,3 +231,7 @@ i want to select the features, then classify the data and extract the most impor
 predict the data
 predict the next value according to the past time values
 find maximum variance plan
+please remove batch effect and classify the patients according to the tumor
+please remove batch effect and classify the patients according to the tumor and show me performances
+classify the patients according to the tumor and compute performances
+classify the patients according to the tumor

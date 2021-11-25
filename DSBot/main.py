@@ -34,11 +34,12 @@ class Dataset:
 
     def set_characteristics(self):
         if self.ds is not None:
-            self.missingValues, self.categorical, self.onlyCategorical, self.zeroVariance, self.outliers = self.check_ds()
-        self.moreFeatures = self.more_features()
-        print('mv',self.missingValues, 'cat',self.categorical,'zv', self.zeroVariance, 'mf',self.moreFeatures, 'outliers', self.outliers)
+            self.check_ds()
+            self.moreFeatures = self.more_features()
+            print('mv',self.missingValues, 'cat',self.categorical,'zv', self.zeroVariance, 'mf', self.moreFeatures, 'outliers', self.outliers)
 
     def missing_values(self):
+        self.ds = self.ds[self.ds.columns[self.ds.isnull().mean() < 0.5]]
         return (self.ds.isnull().sum().sum())>0
 
     def zero_variance(self):
@@ -46,16 +47,15 @@ class Dataset:
         return (var==0).sum()>0
 
     def categorical_columns(self):
-        cols = self.ds.columns
-        num_cols = self.ds._get_numeric_data().columns
+        ds = self.ds.drop(self.label,axis=1)
+        cols = ds.columns
+        num_cols = ds._get_numeric_data().columns
         return len(list(set(cols) - set(num_cols))) > 0, len(num_cols)==0, list(set(cols) - set(num_cols))
 
     def has_outliers(self):
-        df = self.ds.drop(list(self.cat_cols), axis=1)
-        df = df.T
-        mean = df.mean()
-        std = df.std()
-        if len(df[(np.abs(df - mean) <= (7 * std)).all(axis=1)])< len(df):
+        df = self.ds.drop(self.label, axis=1)
+        df = df.drop(list(self.cat_cols), axis=1)
+        if len(df[((np.abs(df-df.mean()))<=(3*df.std())).sum(axis=1)>0.9*df.shape[1]])< len(df):
             return True
         return False
 
@@ -70,12 +70,25 @@ class Dataset:
     def dim_reduction(self):
         self.ds = PCA(len(self.ds.index)).fit_transform(self.ds)
 
+    def unbalanced_data(self):
+        labels = set(self.ds[self.label].values)
+        labeled_data = {}
+        unbalanced = False
+        for l in labels:
+            labeled_data[l] = len(self.ds[self.ds[self.label]==l])
+
+        for k,v in labeled_data.items():
+            if v/(len(self.ds)/len(labels))>1.5 or v/(len(self.ds)/len(labels))<0.5:
+                unbalanced = True
+
+        return unbalanced
+
     def check_ds(self):
-        missing_val = self.missing_values()
-        categorical, only_categorical, self.cat_cols = self.categorical_columns()
-        zero_var = self.zero_variance()
-        outliers = self.has_outliers()
-        return missing_val, categorical, only_categorical, zero_var, outliers
+        self.missingValues = self.missing_values()
+        self.categorical, only_categorical, self.cat_cols = self.categorical_columns()
+        self.zeroVariance = self.zero_variance()
+        self.outliers = self.has_outliers()
+        self.unbalanced = self.unbalanced_data()
 
     def filter_kb(self, kb):
         drop = []
