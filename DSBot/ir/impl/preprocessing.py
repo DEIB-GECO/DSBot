@@ -6,7 +6,7 @@ from sklearn.impute._iterative import IterativeImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
 from pandas.api.types import is_numeric_dtype
 from ir.ir_operations import IROp, IROpOptions
-
+from user import AskModuleToUser, AskParameterToUser
 
 class IRPreprocessing(IROp):
     def __init__(self, name, parameters=None, model = None):
@@ -60,11 +60,14 @@ class IRMissingValuesHandle(IROp):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-        if len(dataset)>100:
-            if (dataset.isna().sum(axis=1)>0).sum()>0.05*len(dataset):
-                result = IRMissingValuesRemove().run(result, session_id)
-            else:
+
+        if (dataset.isna().sum(axis=1)>0).sum()<0.05*len(dataset):
+            result = IRMissingValuesRemove().run(result, session_id)
+        else:
+            if (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
                 result = IRMissingValuesFill().run(result, session_id)
+            else:
+                AskModuleToUser(self, IRMissingValuesRemove(),IRMissingValuesFill())
         return result
 
 
@@ -207,18 +210,27 @@ class IROutliersRemove(IRPreprocessing):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
+
         dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
-        df = dataset.T
-        mean = df.mean()
-        std = df.std()
-        print(df.index)
-        print(df.columns)
-        ds = df[(np.abs(df - mean) <= (5 * std)).all(axis=1)].T
+        index_old = dataset.index.values
+        dataset.index = np.range(len(dataset))
+        ds = dataset[((np.abs(dataset-dataset.mean()))<=(3*dataset.std())).sum(axis=1)<=0.9*dataset.shape[1]]
+
         if ds.shape[1]!=0 and ds.shape[0]!=0:
             print('len', ds.shape)
             result['new_dataset'] = ds
+            if 'labels' in result:
+                label = result['labels']
+                print(label)
+                label.index = np.arange(0, len(dataset))
+                label = label.drop(ds.index)
+                result['labels'] = label.values
+                print(result['labels'] )
+            index_new = pd.DataFrame(index_old).drop(ds.index)
+            ds.index = index_new.iloc[:,0].values
 
+        result['new_dataset'] = ds
         return result
 
 class IRStandardization(IRPreprocessing):

@@ -46,8 +46,9 @@ class Dataset:
         return (var==0).sum()>0
 
     def categorical_columns(self):
-        cols = self.ds.columns
-        num_cols = self.ds._get_numeric_data().columns
+        ds = self.ds.drop(self.label,axis=1)
+        cols = ds.columns
+        num_cols = ds._get_numeric_data().columns
         return len(list(set(cols) - set(num_cols))) > 0, len(num_cols)==0, list(set(cols) - set(num_cols))
 
     def has_outliers(self):
@@ -55,7 +56,7 @@ class Dataset:
         df = df.T
         mean = df.mean()
         std = df.std()
-        if len(df[(np.abs(df - mean) <= (7 * std)).all(axis=1)])< len(df):
+        if len(df[((np.abs(df-df.mean()))<=(3*df.std())).sum(axis=1)<=0.9*df.shape[1]])< len(df):
             return True
         return False
 
