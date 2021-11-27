@@ -53,9 +53,6 @@ class Dataset:
 
     def has_outliers(self):
         df = self.ds.drop(list(self.cat_cols), axis=1)
-        df = df.T
-        mean = df.mean()
-        std = df.std()
         if len(df[((np.abs(df-df.mean()))<=(3*df.std())).sum(axis=1)<=0.9*df.shape[1]])< len(df):
             return True
         return False
