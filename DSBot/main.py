@@ -46,13 +46,18 @@ class Dataset:
         return (var==0).sum()>0
 
     def categorical_columns(self):
-        ds = self.ds.drop(self.label,axis=1)
+        ds = self.ds
+        if self.hasLabel:
+            ds = ds.drop(self.label,axis=1)
         cols = ds.columns
         num_cols = ds._get_numeric_data().columns
         return len(list(set(cols) - set(num_cols))) > 0, len(num_cols)==0, list(set(cols) - set(num_cols))
 
     def has_outliers(self):
         df = self.ds.drop(list(self.cat_cols), axis=1)
+        if self.hasLabel:
+            ds = df.drop(self.label,axis=1)
+
         if len(df[((np.abs(df-df.mean()))<=(3*df.std())).sum(axis=1)<=0.9*df.shape[1]])< len(df):
             return True
         return False

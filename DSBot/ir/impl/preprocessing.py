@@ -152,8 +152,32 @@ class IROneHotEncode(IRPreprocessing):
         print('onehotencode', dataset.shape)
         return result
 
+class IRLabelOperation(IROp):
+    def __init__(self, name, parameters=None, model = None):
+        super(IRLabelOperation, self).__init__(name, parameters if parameters is not None else [])
+        #self.parameter = parameters['value']  # FIXME: use self.get_param('value'), but it will raise UnknownParameter
+        self.labels = None
 
-class IRLabelRemove(IRPreprocessing):
+    @abstractmethod
+    def parameter_tune(self, dataset):
+        pass
+
+    def set_model(self, result):
+        if 'new_dataset' in result:
+            dataset = result['new_dataset']
+        else:
+            dataset = result['original_dataset'].ds
+        if self.parameter == None:
+            self.parameter_tune(dataset)
+        #for p,v in self.parameters.items():
+        #    self._model.__setattr__(p,v.value)
+        self._param_setted = True
+
+    #TDB cosa deve restituire questa funzione?
+    def run(self, result, session_id):
+        pass
+
+class IRLabelRemove(IRLabelOperation):
 
     def __init__(self):
         super(IRLabelRemove, self).__init__("labelRemove")
@@ -183,19 +207,41 @@ class IRLabelRemove(IRPreprocessing):
             print(dataset.shape)
             dataset = dataset.drop(label, axis=1)
             label = result['original_dataset'].ds[label]
-        #if not is_numeric_dtype(label):
-        #    label = pd.get_dummies(label)
-        #label = label.dropna()
-        label = LabelEncoder().fit_transform(label)
 
-        #result['new_dataset'] = dataset.T[set(label.index.values)].T
+        if len(set(label.values))>2:
+            label = LabelEncoder().fit_transform(label)
+        else:
+            label = label.replace(list(set(label))[0],0).replace(list(set(label))[1],1)
+
+
         result['labels']=label
         result['new_dataset'] = dataset
 
-
-        #columns=list(set(dataset.columns) - set(label))
-        #result['new_dataset'] = dataset[columns]
         return result
+
+class IRLabelAppend(IRLabelOperation):
+
+    def __init__(self):
+        super(IRLabelAppend, self).__init__("labelAppend")
+
+    def parameter_tune(self, dataset):
+        # TODO: implement
+        pass
+
+    def run(self, result, session_id):
+        label = result['labels']
+        #print('labels', label.shape)
+        dataset = result['new_dataset']
+        dataset[result['original_dataset'].label] = label
+        result['new_dataset'] = dataset
+        print(dataset)
+        return result
+
+class IRGenericLabelOperations(IROpOptions):
+    def __init__(self):
+        super(IRGenericLabelOperations, self).__init__([IRLabelRemove(), IRLabelAppend()],
+                                                     "labelRemove")
+
 
 class IROutliersRemove(IRPreprocessing):
     def __init__(self):

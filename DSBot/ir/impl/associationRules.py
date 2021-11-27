@@ -36,7 +36,7 @@ class IRAssociationRules(IRRules):
 
         dataset = pd.get_dummies(dataset, columns=numerical_col)
         dataset = dataset.replace({0: False, 1: True})
-
+        print(dataset)
         freq_items = apriori(dataset, min_support=self.parameters['min_support'].value, use_colnames=True)
         rules = association_rules(freq_items, metric="confidence", min_threshold=self.parameters['min_support'].value)
         if result['original_dataset'].hasLabel:
