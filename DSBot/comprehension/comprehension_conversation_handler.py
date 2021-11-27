@@ -180,8 +180,16 @@ class RegressionOrClassification(ComprehensionConversationState):
 class CorrelationOrAssociationRules(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
+        if dataset.onlyCategorical:
+            return 'Given the composition of your dataset, we will apply association rules algorithm to find ' \
+                   'relationships between your data in the form of "if -> then" rules', 'comprehension_end',\
+                   ['associationRules']
+        elif not dataset.categorical:
+            return 'Given the composition of your dataset, we will use correlation to find direct relationships ' \
+                   'between columns in your table', 'comprehension_end', ['correlation']
         return 'Are you more interested in finding direct relationships between numerical columns, or rules in the ' \
-               '"if -> then" form that describe behaviours of more columns? ', 'correlation_or_association_rules', pipeline_array
+               '"if -> then" form that describe behaviours of more columns? ', 'correlation_or_association_rules', \
+               pipeline_array
 
     def handle(self, user_utterance, pipeline_array, dataset):
         if user_utterance == 'direct':
