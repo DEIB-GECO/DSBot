@@ -115,7 +115,8 @@ def receive_utterance():
             wf = f.readlines()[0].strip().split(' ')
         scores = {}
 
-        comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
+        #comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
+        comprehension_sentence = summary_producer(wf, "")
 
         kb = data[session_id]['kb']
         print(kb.kb)
@@ -217,7 +218,8 @@ def comprehension_chat():
 
     # Do stuff with the data received
     print(json_data)
-    return jsonify(comprehension_conversation_handler(json_data))
+    print(str(data[json_data['session_id']]['dataset'].hasLabel))
+    return jsonify(comprehension_conversation_handler(json_data), data[json_data['session_id']]['dataset'])
 """
     if json_data['payload'] == "yes\n":
         return jsonify({'complete': True})

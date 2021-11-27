@@ -1,8 +1,8 @@
 {
   "classification": {
-    "summary" : "your objective is to predict the value of the the column ##LABEL## using the other data in your table.",
-    "example": "suppose you are the owner of a , you want to bla bla bla",
-    "explanation" : "from your request I understood you want to apply classification, an analysis that tries to predict the value of a column of your dataset, called label, from the other data in the table. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict the value of that column",
+    "summary" : "your objective is to predict the value of the column ##LABEL## using the other data in your table.",
+    "example": "suppose you have gene exp, you want to bla bla bla",
+    "explanation" : "from your request I understood you want to apply classification, an analysis that tries to predict the value of a column of your dataset, called label, from the other data in the table. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict the value of that column.",
     "readableName" : "classification"
   },
   "plot": {
@@ -10,7 +10,8 @@
   },
   "clustering": {
     "summary": "you want to group your data in such a way that objects in the same group (called a cluster) are more similar (in some sense) to each other than to those in other groups (clusters).",
-    "explanation": "from your request I understood you want to apply classification, an analysis that aims at finding groups of data similar each other (clusters). This kind of analysis doesn't require any additional information from you, it works in total autonomy.",
+    "explanation": "from your request, I understood you want to apply classification, an analysis that aims at finding groups of data similar each other (clusters). This kind of analysis doesn't require any additional information from you, it works in total autonomy.",
+    "example": "suppose you are the owner of a supermarket and you have demographical information about the subscribers to the fidelity program of your store. You can apply this kind of analysis to find groups of similar customers, therefore understanding which are the kind of people that typically buy at the supermarket. You could exploit this information to improve the communication or create more effective offers for your target.",
     "readableName" : "clustering"
   },
   "outliersDetection": {
@@ -21,11 +22,13 @@
   },
   "correlation": {
     "summary": "you want to see how the features are statistically related to each other.",
-    "explanation": "from your request I understood you want to apply correlation, a statistical tool that find relations between pairs of columns in the dataset. Finding correlated variables (columns) means that the value of one increases, the other one increases as well, and vice versa. The two variables can be also anti-correlated: when one increases the other decreases and viceversa."
+    "explanation": "from your request, I understood you want to apply correlation, a statistical tool that find relations between pairs of columns in the dataset. Finding correlated variables (columns) means that the value of one increases, the other one increases as well, and vice versa. The two variables can be also anti-correlated: when one increases the other decreases and viceversa.",
+    "example": "suppose you are the major of a big city, and you have a table with demographical information of the city neighborhoods. With this kind analysis, you can find which factors influence each other in your city. For example, you might discover that neighborhoods with a lower education level have higher crime rate, and viceversa. You could use this information make a reform to encourage education for children."
   },
   "associationRules": {
     "summary": "you want to find some \"if-then\" rules that describe the relationship between the features (the columns) in your dataset.",
-    "explanation": "from your request I understood you want to apply association rules. It is a machine learning algorithm that scans your table to try to elicit rules that describe the data in your table. That rules are in the form of \"if-then\" clauses, for example \"if the customer buys a shirt and a pair of trousers, then he buy also a pair of socks\"",
+    "explanation": "from your request, I understood you want to apply association rules. It is a machine learning algorithm that scans your table to try to elicit rules that describe the data in your table. That rules are in the form of \"if-then\" clauses, for example \"if the customer buys a shirt and a pair of trousers, then he buy also a pair of socks\".",
+    "example" : "suppose you are a ecommerce website owner and you have a table with all the purcase in your shop. If you discover that people who buy an item (e.g., bottle of wine), then buy also a second item (e.g., a cork), you can suggest the purchase of the second object when the first is added to the shopping cart to increase the revenues.",
     "readableName" : "association rules"
   },
   "featureImportance": {
@@ -33,6 +36,7 @@
   },
   "regression": {
     "summary": "your objective is to predict the value of ##LABEL## column using the others data in the table.",
-    "explanation": "from your request I understood you want to apply regression, an analysis that tries to predict a numerical value from your dataset. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict that column."
+    "explanation": "from your request, I understood you want to apply regression, an analysis that tries to predict a numerical value from your dataset. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict that column.",
+    "example": "suppose you are the owner of a hotel, and you have a table with the information of all the people who have stayed in your facility and the consumptions for the breakfast. With this kind of analysis, knowing who is going to stay in your hotel tonight, you can foresee how much fresh milk you have to order for tomorrow morning"
   }
 }
