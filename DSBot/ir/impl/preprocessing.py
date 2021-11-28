@@ -6,7 +6,7 @@ from sklearn.impute._iterative import IterativeImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
 from pandas.api.types import is_numeric_dtype
 from ir.ir_operations import IROp, IROpOptions
-
+from user import AskModuleToUser, AskParameterToUser
 
 class IRPreprocessing(IROp):
     def __init__(self, name, parameters=None, model = None):
@@ -60,11 +60,14 @@ class IRMissingValuesHandle(IROp):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-        if len(dataset)>100:
-            if (dataset.isna().sum(axis=1)>0).sum()>0.05*len(dataset):
-                result = IRMissingValuesRemove().run(result, session_id)
-            else:
+
+        if (dataset.isna().sum(axis=1)>0).sum()<0.05*len(dataset):
+            result = IRMissingValuesRemove().run(result, session_id)
+        else:
+            if (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
                 result = IRMissingValuesFill().run(result, session_id)
+            else:
+                AskModuleToUser(self, IRMissingValuesRemove(),IRMissingValuesFill())
         return result
 
 
@@ -149,8 +152,32 @@ class IROneHotEncode(IRPreprocessing):
         print('onehotencode', dataset.shape)
         return result
 
+class IRLabelOperation(IROp):
+    def __init__(self, name, parameters=None, model = None):
+        super(IRLabelOperation, self).__init__(name, parameters if parameters is not None else [])
+        #self.parameter = parameters['value']  # FIXME: use self.get_param('value'), but it will raise UnknownParameter
+        self.labels = None
 
-class IRLabelRemove(IRPreprocessing):
+    @abstractmethod
+    def parameter_tune(self, dataset):
+        pass
+
+    def set_model(self, result):
+        if 'new_dataset' in result:
+            dataset = result['new_dataset']
+        else:
+            dataset = result['original_dataset'].ds
+        if self.parameter == None:
+            self.parameter_tune(dataset)
+        #for p,v in self.parameters.items():
+        #    self._model.__setattr__(p,v.value)
+        self._param_setted = True
+
+    #TDB cosa deve restituire questa funzione?
+    def run(self, result, session_id):
+        pass
+
+class IRLabelRemove(IRLabelOperation):
 
     def __init__(self):
         super(IRLabelRemove, self).__init__("labelRemove")
@@ -180,19 +207,41 @@ class IRLabelRemove(IRPreprocessing):
             print(dataset.shape)
             dataset = dataset.drop(label, axis=1)
             label = result['original_dataset'].ds[label]
-        #if not is_numeric_dtype(label):
-        #    label = pd.get_dummies(label)
-        #label = label.dropna()
-        label = LabelEncoder().fit_transform(label)
 
-        #result['new_dataset'] = dataset.T[set(label.index.values)].T
+        if len(set(label.values))>2:
+            label = LabelEncoder().fit_transform(label)
+        else:
+            label = label.replace(list(set(label))[0],0).replace(list(set(label))[1],1)
+
+
         result['labels']=label
         result['new_dataset'] = dataset
 
-
-        #columns=list(set(dataset.columns) - set(label))
-        #result['new_dataset'] = dataset[columns]
         return result
+
+class IRLabelAppend(IRLabelOperation):
+
+    def __init__(self):
+        super(IRLabelAppend, self).__init__("labelAppend")
+
+    def parameter_tune(self, dataset):
+        # TODO: implement
+        pass
+
+    def run(self, result, session_id):
+        label = result['labels']
+        #print('labels', label.shape)
+        dataset = result['new_dataset']
+        dataset[result['original_dataset'].label] = label
+        result['new_dataset'] = dataset
+        print(dataset)
+        return result
+
+class IRGenericLabelOperations(IROpOptions):
+    def __init__(self):
+        super(IRGenericLabelOperations, self).__init__([IRLabelRemove(), IRLabelAppend()],
+                                                     "labelRemove")
+
 
 class IROutliersRemove(IRPreprocessing):
     def __init__(self):
@@ -207,18 +256,27 @@ class IROutliersRemove(IRPreprocessing):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
+
         dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
-        df = dataset.T
-        mean = df.mean()
-        std = df.std()
-        print(df.index)
-        print(df.columns)
-        ds = df[(np.abs(df - mean) <= (5 * std)).all(axis=1)].T
+        index_old = dataset.index.values
+        dataset.index = np.range(len(dataset))
+        ds = dataset[((np.abs(dataset-dataset.mean()))<=(3*dataset.std())).sum(axis=1)<=0.9*dataset.shape[1]]
+
         if ds.shape[1]!=0 and ds.shape[0]!=0:
             print('len', ds.shape)
             result['new_dataset'] = ds
+            if 'labels' in result:
+                label = result['labels']
+                print(label)
+                label.index = np.arange(0, len(dataset))
+                label = label.drop(ds.index)
+                result['labels'] = label.values
+                print(result['labels'] )
+            index_new = pd.DataFrame(index_old).drop(ds.index)
+            ds.index = index_new.iloc[:,0].values
 
+        result['new_dataset'] = ds
         return result
 
 class IRStandardization(IRPreprocessing):

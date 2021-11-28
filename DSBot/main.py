@@ -27,10 +27,13 @@ class Dataset:
         for c in self.ds.columns:
             if SequenceMatcher(None, c.strip().lower(), label.strip().lower()).ratio()>0.75:
                 label = c
-        #self.label = self.ds[label].astype('category')#.values
         self.label = label
-        #self.ds = self.ds.drop(label, axis=1)
         self.hasLabel = True
+        if len(pd.DataFrame(self.ds[label])._get_numeric_data().columns)==1:
+            self.hasCategoricalLabel = True
+        else:
+            self.hasCategoricalLabel = False
+        print(self.hasCategoricalLabel)
 
     def set_characteristics(self):
         if self.ds is not None:
@@ -46,16 +49,19 @@ class Dataset:
         return (var==0).sum()>0
 
     def categorical_columns(self):
-        cols = self.ds.columns
-        num_cols = self.ds._get_numeric_data().columns
+        ds = self.ds
+        if self.hasLabel:
+            ds = ds.drop(self.label,axis=1)
+        cols = ds.columns
+        num_cols = ds._get_numeric_data().columns
         return len(list(set(cols) - set(num_cols))) > 0, len(num_cols)==0, list(set(cols) - set(num_cols))
 
     def has_outliers(self):
         df = self.ds.drop(list(self.cat_cols), axis=1)
-        df = df.T
-        mean = df.mean()
-        std = df.std()
-        if len(df[(np.abs(df - mean) <= (7 * std)).all(axis=1)])< len(df):
+        if self.hasLabel:
+            ds = df.drop(self.label,axis=1)
+
+        if len(df[((np.abs(df-df.mean()))<=(3*df.std())).sum(axis=1)<=0.9*df.shape[1]])< len(df):
             return True
         return False
 
