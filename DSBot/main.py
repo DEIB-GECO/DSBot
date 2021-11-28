@@ -27,10 +27,13 @@ class Dataset:
         for c in self.ds.columns:
             if SequenceMatcher(None, c.strip().lower(), label.strip().lower()).ratio()>0.75:
                 label = c
-        #self.label = self.ds[label].astype('category')#.values
         self.label = label
-        #self.ds = self.ds.drop(label, axis=1)
         self.hasLabel = True
+        if len(pd.DataFrame(self.ds[label])._get_numeric_data().columns)==1:
+            self.hasCategoricalLabel = True
+        else:
+            self.hasCategoricalLabel = False
+        print(self.hasCategoricalLabel)
 
     def set_characteristics(self):
         if self.ds is not None:
