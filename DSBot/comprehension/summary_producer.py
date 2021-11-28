@@ -23,7 +23,6 @@ def summary_producer(operations_array, label):
     sentences_number = len(sentences_array)
 
     print("La lista è lunga: ", sentences_array)
-
     if sentences_number == 1:
         central_sentence = sentences_array[0].capitalize()
     elif sentences_number == 2:
@@ -31,7 +30,7 @@ def summary_producer(operations_array, label):
     else:
         central_sentence = f"First, {sentences_array[0]} Then, {sentences_array[1]}{ ' '.join([str(elem) for elem in sentences_array[2:-2]])} Finally, {sentences_array[-1]}"
 
-    if label:
+    if label != "":
         print("The label is:", label)
-        central_sentence.replace('##LABEL##', label)
+        central_sentence = central_sentence.replace('##label##', label)
     return introductory_sentence + central_sentence + final_sentence
