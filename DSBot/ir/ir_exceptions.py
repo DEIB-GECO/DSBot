@@ -20,3 +20,6 @@ class IncorrectValue(Exception):
 
 class RulesNotAvailable(Exception):
     pass
+
+class PerformanceNotAvailable(Exception):
+    pass

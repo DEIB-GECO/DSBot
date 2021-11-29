@@ -62,7 +62,7 @@ class IRTrainTest(IRCrossValidation):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-        labels = result['labels']
+        labels = result['labels'].values
         result['x_train'] = []
         result['x_test'] = []
         result['y_train'] = []
@@ -77,7 +77,7 @@ class IRTrainTest(IRCrossValidation):
 
 class IRKFold(IRCrossValidation):
     def __init__(self):
-        super(IRKFold, self).__init__("kFold",[IRNumPar("n_splits", 2, "int", 2, 10, 1)],  # TODO: if I want to pass a list of values?
+        super(IRKFold, self).__init__("kFold",[IRNumPar("n_splits", 3, "int", 2, 10, 1)],  # TODO: if I want to pass a list of values?
                                       KFold)
         self._param_setted = False
 
@@ -95,7 +95,7 @@ class IRKFold(IRCrossValidation):
         else:
             dataset = result['original_dataset'].ds
 
-        labels = result['labels']
+        labels = result['labels'].values
 
         print('PARAMETERSSSS', self.parameters)
         cv = self._model

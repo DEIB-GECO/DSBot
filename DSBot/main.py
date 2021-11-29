@@ -30,9 +30,9 @@ class Dataset:
         self.label = label
         self.hasLabel = True
         if len(pd.DataFrame(self.ds[label])._get_numeric_data().columns)==1:
-            self.hasCategoricalLabel = True
-        else:
             self.hasCategoricalLabel = False
+        else:
+            self.hasCategoricalLabel = True
         print(self.hasCategoricalLabel)
 
     def set_characteristics(self):

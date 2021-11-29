@@ -231,3 +231,9 @@ i want to select the features, then classify the data and extract the most impor
 predict the data
 predict the next value according to the past time values
 find maximum variance plan
+regression
+classification
+clustering
+association rules
+correlation
+prediction
