@@ -258,23 +258,26 @@ class IROutliersRemove(IRPreprocessing):
             dataset = result['original_dataset'].ds
 
         dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+        print('len dataset', len(dataset))
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         index_old = dataset.index.values
-        dataset.index = np.range(len(dataset))
+        dataset.index = np.arange(len(dataset))
         ds = dataset[((np.abs(dataset-dataset.mean()))<=(3*dataset.std())).sum(axis=1)<=0.9*dataset.shape[1]]
 
         if ds.shape[1]!=0 and ds.shape[0]!=0:
-            print('len', ds.shape)
+            print('len ds', ds.shape)
             result['new_dataset'] = ds
             if 'labels' in result:
-                label = result['labels']
-                print(label)
+                label = pd.DataFrame(result['labels'])
+                #print(label)
                 label.index = np.arange(0, len(dataset))
-                label = label.drop(ds.index)
-                result['labels'] = label.values
-                print(result['labels'] )
-            index_new = pd.DataFrame(index_old).drop(ds.index)
+                label = label.drop(set(dataset.index) - set(ds.index))
+                result['labels'] = label#.T.values
+                #print(result['labels'] )
+            index_new = pd.DataFrame(index_old).drop(set(dataset.index) - set(ds.index))
+            print('len index', len(index_new))
             ds.index = index_new.iloc[:,0].values
+
 
         result['new_dataset'] = ds
         return result
@@ -288,14 +291,18 @@ class IRStandardization(IRPreprocessing):
         pass
 
     def run(self, result, session_id):
+        print('STANDARDIZATION')
         if 'new_dataset' in result:
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-            dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+        cat_dataset = dataset[result['original_dataset'].cat_cols]
+        values_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+        values_dataset = pd.DataFrame(StandardScaler().fit_transform(values_dataset), index=values_dataset.index, columns=values_dataset.columns)
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
-
-        result['new_dataset'] = pd.DataFrame(StandardScaler().fit_transform(dataset))
+        dataset = pd.concat([cat_dataset, values_dataset], axis=1)
+        result['new_dataset'] = dataset
+        print(dataset)
         return result
 
 class IRNormalization(IRPreprocessing):
@@ -313,8 +320,13 @@ class IRNormalization(IRPreprocessing):
             dataset = result['original_dataset'].ds
             dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
-
-        result['new_dataset'] = pd.DataFrame(MinMaxScaler().fit_transform(dataset))
+        cat_dataset = dataset[result['original_dataset'].cat_cols]
+        values_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+        values_dataset = pd.DataFrame(MinMaxScaler().fit_transform(values_dataset), index=values_dataset,
+                                      columns=values_dataset.columns)
+        # df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+        dataset = pd.concat([cat_dataset, values_dataset], axis=1)
+        result['new_dataset'] = dataset
         return result
 
 class IRGenericPreprocessing(IROpOptions):

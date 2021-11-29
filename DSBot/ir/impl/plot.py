@@ -13,7 +13,7 @@ from pandas.plotting import table
 from sklearn.metrics import RocCurveDisplay
 from seaborn import barplot
 from sklearn.metrics import roc_curve, auc
-from ir.ir_exceptions import LabelsNotAvailable, PCADataNotAvailable, CorrelationNotAvailable, RulesNotAvailable
+from ir.ir_exceptions import LabelsNotAvailable, PCADataNotAvailable, CorrelationNotAvailable, RulesNotAvailable, PerformanceNotAvailable
 from ir.ir_operations import IROp, IROpOptions
 from itertools import cycle
 import plotly.express as px
@@ -176,6 +176,37 @@ class IRTableAssociationRules(IRPlot):
             #result['plot'].append("u_labels = np.unique(result['labels'])\nfor i in u_labels:\n\tax = plt.scatter(result['transformed_ds'][result['labels'] == i, 0], result['transformed_ds'][result['labels'] == i, 1], label=i)")
 
         result['original_dataset'].name_plot = './temp/temp_' + str(session_id) + '/table_associationRules.png'
+
+        # plt.show()
+        return  result
+
+class IRTableRegression(IRPlot):
+    def __init__(self):
+        super(IRTableRegression, self).__init__("tableRegression",
+                                            [],
+                                            table)
+
+    def parameter_tune(self, dataset):
+        pass
+
+    def run(self, result, session_id):
+        if 'regressionPerformance' not in result:
+            raise PerformanceNotAvailable
+        else:
+            performance = result['regressionPerformance']
+
+
+        df = performance
+        df_styled = df.style.background_gradient() #adding a gradient based on values in cell
+        dfi.export(df_styled, './temp/temp_' + str(session_id) + '/table_regression.png')
+        if 'plot' not in result:
+            result['plot'] = ['./temp/temp_' + str(session_id) + '/table_regression.png']
+            #result['plot'] = ["u_labels = np.unique(result['labels'])\nfor i in u_labels:\n\tax = plt.scatter(result['transformed_ds'][result['labels'] == i, 0], result['transformed_ds'][result['labels'] == i, 1], label=i)"]
+        else:
+            result['plot'].append('./temp/temp_' + str(session_id) + '/table_regression.png')
+            #result['plot'].append("u_labels = np.unique(result['labels'])\nfor i in u_labels:\n\tax = plt.scatter(result['transformed_ds'][result['labels'] == i, 0], result['transformed_ds'][result['labels'] == i, 1], label=i)")
+
+        result['original_dataset'].name_plot = './temp/temp_' + str(session_id) + '/table_regression.png'
 
         # plt.show()
         return  result
@@ -344,8 +375,8 @@ class IRROC(IRPlot):
                                ''.format(i, roc_auc[i]))
         else:
             plt.figure()
-            for z in zip(y, pred):
-                print(z)
+            print(y)
+            print(pred[:,1])
             fpr, tpr, _ = roc_curve(y, pred[:,1])
             roc_auc = auc(fpr, tpr)
             plt.plot(fpr, tpr, lw=2,
@@ -419,4 +450,4 @@ class IRFeatureImportanceBarPlot(IRPlot):
 # FIXME: this class was commented out because the implementation raises errors
 class IRGenericPlot(IROpOptions):
      def __init__(self):
-         super(IRGenericPlot, self).__init__([IRScatterplot(), IRClustermap(), IRDistplot(), IRBoxplot(), IRBarplot(), IRROC(), IRScatterAssociationRules(), IRTableAssociationRules(), IRFeatureImportancePlot(), IRFeatureImportanceBarPlot()], "scatterplot")
+         super(IRGenericPlot, self).__init__([IRScatterplot(), IRClustermap(), IRDistplot(), IRBoxplot(), IRBarplot(), IRROC(), IRScatterAssociationRules(), IRTableAssociationRules(), IRFeatureImportancePlot(), IRFeatureImportanceBarPlot(), IRTableRegression()], "scatterplot")

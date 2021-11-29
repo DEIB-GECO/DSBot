@@ -231,3 +231,9 @@ featureSelection classification featureImportance
 prediction
 regression
 pca
+regression
+classification
+clustering
+associationRules
+correlation
+prediction
