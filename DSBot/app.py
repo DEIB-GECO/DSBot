@@ -11,17 +11,12 @@ from comprehension.summary_producer import summary_producer
 from comprehension.comprehension_conversation_handler import comprehension_conversation_handler
 from log_helpers import setup_logger
 from main import Dataset
-# from flask_session import Session
 from needleman_wunsch import NW
 from kb import KnowledgeBase
 import os
 import pandas as pd
-import numpy as np
-import importlib
 import base64
 from threading import Thread
-import matplotlib.pyplot as plt
-import seaborn as sns
 import copy
 from datetime import timedelta
 from flask.sessions import SecureCookieSessionInterface
@@ -54,9 +49,11 @@ Session(app)
 # Session(app)
 session_serializer = SecureCookieSessionInterface().get_signing_serializer(app)
 data = {}
+session_id = None
 socketio = SocketIO(app, manage_session=False, cors_allowed_origins='*', async_mode=async_mode,
                     path=socketio_path, logger=False, engineio_logger=False, debug=False, )
-
+message_queue = []
+dataset = None
 simple_page = Blueprint('root_pages',
                         __name__,
                         static_folder='../frontend/dist/static',
@@ -64,6 +61,8 @@ simple_page = Blueprint('root_pages',
 
 @app.route('/receiveds', methods=['POST'])
 def receive_ds():
+    global dataset
+    global session_id
     session_id = session_serializer.dumps(dict(session))
     data[session_id] = {}
     has_index = 0 if request.form['has_index'] == 'true' else None
@@ -71,7 +70,6 @@ def receive_ds():
     sep = request.form['separator']
     label = request.form['label']
     # format = request.form['format']
-    # print('sep', sep)
     uploaded_file = request.files['ds']
     if uploaded_file.filename != '':
         # uploaded_file.save(uploaded_file.filename)
@@ -99,7 +97,6 @@ def receive_ds():
         data[session_id]['kb'] = kb
         data[session_id]['dataset'] = dataset
 
-    print(kb.kb)
     print("SESSION ID", session_id)
     # print('label', label, dataset.label, dataset.hasLabel)
     return jsonify({"session_id": session_id})
@@ -129,28 +126,11 @@ def receive_utterance():
 
         with open('./temp/temp_' + str(session_id) + '/pred' + str(session_id) + '.txt', 'r') as f:
             wf = f.readlines()[0].strip().split(' ')
-        scores = {}
 
         # comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
         temp_dataset = data[session_id]['dataset']
         comprehension_sentence = summary_producer(wf, temp_dataset.label)
 
-        kb = data[session_id]['kb']
-        print(kb.kb)
-        for i in range(len(kb.kb)):
-            sent = [x for x in kb.kb.values[i, 1:] if str(x) != 'nan']
-            print(sent)
-            scores[i] = NW(wf, sent, kb.voc) / len(sent)
-            print(scores[i])
-
-        print(scores)
-        max_key = max(scores, key=scores.get)
-        max_key = [x for x in kb.kb.values[max_key, 1:] if str(x) != 'nan']
-        print('MAX', max_key)
-
-        ir_tuning = create_IR(max_key)
-        data[session_id]['ir_tuning'] = ir_tuning
-        threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
         return jsonify({"session_id": session_id,
                         "request": wf,
                         "comprehension_sentence": comprehension_sentence,
@@ -244,35 +224,44 @@ def echo():
 def comprehension_chat():
     json_data = request.get_json(force=True)
 
-    # Do stuff with the data received
-    print(json_data)
-    print(str(data[json_data['session_id']]['dataset'].hasLabel))
+    scores = {}
+    wf = json_data['comprehension_pipeline']
+    kb = data[session_id]['kb']
+    print(kb.kb)
+    for i in range(len(kb.kb)):
+        sent = [x for x in kb.kb.values[i, 1:] if str(x) != 'nan']
+        print(sent)
+        scores[i] = NW(wf, sent, kb.voc) / len(sent)
+        print(scores[i])
+
+    print(scores)
+    max_key = max(scores, key=scores.get)
+    max_key = [x for x in kb.kb.values[max_key, 1:] if str(x) != 'nan']
+    print('MAX', max_key)
+
+    ir_tuning = create_IR(max_key, message_queue)
+    data[session_id]['ir_tuning'] = ir_tuning
+    threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
+
     return jsonify(comprehension_conversation_handler(json_data, data[json_data['session_id']]['dataset']))
 
 @socketio.on('message_sent')
 def handle_message(data):
+    global message_queue
     print('received_message', data)
+    message_queue.append(data['message'])
 
 @socketio.on('ack')
 def handle_message(data):
-    print('received_message GVUGGYIUOHIOJ', data)
-    emit("message_response", {'type':'aaaaaa', "message":'ciaone'})
+    print('received_message', data)
+
+
+@socketio.on('connect')
+def test_connect():
+    print("\n\n\nCONNESSO\n\n\n")
+
 
 app.register_blueprint(simple_page, url_prefix=base_url)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, port=5000)
-
-
-"""
-    if json_data['payload'] == "yes\n":
-        return jsonify({'complete': True})
-        # TODO qui dobbiamo iniziare a creare la pipeline, non prima!
-    if json_data['payload'] == "yes\n":
-        return jsonify({'complete': True})
-"""
-# TODO altrimenti dobbiamo iniziare a capire cosa non va
-
-# Return a response
-
-

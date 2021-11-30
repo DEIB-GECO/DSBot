@@ -32,5 +32,5 @@ def summary_producer(operations_array, label):
 
     if label != "":
         print("The label is:", label)
-        central_sentence = central_sentence.replace('##label##', label)
+        central_sentence = central_sentence.replace('##LABEL##', f"'{label}'")
     return introductory_sentence + central_sentence + final_sentence

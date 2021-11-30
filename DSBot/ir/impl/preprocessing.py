@@ -6,7 +6,9 @@ from sklearn.impute._iterative import IterativeImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
 from pandas.api.types import is_numeric_dtype
 from ir.ir_operations import IROp, IROpOptions
-from user import AskModuleToUser, AskParameterToUser
+from user import ask_user
+import time
+from flask_socketio import SocketIO, emit
 
 class IRPreprocessing(IROp):
     def __init__(self, name, parameters=None, model = None):
@@ -34,10 +36,11 @@ class IRPreprocessing(IROp):
         pass
 
 class IRMissingValuesHandle(IROp):
-    def __init__(self, name, parameters=None, model = None):
+    def __init__(self, name, parameters=None, model = None ):
         super(IRMissingValuesHandle, self).__init__(name, parameters if parameters is not None else [])
         #self.parameter = parameters['value']  # FIXME: use self.get_param('value'), but it will raise UnknownParameter
         self.labels = None
+        #self.message_queue = message_queue
 
 
     def parameter_tune(self, dataset):
@@ -67,7 +70,8 @@ class IRMissingValuesHandle(IROp):
             if (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
                 result = IRMissingValuesFill().run(result, session_id)
             else:
-                AskModuleToUser(self, [IRMissingValuesRemove,IRMissingValuesFill])
+                pass
+                #AskModuleToUser(self, [IRMissingValuesRemove,IRMissingValuesFill])
         return result
 
 

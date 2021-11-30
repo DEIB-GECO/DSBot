@@ -14,11 +14,12 @@ def run(ir, dataset, session_id):
         return run(ir[1:], ir[0].run(dataset, session_id), session_id)
 
 
-def create_IR(pipeline):
+def create_IR(pipeline, message_queue):
     dict_pipeline = []
     for item in pipeline:
         try:
             module = modules[item]()
+            module.set_message_queue(message_queue)
             module.set_model(item)
             dict_pipeline.append(module)
         except KeyError:

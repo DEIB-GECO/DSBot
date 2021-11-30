@@ -33,6 +33,9 @@ class IROp(TuningOpMixin, ABC):
     def run(self, result, session_id):
         pass
 
+    def set_message_queue(self, message_queue):
+        self.set_message_queue = message_queue
+
 
 class IROpOptions(TuningOpOptionsMixin, object):
     """A group of `IROp` objects, calls to this are forwarded to the default IROp.
