@@ -101,6 +101,7 @@ export default {
           console.log('ERRORE STRANO', payload)
         }
       })
+      /*
       socket.on('reconnect', () => {
         socket.emit('ack', {
           message_id: this.lastMessageId,
@@ -112,7 +113,7 @@ export default {
         console.log('Ehi wait msg', payload)
         this.jsonResponseParsingFunctions.message(payload.payload)
         this.setSendButtonStatus(false)
-      })
+      }) */
     }
   },
   methods: {
