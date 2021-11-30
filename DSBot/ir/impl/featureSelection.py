@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 import numpy as np
 import pandas as pd
-from ir.ir_exceptions import LabelsNotAvailable
+from ir.ir_exceptions import LabelsNotAvailable, ClassifierNotAvailable
 from ir.ir_operations import IROp, IROpOptions
 from ir.ir_parameters import IRNumPar
 from ir.modules.laplace import Laplace
@@ -214,7 +214,13 @@ class IRFeatureImportance(IRFeatureImportanceOp):
         else:
             dataset = result['original_dataset'].ds
         try:
-            fi = result['classifier'].feature_importances_
+            if 'classifier' in result:
+                fi = result['classifier'].feature_importances_
+            else:
+                raise ClassifierNotAvailable
+        except ClassifierNotAvailable:
+            fi = result['regressor'].coef_[0]
+            print(fi)
         except:
             fi = np.array(len(dataset.columns))
         d = {'Cols': dataset.columns, 'FI': fi}

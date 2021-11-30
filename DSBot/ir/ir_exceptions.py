@@ -23,3 +23,6 @@ class RulesNotAvailable(Exception):
 
 class PerformanceNotAvailable(Exception):
     pass
+
+class ClassifierNotAvailable(Exception):
+    pass
