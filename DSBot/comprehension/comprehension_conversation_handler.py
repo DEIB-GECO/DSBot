@@ -247,4 +247,5 @@ def comprehension_conversation_handler(user_payload, dataset):
     # Execute the function
     new_message, new_state, new_pipeline_array = func.handle(user_utterance, pipeline_array, dataset)
     new_pipeline_string = pipeline_array_to_string(pipeline_array)
-    return {'message': new_message, 'comprehension_state': new_state, 'comprehension_pipeline': new_pipeline_string}
+    process_complete = {'complete': True} if new_state=='comprehension_end' else {}
+    return {'message': new_message, 'comprehension_state': new_state, 'comprehension_pipeline': new_pipeline_string, **process_complete}
