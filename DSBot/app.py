@@ -27,15 +27,25 @@ from datetime import timedelta
 from flask.sessions import SecureCookieSessionInterface
 
 from tuning import get_framework
+import flask
+from flask import Blueprint, render_template
+from flask import Flask, session, request, copy_current_request_context
+from flask_session import Session
+from flask_socketio import SocketIO, emit, disconnect
+async_mode = "gevent"
+
+base_url = '/dsbot/'
+socketio_path = base_url + 'socket.io/'
 
 setup_logger()
 
 app = Flask(__name__)
 cors = CORS(app, supports_credentials=True)
+app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = 'secret!'
 app.config['CORS_HEADERS'] = 'application/json'
 app.config['CORS_SUPPORTS_CREDENTIALS'] = True
-
+Session(app)
 # app.config['SESSION_TYPE'] = 'filesystem'
 # session config
 # app.config['SESSION_FILE_DIR'] = 'flask_session'
@@ -44,7 +54,13 @@ app.config['CORS_SUPPORTS_CREDENTIALS'] = True
 # Session(app)
 session_serializer = SecureCookieSessionInterface().get_signing_serializer(app)
 data = {}
+socketio = SocketIO(app, manage_session=False, cors_allowed_origins='*',
+                    path=socketio_path, logger=False, engineio_logger=False, debug=False, )
 
+simple_page = Blueprint('root_pages',
+                        __name__,
+                        static_folder='../frontend/dist/static',
+                        template_folder='../frontend/dist')
 
 @app.route('/receiveds', methods=['POST'])
 def receive_ds():
