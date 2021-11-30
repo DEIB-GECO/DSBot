@@ -260,7 +260,7 @@ def handle_message(data):
 app.register_blueprint(simple_page, url_prefix=base_url)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='localhost', port=5000)
+    socketio.run(app, debug=True, port=5000)
 
 
 """

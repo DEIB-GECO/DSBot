@@ -71,7 +71,7 @@ const SOCKET_ENDPOINT = '/test'
 // reconnectionDelay: 500,
 // reconnectionAttempts: 10,
 //})
-const socket = io('http://localhost:5000/inspire/socket.io/')
+const socket = io('http://127.0.0.1:5000/')
 
 export default {
   components: {},
