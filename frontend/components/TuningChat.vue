@@ -58,7 +58,18 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
+import io from 'socket.io-client'
+
+const SOCKET_PATH = 'localhost'
+const SOCKET_ENDPOINT = '/test'
+
+const socket = io(SOCKET_ENDPOINT, {
+  path: SOCKET_PATH,
+  reconnection: true,
+  reconnectionDelay: 500,
+  reconnectionAttempts: 10,
+})
 
 export default {
   components: {},
@@ -79,16 +90,45 @@ export default {
   updated() {
     this.scrollToEnd()
   },
+  created() {
+    if (this.destination === 'refinement') {
+      // socket.emit('ack', { message_id: this.lastMessageId, location: 'crated' })
+      socket.on('message_response', (payload) => {
+        if (payload.type) {
+          console.log('server sent JSON_response', payload)
+          this.receiveChat(payload.message)
+        } else {
+          console.log('ERRORE STRANO', payload)
+        }
+      })
+      socket.on('reconnect', () => {
+        socket.emit('ack', {
+          message_id: this.lastMessageId,
+          location: 'reconnect',
+        })
+        console.log('RECONNECT! Mando ack')
+      })
+      socket.on('wait_msg', (payload) => {
+        console.log('Ehi wait msg', payload)
+        this.jsonResponseParsingFunctions.message(payload.payload)
+        this.setSendButtonStatus(false)
+      })
+    }
+  },
   methods: {
     ...mapActions(['toFramework', 'sendChatMessage']),
+    ...mapMutations(['sendChat', 'receiveChat']),
     sendText() {
       if (this.utterance.trim() !== '' && this.utterance !== '\n') {
         if (this.destination === 'mmcc') this.toFramework(this.utterance)
-        else
+        else if (this.destination === 'comprehension') {
           this.sendChatMessage({
             destination: this.destination,
             message: this.utterance,
           })
+        } else if (this.destination === 'refinement') {
+          this.sendSocketMessage()
+        }
         this.utterance = ''
       }
     },
@@ -98,6 +138,10 @@ export default {
       if (container) {
         container.scrollTop = container.scrollHeight
       }
+    },
+    sendSocketMessage() {
+      this.sendChat(this.utterance)
+      socket.emit('message_sent', { message: this.utterance })
     },
   },
 }
