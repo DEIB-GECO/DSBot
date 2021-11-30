@@ -19,10 +19,15 @@ class IRRegressionPerformance(IRPerformance):
 
 
     def run(self, result, session_id):
+        def flatten(L):
+            for item in L:
+                try:
+                    yield from flatten(item)
+                except TypeError:
+                    yield item
+
         pred = np.array(result['predicted_labels']).flatten()
-        print(pred)
-        y = np.array(result['y_test']).flatten()
-        print(y)
+        y = np.array(list(flatten(result['y_test'])))
         r2 = r2_score(y, pred)
         mse = mean_squared_error(y, pred)
         rmse = math.sqrt(mean_squared_error(y, pred))
