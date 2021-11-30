@@ -32,7 +32,7 @@ from flask import Blueprint, render_template
 from flask import Flask, session, request, copy_current_request_context
 from flask_session import Session
 from flask_socketio import SocketIO, emit, disconnect
-async_mode = "gevent"
+async_mode = "eventlet"
 
 base_url = '/inspire/'
 socketio_path = 'socket.io/'
@@ -54,7 +54,7 @@ Session(app)
 # Session(app)
 session_serializer = SecureCookieSessionInterface().get_signing_serializer(app)
 data = {}
-socketio = SocketIO(app, manage_session=False, cors_allowed_origins='*',
+socketio = SocketIO(app, manage_session=False, cors_allowed_origins='*', async_mode=async_mode,
                     path=socketio_path, logger=False, engineio_logger=False, debug=False, )
 
 simple_page = Blueprint('root_pages',
