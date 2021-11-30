@@ -67,7 +67,7 @@ class IRMissingValuesHandle(IROp):
             if (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
                 result = IRMissingValuesFill().run(result, session_id)
             else:
-                AskModuleToUser(self, IRMissingValuesRemove(),IRMissingValuesFill())
+                AskModuleToUser(self, [IRMissingValuesRemove,IRMissingValuesFill])
         return result
 
 
