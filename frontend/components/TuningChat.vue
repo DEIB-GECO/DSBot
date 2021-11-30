@@ -57,6 +57,7 @@
   </div>
 </template>
 
+<script src="/socket.io/socket.io.js"></script>
 <script>
 import { mapActions, mapState, mapMutations } from 'vuex'
 import io from 'socket.io-client'
@@ -92,6 +93,8 @@ export default {
   },
   created() {
     if (this.destination === 'refinement') {
+      console.log('created invocato')
+
       // socket.emit('ack', { message_id: this.lastMessageId, location: 'crated' })
       socket.on('message_response', (payload) => {
         if (payload.type) {

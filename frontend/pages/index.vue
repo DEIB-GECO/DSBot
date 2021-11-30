@@ -22,12 +22,18 @@
           <v-divider></v-divider>
 
           <v-stepper-step :complete="e1 > 4" step="4">
-            View your results
+            Refine your question
           </v-stepper-step>
 
           <v-divider></v-divider>
 
           <v-stepper-step :complete="e1 > 5" step="5">
+            View your results
+          </v-stepper-step>
+
+          <v-divider></v-divider>
+
+          <v-stepper-step :complete="e1 > 6" step="6">
             Tune your pipeline
           </v-stepper-step>
         </v-stepper-header>
@@ -46,6 +52,10 @@
           </v-stepper-content>
 
           <v-stepper-content step="4" class="px-10 pb-8">
+            <tuning-chat :destination="'refinement'" />
+          </v-stepper-content>
+
+          <v-stepper-content step="5" class="px-10 pb-8">
             <results></results>
 
             <v-btn color="secondary" @click="restart()"> Restart </v-btn>
@@ -58,7 +68,7 @@
             </v-btn>
           </v-stepper-content>
 
-          <v-stepper-content step="5" class="px-10 pb-8">
+          <v-stepper-content step="6" class="px-10 pb-8">
             <tuning></tuning>
 
             <v-btn color="secondary" @click="restart()"> Restart </v-btn>
