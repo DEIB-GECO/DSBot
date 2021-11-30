@@ -12,7 +12,7 @@
       <v-switch
         v-model="hasIndex"
         flat
-        :label="`The file rows have ${hasIndex ? '' : 'not'} Keys`"
+        :label="`The file rows have ${hasIndex ? '' : 'not'} indices`"
       ></v-switch>
       <!-- </v-flex> -->
       <!-- <v-flex xs6> -->
@@ -29,6 +29,8 @@
         <v-select
           v-model="separator"
           :items="separator_list"
+          :item-text="'text'"
+          :item-value="'value'"
           :error="separatorError"
           label="Separator"
         ></v-select>
@@ -54,7 +56,11 @@ export default {
     return {
       hasIndex: true,
       hasColumnNames: true,
-      separator_list: [',', ';'],
+      separator_list: [
+        { text: ',', value: ',' },
+        { text: ';', value: ';' },
+        { text: '\\t', value: '\t' },
+      ],
       separator: '',
       dataset: null,
       fileInputError: false,
