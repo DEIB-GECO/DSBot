@@ -3,7 +3,7 @@ from abc import abstractmethod
 from ir.ir_exceptions import LabelsNotAvailable
 from ir.ir_operations import IROp, IROpOptions
 from ir.ir_parameters import IRNumPar
-
+from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.model_selection import train_test_split, KFold
 import numpy as np
@@ -79,12 +79,19 @@ class IRLinearRegression(IRRegression):
 class IRRidgeRegression(IRRegression):
     def __init__(self):
         super(IRRidgeRegression, self).__init__("ridgeRegression",
-                                             [],  # TODO: if I want to pass a list of values?
+                                             [IRNumPar('alpha', 1, "int", 0, 1, 0.01)],  # TODO: if I want to pass a list of values?
                                              Ridge)
         self._param_setted = False
 
     def parameter_tune(self, dataset, labels):
-        pass
+        grid = dict()
+        grid['alpha'] = np.arange(self.parameters['alpha'].min_v, self.parameters['alpha'].max_v, self.parameters['alpha'].step)
+        # define search
+        search = GridSearchCV(self._model, grid, scoring='neg_mean_absolute_error', cv=KFold(5, shuffle=True), n_jobs=-1)
+        # perform the search
+        search.fit(dataset, labels)
+        for k,v in search.best_params_.items():
+            self.parameters[k].value = v
 
 
 class IRGenericRegression(IROpOptions):

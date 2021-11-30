@@ -147,7 +147,8 @@ class IROneHotEncode(IRPreprocessing):
             dataset = result['original_dataset'].ds
         cols = dataset.columns
         num_cols = dataset._get_numeric_data().columns
-        dataset = pd.get_dummies(dataset, columns=list(set(cols) - set(num_cols)))
+        cat_dataset = pd.get_dummies(dataset, columns=list(set(cols) - set(num_cols)))
+        dataset = pd.concat([cat_dataset, dataset[num_cols]], axis=1)
         result['new_dataset'] = dataset
         print('onehotencode', dataset.shape)
         return result
@@ -257,12 +258,12 @@ class IROutliersRemove(IRPreprocessing):
         else:
             dataset = result['original_dataset'].ds
 
-        dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+        value_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         print('len dataset', len(dataset))
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         index_old = dataset.index.values
-        dataset.index = np.arange(len(dataset))
-        ds = dataset[((np.abs(dataset-dataset.mean()))<=(3*dataset.std())).sum(axis=1)<=0.9*dataset.shape[1]]
+        value_dataset.index = np.arange(len(dataset))
+        ds = value_dataset[((np.abs(value_dataset-value_dataset.mean()))<=(3*value_dataset.std())).sum(axis=1)<=0.9*value_dataset.shape[1]]
 
         if ds.shape[1]!=0 and ds.shape[0]!=0:
             print('len ds', ds.shape)
@@ -270,15 +271,20 @@ class IROutliersRemove(IRPreprocessing):
             if 'labels' in result:
                 label = pd.DataFrame(result['labels'])
                 #print(label)
-                label.index = np.arange(0, len(dataset))
-                label = label.drop(set(dataset.index) - set(ds.index))
+                label.index = np.arange(0, len(value_dataset))
+                label = label.drop(set(value_dataset.index) - set(ds.index))
                 result['labels'] = label#.T.values
                 #print(result['labels'] )
-            index_new = pd.DataFrame(index_old).drop(set(dataset.index) - set(ds.index))
+            index_new = pd.DataFrame(index_old).drop(set(value_dataset.index) - set(ds.index))
             print('len index', len(index_new))
             ds.index = index_new.iloc[:,0].values
 
-
+        if len(result['original_dataset'].cat_cols)!=0:
+            cat_dataset = dataset[list(result['original_dataset'].cat_cols)]
+            cat_dataset.index = value_dataset.index
+            cat_dataset = cat_dataset.drop(set(value_dataset.index) - set(ds.index))
+            cat_dataset.index = index_new.iloc[:, 0].values
+            ds = pd.concat([cat_dataset, ds], axis=1)
         result['new_dataset'] = ds
         return result
 
