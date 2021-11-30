@@ -62,15 +62,16 @@
 import { mapActions, mapState, mapMutations } from 'vuex'
 import io from 'socket.io-client'
 
-const SOCKET_PATH = 'localhost'
+const SOCKET_PATH = '/inspire/socket.io'
 const SOCKET_ENDPOINT = '/test'
 
-const socket = io(SOCKET_ENDPOINT, {
-  path: SOCKET_PATH,
-  reconnection: true,
-  reconnectionDelay: 500,
-  reconnectionAttempts: 10,
-})
+//const socket = io(SOCKET_ENDPOINT, {
+// path: SOCKET_PATH,
+// reconnection: true,
+// reconnectionDelay: 500,
+// reconnectionAttempts: 10,
+//})
+const socket = io('http://localhost:5000/inspire/socket.io/')
 
 export default {
   components: {},
@@ -94,8 +95,9 @@ export default {
   created() {
     if (this.destination === 'refinement') {
       console.log('created invocato')
-
-      // socket.emit('ack', { message_id: this.lastMessageId, location: 'crated' })
+      console.log('UELLA', socket.connected)
+      socket.emit('ack', { message_id: 1, location: 'crated' })
+      console.log('UELLA2')
       socket.on('message_response', (payload) => {
         if (payload.type) {
           console.log('server sent JSON_response', payload)
