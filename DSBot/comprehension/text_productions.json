@@ -38,5 +38,10 @@
     "summary": "your objective is to predict the value of ##LABEL## column using the others data in the table.",
     "explanation": "from your request, I understood you want to apply regression, an analysis that tries to predict a numerical value from your dataset. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict that column.",
     "example": "suppose you are the owner of a hotel, and you have a table with the information of all the people who have stayed in your facility and the consumptions for the breakfast. With this kind of analysis, knowing who is going to stay in your hotel tonight, you can foresee how much fresh milk you have to order for tomorrow morning"
+  },
+  "prediction": {
+     "summary": "your objective is to predict the value of ##LABEL## column using the others data in the table.",
+    "explanation": "from your request, I understood you want to apply prediction. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict that column.",
+    "example": "suppose you are the owner of a hotel, and you have a table with the information of all the people who have stayed in your facility and the consumptions for the breakfast. With this kind of analysis, knowing who is going to stay in your hotel tonight, you can foresee how much fresh milk you have to order for tomorrow morning"
   }
 }
