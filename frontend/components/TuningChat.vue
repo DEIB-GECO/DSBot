@@ -47,6 +47,7 @@
             height="100%"
             color="primary"
             :depressed="true"
+            :deactivated="isChatActive"
             @click="sendText"
           >
             <font-awesome-icon icon="chevron-right" size="2x" color="white" />
@@ -84,6 +85,7 @@ export default {
   data() {
     return {
       utterance: '',
+      isChatActive: true,
     }
   },
   computed: {
@@ -106,6 +108,12 @@ export default {
           console.log('ERRORE STRANO', payload)
         }
       })
+      socket.on('freeze_chat', () => {
+        this.isChatActive = false
+      })
+      socket.on('unfreeze_chat', () => {
+        this.isChatActive = true
+      })
       /*
       socket.on('reconnect', () => {
         socket.emit('ack', {
@@ -125,17 +133,19 @@ export default {
     ...mapActions(['toFramework', 'sendChatMessage']),
     ...mapMutations(['sendChat', 'receiveChat']),
     sendText() {
-      if (this.utterance.trim() !== '' && this.utterance !== '\n') {
-        if (this.destination === 'mmcc') this.toFramework(this.utterance)
-        else if (this.destination === 'comprehension') {
-          this.sendChatMessage({
-            destination: this.destination,
-            message: this.utterance,
-          })
-        } else if (this.destination === 'refinement') {
-          this.sendSocketMessage()
+      if (this.isChatActive) {
+        if (this.utterance.trim() !== '' && this.utterance !== '\n') {
+          if (this.destination === 'mmcc') this.toFramework(this.utterance)
+          else if (this.destination === 'comprehension') {
+            this.sendChatMessage({
+              destination: this.destination,
+              message: this.utterance,
+            })
+          } else if (this.destination === 'refinement') {
+            this.sendSocketMessage()
+          }
+          this.utterance = ''
         }
-        this.utterance = ''
       }
     },
     scrollToEnd() {
