@@ -256,6 +256,7 @@ def handle_message(data):
 @socketio.on('ack')
 def handle_message(data):
     print('received_message GVUGGYIUOHIOJ', data)
+    emit("message_response", {'type':'aaaaaa', "message":'ciaone'})
 
 app.register_blueprint(simple_page, url_prefix=base_url)
 
