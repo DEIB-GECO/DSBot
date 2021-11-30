@@ -34,8 +34,8 @@ from flask_session import Session
 from flask_socketio import SocketIO, emit, disconnect
 async_mode = "gevent"
 
-base_url = '/dsbot/'
-socketio_path = base_url + 'socket.io/'
+base_url = '/inspire/'
+socketio_path = 'socket.io/'
 
 setup_logger()
 
@@ -199,6 +199,17 @@ def tuning():
         response = data[session_id]['framework'].handle_data_input(json_data['payload'])
     return jsonify({'tuning': response})
 
+@simple_page.route('/')
+def index():
+    flask.current_app.logger.info("serve index")
+    return render_template('inspire.html', async_mode=socketio.async_mode)
+
+
+@app.route('/')
+def index():
+    flask.current_app.logger.info("serve index")
+    return render_template('inspire.html', async_mode=socketio.async_mode)
+
 
 def execute_algorithm(ir, session_id):
     app.logger.debug('Entering execute_algorithm function')
@@ -238,6 +249,19 @@ def comprehension_chat():
     print(str(data[json_data['session_id']]['dataset'].hasLabel))
     return jsonify(comprehension_conversation_handler(json_data, data[json_data['session_id']]['dataset']))
 
+@socketio.on('message_sent')
+def handle_message(data):
+    print('received_message', data)
+
+@socketio.on('ack')
+def handle_message(data):
+    print('received_message GVUGGYIUOHIOJ', data)
+
+app.register_blueprint(simple_page, url_prefix=base_url)
+
+if __name__ == '__main__':
+    socketio.run(app, debug=True, host='localhost', port=5000)
+
 
 """
     if json_data['payload'] == "yes\n":
@@ -251,4 +275,3 @@ def comprehension_chat():
 # Return a response
 
 
-app.run(host='localhost', port=5000, debug=True)
