@@ -260,6 +260,9 @@ def handle_message(data):
 def test_connect():
     print("\n\n\nCONNESSO\n\n\n")
 
+@socketio.on('receiveds')
+def on_df_received(form_data):
+    print("user data received!")
 
 app.register_blueprint(simple_page, url_prefix=base_url)
 

@@ -65,13 +65,6 @@ import io from 'socket.io-client'
 
 const SOCKET_PATH = '/inspire/socket.io'
 const SOCKET_ENDPOINT = '/test'
-
-//const socket = io(SOCKET_ENDPOINT, {
-// path: SOCKET_PATH,
-// reconnection: true,
-// reconnectionDelay: 500,
-// reconnectionAttempts: 10,
-//})
 const socket = io('http://127.0.0.1:5000/')
 
 export default {

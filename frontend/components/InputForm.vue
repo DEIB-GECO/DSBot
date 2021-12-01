@@ -84,6 +84,7 @@ export default {
           format: '.csv',
           label: this.label,
         }
+        this.$emit('sendData', inputData)
         this.sendDataStore(inputData)
       }
     },
