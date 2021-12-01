@@ -117,7 +117,11 @@ def receive_utterance():
 
         # comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
         temp_dataset = data[session_id]['dataset']
-        comprehension_sentence = summary_producer(wf, temp_dataset.label)
+        if hasattr(temp_dataset, 'label'):
+            label = temp_dataset.label
+        else:
+            label = ""
+        comprehension_sentence = summary_producer(wf, label)
 
         kb = data[session_id]['kb']
         print(kb.kb)

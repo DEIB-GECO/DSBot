@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import json
+from http.client import HTTPConnection
 from pathlib import Path
+from typing import Dict, Any
 
 algorithm_modules = ['clustering', 'classification', 'correlation', 'associationRules', 'regression']
 
@@ -22,6 +24,21 @@ def retrieve_message(module, sentence_type):
     with open(Path(__file__).parent / 'text_productions.json', "r") as process_file:
         producible_sentences = json.loads(process_file.read())
     return producible_sentences[module][sentence_type]
+
+
+def parse(utterance: str):
+    """ Runs the interpreter to parse the given utterance and returns a dictionary containing the parsed data.
+
+    If no intent can be extracted from the provided utterance, this returns an empty dictionary.
+
+    :param utterance: the text input from the user
+    :return: a dictionary containing the detected intent and corresponding entities if any exists.
+    """
+    connection = HTTPConnection(host='localhost', port=5005)
+    connection.request("POST", "/model/parse", json.dumps({"text": utterance}))
+    response = json.loads(connection.getresponse().read())
+    print("RESPONSE:"+ str(response))
+    return response
 
 
 """
@@ -53,7 +70,9 @@ class Reformulation(ComprehensionConversationState):
             # TODO qui dobbiamo iniziare a creare la pipeline, non prima!
         elif user_utterance == 'no':
             next_state = AlgorithmVerificationPrediction()
-            return next_state.generate(pipeline_array, dataset)
+            new_message, new_state, new_pipeline_array = next_state.generate(pipeline_array, dataset)
+            return "Oh, I am sorry I did not understand your request. I will ask you some questions to better" \
+                   " understand what you want to do. " + new_message, new_state, new_pipeline_array
         elif user_utterance == 'Can you explain it better?':
             return self.help(pipeline_array)
         elif user_utterance == 'Can you provide me an example?':
@@ -108,11 +127,11 @@ class AlgorithmVerificationPrediction(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
         if dataset.hasLabel:
-            return "I see that you indicated the presence of a label in your dataset. Do you want to try to predict " \
-                   "its value from the other data? ", 'algorithm_verification_prediction', pipeline_array
+            return "I see that you indicated the presence of a label in your dataset. Do you want to try to predict it?", \
+                   'algorithm_verification_prediction', pipeline_array
         else:
             next_state = AlgorithmVerificationRelationships()
-            return next_state.generate()
+            return next_state.generate(pipeline_array, dataset)
 
     def handle(self, user_utterance, pipeline_array, dataset):
         if user_utterance == 'no':
@@ -128,10 +147,7 @@ class AlgorithmVerificationPrediction(ComprehensionConversationState):
 class AlgorithmVerificationRelationships(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
-        return "Are you interested in finding direct relationships between the columns of your dataset? For example " \
-               "you might discover that at the increase of the value of the column X, the column Y increases in all " \
-               "the data rows as well, or that the presence of feature A and feature B inside the data row imply the " \
-               "presence of feature C.", \
+        return "Are you interested in finding relations in your data?", \
                'algorithm_verification_relationship', pipeline_array
 
     def handle(self, user_utterance, pipeline_array, dataset):
@@ -148,9 +164,8 @@ class AlgorithmVerificationRelationships(ComprehensionConversationState):
 class AlgorithmVerificationClustering(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
-        return "Are you interested in making groups that contain similar data points? In this way, you can categorize " \
-               "your data into similar groups and see how these groups are formed.", \
-               'algorithm_verification_relationship', pipeline_array
+        return "Are you interested grouping your data by similarities?", \
+               'algorithm_verification_clustering', pipeline_array
 
     def handle(self, user_utterance, pipeline_array, dataset):
         if user_utterance == 'no':
@@ -160,6 +175,21 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
             return 'Ok, we will proceed with clustering analysis!', 'comprehension_end', ['clustering']
         else:
             return 'TBD', 'comprehension_end', pipeline_array
+
+
+class PredictionIfNotLabel(ComprehensionConversationState):
+
+    def generate(self, pipeline_array, dataset):
+        return "Do you want to predict a value in your data? ", "prediction_if_not_label", pipeline_array
+
+    def handle(self, user_utterance, pipeline_array, dataset):
+        if user_utterance == 'yes':
+            return "Since you haven't inserted a label in your dataset, let's decide what to predict!", \
+                   "comprehension_end", pipeline_array
+        # TODO: scegliere la colonna
+        else:
+            return 'I haven\'t found any operation compatible with your idea... retry!', 'comprehension_end', \
+                   pipeline_array
 
 
 class RegressionOrClassification(ComprehensionConversationState):
@@ -207,9 +237,9 @@ class CorrelationOrAssociationRules(ComprehensionConversationState):
                pipeline_array
 
     def handle(self, user_utterance, pipeline_array, dataset):
-        if user_utterance == 'direct':
+        if user_utterance == 'I want direct relationships':
             return 'Ok, we will proceed with correlation analysis!', 'comprehension_end', ['correlation']
-        elif user_utterance == 'rules':
+        elif user_utterance == 'I want to find rules':
             return 'Ok, we will proceed with association rules analysis!', 'comprehension_end', ['associationRules']
         else:
             next_state = AlgorithmVerificationRelationships()
@@ -220,7 +250,7 @@ switcher = {
     'reformulation': Reformulation,
     'algorithm_verification': AlgorithmVerfication,
     'algorithm_verification_prediction': AlgorithmVerificationPrediction,
-    'algorithm_verification_relationship': AlgorithmVerificationPrediction,
+    'algorithm_verification_relationship': AlgorithmVerificationRelationships,
     'algorithm_verification_clustering': AlgorithmVerificationClustering,
     'regression_or_classification': RegressionOrClassification,
     'correlation_or_association_rules': CorrelationOrAssociationRules,
@@ -236,6 +266,7 @@ def pipeline_array_to_string(pipeline_array):
 
 
 def comprehension_conversation_handler(user_payload, dataset):
+    parse(user_payload['message'])
     print(user_payload)
     user_utterance = user_payload['message']
     conversation_state = user_payload['comprehension_state']
