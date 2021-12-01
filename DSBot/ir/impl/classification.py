@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import KFold
-
+import autosklearn.classification
 from collections import Counter
 import numpy as np
 
@@ -53,8 +53,12 @@ class IRClassification(IROp):
         result['feat_imp'] = []
 
         for x_train, x_test, y_train,y_test in zip(result['x_train'],result['x_test'],result['y_train'],result['y_test']):
-            result['predicted_labels'] += list(self._model.fit(x_train, y_train).predict(x_test))
-            result['y_score'] += list(self._model.predict_proba(x_test))
+            cls = autosklearn.classification.AutoSklearnClassifier()
+            cls.fit(x_train, y_train)
+            result['predicted_labels'] += cls.predict(x_test)
+            result['y_score'] += cls.predict_proba(x_test)
+            #result['predicted_labels'] += list(self._model.fit(x_train, y_train).predict(x_test))
+            #result['y_score'] += list(self._model.predict_proba(x_test))
         result['classifier'] = self._model
         self._param_setted = False
         return result
