@@ -1,0 +1,185 @@
+version: "2.0"
+
+nlu:
+  - intent: greet
+    examples: |
+      - hey
+      - hello
+      - hi
+      - hello there
+      - good morning
+      - good evening
+      - moin
+      - hey there
+      - hey dude
+      - goodmorning
+      - goodevening
+      - good afternoon
+
+  - intent: goodbye
+    examples: |
+      - good afternoon
+      - cu
+      - good by
+      - cee you later
+      - good night
+      - bye
+      - goodbye
+      - have a nice day
+      - see you around
+      - bye bye
+      - see you later
+
+  - intent: affirm
+    examples: |
+      - yes
+      - y
+      - indeed
+      - of course
+      - that sounds good
+      - correct
+      - I think so
+      - yeah
+      - oh yes!
+      - I confirm!
+      - exactly
+      - yup
+      - ok :)
+      - sure
+      - for sure
+      - great
+      - amazing
+      - awesome!
+      - perfect!
+      - I would love that
+      - oh yeah!
+      - wonderful
+      - extremely good
+      - so so perfect
+      - so good
+      - so perfect
+      - super
+      - okay
+      - si
+      - let's do it!
+      - absolutely
+      - cool
+      - I am fine with it
+      - yessss
+      - top
+      - ok boss
+      - yep
+      - let's go!
+
+  - intent: deny
+    examples: |
+      - no
+      - n
+      - never
+      - I don't think so
+      - don't like that
+      - no way
+      - not really
+      - nope
+      - absolutely not
+      - forget it!
+      - I don't want to do that
+      - I think you are not understanding my request
+      - no!
+      - are you nuts?!
+      - Probably I didn't explain myself properly
+      - you haven't understood
+      - nono
+
+  - intent: don_t_know
+    examples: |
+      - I don't know
+      - I do not know
+      - boh
+      - I am not sure
+      - I have no idea
+      - Why are you asking me?
+      - who knows
+      - bo
+      - not sure
+      - no idea
+      - really?
+      - what?
+      - eh?
+      - idk
+      - you should ask yourself
+      - don't ask me!
+      - do not ask me
+      - you are asking to the wrong person
+
+  - intent: example
+    examples: |
+      - can you provide an example?
+      - can you make an example?
+      - may I have an example?
+      - I want an example
+      - example
+      - do you have a practical example?
+      - I want a case study
+      - for example?
+      - I need an example
+      - I want an example
+      - for istance?
+      - like?
+      - when should I use it?
+      - such as?
+      - can I see it in practice?
+      - I need some examples
+      - I need practical examples
+      - I need a case study
+      - can you show it in practice?
+      - I need practical examples
+
+  - intent: clarification_request
+    examples: |
+      - I haven't understood
+      - I didn't understand
+      - What does it mean?
+      - this is not clear to me
+      - I can't understand
+      - can you use simpler words?
+      - I haven't understood what you mean
+      - that is?
+      - This is unclear to me
+      - what you mean?
+      - I do not understand
+      - this topic is obscure to me
+      - what is it?
+      - what does it consist on?
+      - what does it consist of?
+      - what is [classification](algorithm)?
+      - what is [regression](algorithm)?
+      - whay should I choose [association rules]{"entity": "algorithm", "value":"association_rules"}?
+      - I lost you
+      - Can you show me how it works?
+      - How does it work?
+      - how it works?
+
+  - intent: mood_unhappy
+    examples: |
+      - my day was horrible
+      - I am sad
+      - I don't feel very well
+      - I am disappointed
+      - super sad
+      - I'm so sad
+      - sad
+      - very sad
+      - unhappy
+      - not good
+      - not very good
+      - extremly sad
+      - so saad
+      - so sad
+
+  - intent: bot_challenge
+    examples: |
+      - are you a bot?
+      - are you a human?
+      - am I talking to a bot?
+      - am I talking to a human?

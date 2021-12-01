@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import json
+from http.client import HTTPConnection
 from pathlib import Path
+from typing import Dict, Any
 
 algorithm_modules = ['clustering', 'classification', 'correlation', 'associationRules', 'regression']
 
@@ -22,6 +24,21 @@ def retrieve_message(module, sentence_type):
     with open(Path(__file__).parent / 'text_productions.json', "r") as process_file:
         producible_sentences = json.loads(process_file.read())
     return producible_sentences[module][sentence_type]
+
+
+def parse(utterance: str):
+    """ Runs the interpreter to parse the given utterance and returns a dictionary containing the parsed data.
+
+    If no intent can be extracted from the provided utterance, this returns an empty dictionary.
+
+    :param utterance: the text input from the user
+    :return: a dictionary containing the detected intent and corresponding entities if any exists.
+    """
+    connection = HTTPConnection(host='localhost', port=5005)
+    connection.request("POST", "/model/parse", json.dumps({"text": utterance}))
+    response = json.loads(connection.getresponse().read())
+    print("RESPONSE:"+ str(response))
+    return response
 
 
 """
@@ -110,8 +127,8 @@ class AlgorithmVerificationPrediction(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
         if dataset.hasLabel:
-            return "I see that you indicated the presence of a label in your dataset. Do you want to try to predict it?",\
-                   'algorithm_verification_prediction', pipeline_array
+            return "I see that you indicated the presence of a label in your dataset. Do you want to try to predict " \
+                   "its value from the other data? ", 'algorithm_verification_prediction', pipeline_array
         else:
             next_state = AlgorithmVerificationRelationships()
             return next_state.generate(pipeline_array, dataset)
@@ -160,19 +177,6 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
             return 'TBD', 'comprehension_end', pipeline_array
 
 class PredictionIfNotLabel(ComprehensionConversationState):
-
-    def generate(self, pipeline_array, dataset):
-        return "Do you want to predict a value in your data? ", "prediction_if_not_label", pipeline_array
-
-    def handle(self, user_utterance, pipeline_array, dataset):
-        if user_utterance=='yes':
-            return "Since you haven't inserted a label in your dataset, let's decide what to predict!", \
-                   "comprehension_end", pipeline_array
-        # TODO: scegliere la colonna
-        else:
-            return 'I haven\'t found any operation compatible with your idea... retry!', 'comprehension_end', \
-                   pipeline_array
-
 
 class RegressionOrClassification(ComprehensionConversationState):
 
@@ -248,6 +252,7 @@ def pipeline_array_to_string(pipeline_array):
 
 
 def comprehension_conversation_handler(user_payload, dataset):
+    parse(user_payload['message'])
     print(user_payload)
     user_utterance = user_payload['message']
     conversation_state = user_payload['comprehension_state']
