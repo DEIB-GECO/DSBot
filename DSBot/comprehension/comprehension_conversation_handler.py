@@ -37,8 +37,8 @@ def parse(utterance: str):
     connection = HTTPConnection(host='localhost', port=5005)
     connection.request("POST", "/model/parse", json.dumps({"text": utterance}))
     response = json.loads(connection.getresponse().read())
-    print("RESPONSE:" + str(response['intent']))
-    return response['intent']
+    print("RESPONSE:" + str(response))
+    return response
 
 
 """
@@ -55,7 +55,7 @@ class ComprehensionConversationState(ABC):
         pass
 
     @abstractmethod
-    def handle(self, user_intent, pipeline_array, dataset):
+    def handle(self, user_message_parsed, pipeline_array, dataset):
         pass
 
 
@@ -64,18 +64,18 @@ class Reformulation(ComprehensionConversationState):
     def generate(self, pipeline_array, dataset):
         pass
 
-    def handle(self, user_intent, pipeline_array, dataset):
-        if user_intent['name'] == 'affirm':
+    def handle(self, user_message_parsed, pipeline_array, dataset):
+        if user_message_parsed['intent']['name'] == 'affirm':
             return 'ok, we can proceed', 'comprehension_end', pipeline_array
             # TODO qui dobbiamo iniziare a creare la pipeline, non prima!
-        elif user_intent['name'] == 'deny':
+        elif user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerificationPrediction()
             new_message, new_state, new_pipeline_array = next_state.generate(pipeline_array, dataset)
             return "Oh, I am sorry I did not understand your request. I will ask you some questions to better"\
                    " understand what you want to do. " + new_message, new_state, new_pipeline_array
-        elif user_intent['name'] == 'don_t_know':
+        elif user_message_parsed['intent']['name'] == 'don_t_know':
             return self.help(pipeline_array)
-        elif user_intent['name'] == 'example':
+        elif user_message_parsed['intent']['name'] == 'example':
             return self.example(pipeline_array)
         else:
             return 'I did not understand, sorry', 'reformulation', pipeline_array
@@ -112,12 +112,12 @@ class AlgorithmVerfication(ComprehensionConversationState):
 
         return 'Non ho trovato la unit', "algorithm_verification", pipeline_array
 
-    def handle(self, user_intent, pipeline_array, dataset):
+    def handle(self, user_message_parsed, pipeline_array, dataset):
         print("AlgorithmVerification.handle eseguito")
-        if user_intent['name'] == 'deny':
+        if user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerfication()
             return next_state.generate(pipeline_array, dataset)
-        elif user_intent['name'] == 'affirm':
+        elif user_message_parsed['intent']['name'] == 'affirm':
             return 'ok, we can proceed', 'comprehension_end', pipeline_array
         else:
             return 'TBD', 'comprehension_end', pipeline_array
@@ -133,11 +133,11 @@ class AlgorithmVerificationPrediction(ComprehensionConversationState):
             next_state = AlgorithmVerificationRelationships()
             return next_state.generate(pipeline_array, dataset)
 
-    def handle(self, user_intent, pipeline_array, dataset):
-        if user_intent['name'] == 'deny':
+    def handle(self, user_message_parsed, pipeline_array, dataset):
+        if user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerificationRelationships()
             return next_state.generate(pipeline_array, dataset)
-        elif user_intent['name'] == 'affirm':
+        elif user_message_parsed['intent']['name'] == 'affirm':
             next_state = RegressionOrClassification()
             return next_state.generate(pipeline_array, dataset)
         else:
@@ -150,11 +150,11 @@ class AlgorithmVerificationRelationships(ComprehensionConversationState):
         return "Are you interested in finding relations in your data?", \
                'algorithm_verification_relationship', pipeline_array
 
-    def handle(self, user_intent, pipeline_array, dataset):
-        if user_intent['name'] == 'deny':
+    def handle(self, user_message_parsed, pipeline_array, dataset):
+        if user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerificationClustering()
             return next_state.generate(pipeline_array, dataset)
-        elif user_intent['name'] == 'affirm':
+        elif user_message_parsed['intent']['name'] == 'affirm':
             next_state = CorrelationOrAssociationRules()
             return next_state.generate(pipeline_array, dataset)
         else:
@@ -167,11 +167,11 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
         return "Are you interested grouping your data by similarities?", \
                'algorithm_verification_clustering', pipeline_array
 
-    def handle(self, user_intent, pipeline_array, dataset):
-        if user_intent['name'] == 'deny':
+    def handle(self, user_message_parsed, pipeline_array, dataset):
+        if user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerificationRelationships()
             return next_state.generate(pipeline_array, dataset)
-        elif user_intent['name'] == 'affirm':
+        elif user_message_parsed['intent']['name'] == 'affirm':
             return 'Ok, we will proceed with clustering analysis!', 'comprehension_end', ['clustering']
         else:
             return 'TBD', 'comprehension_end', pipeline_array
@@ -187,7 +187,7 @@ class RegressionOrClassification(ComprehensionConversationState):
         else:
             return next_state.generate(['classification'], dataset)
 
-    def handle(self, user_intent, pipeline_array, dataset):
+    def handle(self, user_message_parsed, pipeline_array, dataset):
         pass
 
 
@@ -199,10 +199,10 @@ class FeatureImportanceOrNot(ComprehensionConversationState):
                "more interested in understanding which are the most influencing factors in determining the prediction?", \
                "feature_importance_or_not", pipeline_array
 
-    def handle(self, user_intent, pipeline_array, dataset):
-        if user_intent['name'] == 'affirm':
+    def handle(self, user_message_parsed, pipeline_array, dataset):
+        if user_message_parsed['intent']['name'] == 'affirm':
             return "Ok, we can proceed!", "comprehension_end", pipeline_array
-        elif user_intent['name'] == 'user_intent':
+        elif user_message_parsed['intent']['name'] == 'user_intent':
             pipeline_array.append('featureImportance')
             return "Ok, we will perform a Feature Importance analysis, to highlight which are the most important " \
                    "factors in the prediction outcome", "comprehension_end", pipeline_array
@@ -222,10 +222,10 @@ class CorrelationOrAssociationRules(ComprehensionConversationState):
                '"if -> then" form that describe behaviours of more columns? ', 'correlation_or_association_rules', \
                pipeline_array
 
-    def handle(self, user_intent, pipeline_array, dataset):
-        if user_intent['name'] == 'I want direct relationships':
+    def handle(self, user_message_parsed, pipeline_array, dataset):
+        if user_message_parsed['intent']['name'] == 'I want direct relationships':
             return 'Ok, we will proceed with correlation analysis!', 'comprehension_end', ['correlation']
-        elif user_intent['name'] == 'I want to find rules':
+        elif user_message_parsed['intent']['name'] == 'I want to find rules':
             return 'Ok, we will proceed with association rules analysis!', 'comprehension_end', ['associationRules']
         else:
             next_state = AlgorithmVerificationRelationships()
@@ -252,8 +252,8 @@ def pipeline_array_to_string(pipeline_array):
 
 
 def comprehension_conversation_handler(user_payload, dataset):
-    user_intent = parse(user_payload['message'])
-    print("user intent is:" + str(user_intent))
+    user_message_parsed = parse(user_payload['message'])
+    print("user intent is:" + str(user_message_parsed))
     user_utterance = user_payload['message']
     conversation_state = user_payload['comprehension_state']
     pipeline_array = user_payload['comprehension_pipeline']
@@ -262,6 +262,6 @@ def comprehension_conversation_handler(user_payload, dataset):
     func = switcher.get(conversation_state, "nothing")()
 
     # Execute the function
-    new_message, new_state, new_pipeline_array = func.handle(user_intent, pipeline_array, dataset)
+    new_message, new_state, new_pipeline_array = func.handle(user_message_parsed, pipeline_array, dataset)
     new_pipeline_string = pipeline_array_to_string(pipeline_array)
     return {'message': new_message, 'comprehension_state': new_state, 'comprehension_pipeline': new_pipeline_string}
