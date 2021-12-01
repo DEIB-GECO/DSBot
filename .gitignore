@@ -142,3 +142,5 @@ DSBot/wf/run/example.enc_embeddings.pt
 DSBot/wf/run/model1_step_1000.pt
 
 DSBot/wf/run/model1_step_500.pt
+
+DSBot/flask_session/
