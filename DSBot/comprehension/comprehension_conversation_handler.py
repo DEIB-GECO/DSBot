@@ -41,14 +41,26 @@ def parse(utterance: str):
     return response
 
 
-"""
-Every chat state has 2 methods: 
- - generate that generate the sentence to prompt to the user before its response
- - handle that takes user input and decides the following state
-"""
+def retrieve_specific_entity_value(entities_list, entity_name):
+    for entity in entities_list:
+        if entity['entity'] == entity_name:
+            return entity['value']
+    return
+
+
+def retrieve_entities_values(entities_list):
+    values_list = []
+    for entity in entities_list:
+        values_list.append(entity['value'])
+    return values_list
 
 
 class ComprehensionConversationState(ABC):
+    """
+    Every chat state has 2 methods:
+     - generate that generate the sentence to prompt to the user before its response
+     - handle that takes user input and decides the following state
+    """
 
     @abstractmethod
     def generate(self, pipeline_array, dataset):
@@ -71,7 +83,7 @@ class Reformulation(ComprehensionConversationState):
         elif user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerificationPrediction()
             new_message, new_state, new_pipeline_array = next_state.generate(pipeline_array, dataset)
-            return "Oh, I am sorry I did not understand your request. I will ask you some questions to better"\
+            return "Oh, I am sorry I did not understand your request. I will ask you some questions to better" \
                    " understand what you want to do. " + new_message, new_state, new_pipeline_array
         elif user_message_parsed['intent']['name'] == 'don_t_know':
             return self.help(pipeline_array)
@@ -176,7 +188,8 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
         else:
             return 'TBD', 'comprehension_end', pipeline_array
 
-#class PredictionIfNotLabel(ComprehensionConversationState):
+
+# class PredictionIfNotLabel(ComprehensionConversationState):
 
 class RegressionOrClassification(ComprehensionConversationState):
 
@@ -200,12 +213,16 @@ class FeatureImportanceOrNot(ComprehensionConversationState):
                "feature_importance_or_not", pipeline_array
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
-        if user_message_parsed['intent']['name'] == 'affirm':
-            return "Ok, we can proceed!", "comprehension_end", pipeline_array
-        elif user_message_parsed['intent']['name'] == 'user_intent':
-            pipeline_array.append('featureImportance')
-            return "Ok, we will perform a Feature Importance analysis, to highlight which are the most important " \
-                   "factors in the prediction outcome", "comprehension_end", pipeline_array
+        user_entities = retrieve_entities_values(user_message_parsed['entities'])
+        if len(user_entities) > 0 :
+            if user_entities[0] in ['first', '1', 'prediction', 'classification', 'regression']:
+                return "Ok, we can proceed!", "comprehension_end", pipeline_array
+            elif user_entities[0] in ['second', '2', 'features_importance', 'last']:
+                pipeline_array.append('featureImportance')
+                return "Ok, we will perform a Feature Importance analysis, to highlight which are the most important " \
+                       "factors in the prediction outcome", "comprehension_end", pipeline_array
+        return 'I am sorry, I did not understand what you prefer. Can you repeat it, using different words?', \
+               'correlation_or_association_rules', pipeline_array
 
 
 class CorrelationOrAssociationRules(ComprehensionConversationState):
@@ -223,13 +240,17 @@ class CorrelationOrAssociationRules(ComprehensionConversationState):
                pipeline_array
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
-        if user_message_parsed['intent']['name'] == 'I want direct relationships':
-            return 'Ok, we will proceed with correlation analysis!', 'comprehension_end', ['correlation']
-        elif user_message_parsed['intent']['name'] == 'I want to find rules':
-            return 'Ok, we will proceed with association rules analysis!', 'comprehension_end', ['associationRules']
-        else:
-            next_state = AlgorithmVerificationRelationships()
-            return next_state.generate(pipeline_array, dataset)
+        if user_message_parsed['intent']['name'] == 'preference':
+            user_interest = retrieve_entities_values(user_message_parsed['entities'])
+            if len(user_interest) > 0:
+                if user_interest[0] in ['correlation', 'first', '1']:
+                    return 'Ok, we will proceed with correlation analysis!', 'comprehension_end', ['correlation']
+                elif user_interest[0] in ['association_rules', 'second', '2']:
+                    return 'Ok, we will proceed with association rules analysis!', 'comprehension_end', [
+                        'associationRules']
+
+        return 'I am sorry, I did not understand what you prefer. Can you repeat it, using different words?', \
+               'correlation_or_association_rules', pipeline_array
 
 
 switcher = {

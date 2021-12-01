@@ -154,11 +154,86 @@ nlu:
       - what does it consist of?
       - what is [classification](algorithm)?
       - what is [regression](algorithm)?
-      - whay should I choose [association rules]{"entity": "algorithm", "value":"association_rules"}?
+      - why should I choose [association rules]{"entity": "algorithm", "value":"association_rules"}?
       - I lost you
       - Can you show me how it works?
       - How does it work?
       - how it works?
+      - What does to [cluster]{"entity": "algorithm", "value":"clustering"} mean?
+      - What happens if I [correlate]{"entity": "algorithm", "value":"correlation"}
+      - What does to [predict]{"entity": "algorithm", "value":"prediction"} mean?
+      - What is [clustering](algorithm)?
+      - What are [association rules]{"entity": "algorithm", "value":"association_rules"}?
+      - What is [correlation](algorithm) analysis?
+      - What does [regression](algorithm) mean?
+      - What does [rules]{"entity": "algorithm", "value":"association_rules"} mean?
+      - What does to find [relevant features]{"entity": "algorithm", "value":"features_importance"} mean?
+      - What are [important features]{"entity": "algorithm", "value":"features_importance"}?
+      - What is a [predictive model]{"entity": "algorithm", "value":"prediction"}?
+      - What do i do when I [classify]{"entity": "algorithm", "value":"classification"}
+      - What does a [model]{"entity": "algorithm", "value":"prediction"} mean?
+      - What is a [classification model]{"entity": "algorithm", "value":"classification"}?
+
+  - intent: preference
+    examples: |
+      - I prefer the [first](ordinal) option
+      - I want the [first](ordinal) one
+      - I would like the [first](ordinal) possibility
+      - I prefer the [second](ordinal) option
+      - I want the [second](ordinal) one
+      - I would like the [second](ordinal) possibility
+      - I want option number [one]{"entity": "number", "value":1}
+      - I want option number [two]{"entity": "number", "value":2}
+      - I want option [1]{"entity": "number", "value":1}
+      - I would like option [1]{"entity": "number", "value":1}
+      - I prefer option [1]{"entity": "number", "value":1}
+      - Option [1]{"entity": "number", "value":1}
+      - The [first](ordinal) one
+      - The [last]{"entity": "ordinal", "value":"last"} option
+      - Option [a]{"entity": "ordinal", "value":"first"}
+      - Option [b]{"entity": "ordinal", "value":"second"}
+      - I will go for [a]{"entity": "ordinal", "value":"first"}
+      - The [last]{"entity": "ordinal", "value":"last"} one suits better my use case
+      - [1]{"entity": "number", "value":1}
+      - [2]{"entity": "number", "value":2}
+      - [one]{"entity": "number", "value":1}
+      - [two]{"entity": "number", "value":2}
+      - I am interested in the [prediction](algorithm)
+      - I am more interested in the [prediction](algorithm)
+      - I am more interested in the [prediction](algorithm) itself
+      - I only want the [prediction](algorithm)
+      - I only want number [one]{"entity": "number", "value":1}
+      - I just want the [prediction](algorithm)
+      - The [prediction](algorithm) is sufficient
+      - Only [prediction](algorithm)
+      - I prefer to [cluster]{"entity": "algorithm", "value":"clustering"}
+      - I prefer to [correlate]{"entity": "algorithm", "value":"correlation"}
+      - I prefer to [predict]{"entity": "algorithm", "value":"prediction"}
+      - I prefer [clustering](algorithm)
+      - I prefer [association rules]{"entity": "algorithm", "value":"association_rules"}
+      - I prefer [correlation](algorithm)
+      - I prefer [regression](algorithm)
+      - I prefer to find [rules]{"entity": "algorithm", "value":"association_rules"}
+      - I prefer to find [relevant features]{"entity": "algorithm", "value":"features_importance"}
+      - I prefer to find [important features]{"entity": "algorithm", "value":"features_importance"}
+      - I prefer the [predictive model]{"entity": "algorithm", "value":"prediction"}
+      - I prefer to [classify]{"entity": "algorithm", "value":"classification"}
+      - I prefer the [model]{"entity": "algorithm", "value":"prediction"}
+      - I prefer the [classification model]{"entity": "algorithm", "value":"classification"}
+      - I want to [cluster]{"entity": "algorithm", "value":"clustering"}
+      - I want to [correlate]{"entity": "algorithm", "value":"correlation"}
+      - I want to [predict]{"entity": "algorithm", "value":"prediction"}
+      - I want [clustering](algorithm)
+      - I want [association rules]{"entity": "algorithm", "value":"association_rules"}
+      - I want [correlation](algorithm)
+      - I want [regression](algorithm)
+      - I want to find [rules]{"entity": "algorithm", "value":"association_rules"}
+      - I want to find [relevant features]{"entity": "algorithm", "value":"features_importance"}
+      - I want to find [important features]{"entity": "algorithm", "value":"features_importance"}
+      - I want the [predictive model]{"entity": "algorithm", "value":"prediction"}
+      - I want to [classify]{"entity": "algorithm", "value":"classification"}
+      - I want the [model]{"entity": "algorithm", "value":"prediction"}
+      - I want the [classification model]{"entity": "algorithm", "value":"classification"}
 
   - intent: mood_unhappy
     examples: |
