@@ -237,3 +237,435 @@ clustering
 association rules
 correlation
 prediction
+can you find groups
+can you find clusters
+can you find sets
+can you find similar samples
+can you find groups of similar samples
+can you find sets of similar samples
+can you find sets of similar elements
+can you find elements which are similar
+can you find elements that are uniform
+can you find uniform samples
+i want groups
+i want clusters
+i want sets
+i want similar samples
+i want groups of similar samples
+i want sets of similar samples
+i want sets of similar elements
+i want elements which are similar
+i want elements that are uniform
+i want uniform samples
+can you compute groups
+can you compute clusters
+can you compute sets
+can you compute similar samples
+can you compute groups of similar samples
+can you compute sets of similar samples
+can you compute sets of similar elements
+can you compute elements which are similar
+can you compute elements that are uniform
+can you compute uniform samples
+do they exist groups
+do they exist clusters
+do they exist sets
+do they exist similar samples
+do they exist groups of similar samples
+do they exist sets of similar samples
+do they exist sets of similar elements
+do they exist elements which are similar
+do they exist elements that are uniform
+do they exist uniform samples
+i want to compute groups
+i want to compute clusters
+i want to compute sets
+i want to compute similar samples
+i want to compute groups of similar samples
+i want to compute sets of similar samples
+i want to compute sets of similar elements
+i want to compute elements which are similar
+i want to compute elements that are uniform
+i want to compute uniform samples
+are there groups
+are there clusters
+are there sets
+are there similar samples
+are there groups of similar samples
+are there sets of similar samples
+are there sets of similar elements
+are there elements which are similar
+are there elements that are uniform
+are there uniform samples
+i want to identify groups
+i want to identify clusters
+i want to identify sets
+i want to identify similar samples
+i want to identify groups of similar samples
+i want to identify sets of similar samples
+i want to identify sets of similar elements
+i want to identify elements which are similar
+i want to identify elements that are uniform
+i want to identify uniform samples
+let's search for groups
+let's search for clusters
+let's search for sets
+let's search for similar samples
+let's search for groups of similar samples
+let's search for sets of similar samples
+let's search for sets of similar elements
+let's search for elements which are similar
+let's search for elements that are uniform
+let's search for uniform samples
+look for groups
+look for clusters
+look for sets
+look for similar samples
+look for groups of similar samples
+look for sets of similar samples
+look for sets of similar elements
+look for elements which are similar
+look for elements that are uniform
+look for uniform samples
+can you find groups of sequences
+can you find groups of cars
+can you find sets of sequences
+can you find sets of cars
+can you find clusters of sequences
+can you find clusters of cars
+can you find similar samples of sequences
+can you find similar samples of cars
+can you find sets of similar sequences
+can you find sets of similar cars
+can you find groups of similar sequences
+can you find groups of similar cars
+can you find uniform sequences
+can you find uniform cars
+i want groups of sequences
+i want groups of cars
+i want sets of sequences
+i want sets of cars
+i want clusters of sequences
+i want clusters of cars
+i want similar samples of sequences
+i want similar samples of cars
+i want sets of similar sequences
+i want sets of similar cars
+i want groups of similar sequences
+i want groups of similar cars
+i want uniform sequences
+i want uniform cars
+can you compute groups of sequences
+can you compute groups of cars
+can you compute sets of sequences
+can you compute sets of cars
+can you compute clusters of sequences
+can you compute clusters of cars
+can you compute similar samples of sequences
+can you compute similar samples of cars
+can you compute sets of similar sequences
+can you compute sets of similar cars
+can you compute groups of similar sequences
+can you compute groups of similar cars
+can you compute uniform sequences
+can you compute uniform cars
+do they exist groups of sequences
+do they exist groups of cars
+do they exist sets of sequences
+do they exist sets of cars
+do they exist clusters of sequences
+do they exist clusters of cars
+do they exist similar samples of sequences
+do they exist similar samples of cars
+do they exist sets of similar sequences
+do they exist sets of similar cars
+do they exist groups of similar sequences
+do they exist groups of similar cars
+do they exist uniform sequences
+do they exist uniform cars
+i want to compute groups of sequences
+i want to compute groups of cars
+i want to compute sets of sequences
+i want to compute sets of cars
+i want to compute clusters of sequences
+i want to compute clusters of cars
+i want to compute similar samples of sequences
+i want to compute similar samples of cars
+i want to compute sets of similar sequences
+i want to compute sets of similar cars
+i want to compute groups of similar sequences
+i want to compute groups of similar cars
+i want to compute uniform sequences
+i want to compute uniform cars
+are there groups of sequences
+are there groups of cars
+are there sets of sequences
+are there sets of cars
+are there clusters of sequences
+are there clusters of cars
+are there similar samples of sequences
+are there similar samples of cars
+are there sets of similar sequences
+are there sets of similar cars
+are there groups of similar sequences
+are there groups of similar cars
+are there uniform sequences
+are there uniform cars
+i want to identify groups of sequences
+i want to identify groups of cars
+i want to identify sets of sequences
+i want to identify sets of cars
+i want to identify clusters of sequences
+i want to identify clusters of cars
+i want to identify similar samples of sequences
+i want to identify similar samples of cars
+i want to identify sets of similar sequences
+i want to identify sets of similar cars
+i want to identify groups of similar sequences
+i want to identify groups of similar cars
+i want to identify uniform sequences
+i want to identify uniform cars
+let's search for groups of sequences
+let's search for groups of cars
+let's search for sets of sequences
+let's search for sets of cars
+let's search for clusters of sequences
+let's search for clusters of cars
+let's search for similar samples of sequences
+let's search for similar samples of cars
+let's search for sets of similar sequences
+let's search for sets of similar cars
+let's search for groups of similar sequences
+let's search for groups of similar cars
+let's search for uniform sequences
+let's search for uniform cars
+look for groups of sequences
+look for groups of cars
+look for sets of sequences
+look for sets of cars
+look for clusters of sequences
+look for clusters of cars
+look for similar samples of sequences
+look for similar samples of cars
+look for sets of similar sequences
+look for sets of similar cars
+look for groups of similar sequences
+look for groups of similar cars
+look for uniform sequences
+look for uniform cars
+can i see groups
+can i see clusters
+can i see sets
+can i see similar samples
+can i see groups of similar samples
+can i see sets of similar samples
+can i see sets of similar elements
+can i see elements which are similar
+can i see elements that are uniform
+can i see uniform samples
+can you show groups
+can you show clusters
+can you show sets
+can you show similar samples
+can you show groups of similar samples
+can you show sets of similar samples
+can you show sets of similar elements
+can you show elements which are similar
+can you show elements that are uniform
+can you show uniform samples
+show me groups
+show me clusters
+show me sets
+show me similar samples
+show me groups of similar samples
+show me sets of similar samples
+show me sets of similar elements
+show me elements which are similar
+show me elements that are uniform
+show me uniform samples
+can i visualize groups
+can i visualize clusters
+can i visualize sets
+can i visualize similar samples
+can i visualize groups of similar samples
+can i visualize sets of similar samples
+can i visualize sets of similar elements
+can i visualize elements which are similar
+can i visualize elements that are uniform
+can i visualize uniform samples
+plot groups
+plot clusters
+plot sets
+plot similar samples
+plot groups of similar samples
+plot sets of similar samples
+plot sets of similar elements
+plot elements which are similar
+plot elements that are uniform
+plot uniform samples
+draw groups
+draw clusters
+draw sets
+draw similar samples
+draw groups of similar samples
+draw sets of similar samples
+draw sets of similar elements
+draw elements which are similar
+draw elements that are uniform
+draw uniform samples
+can you draw groups
+can you draw clusters
+can you draw sets
+can you draw similar samples
+can you draw groups of similar samples
+can you draw sets of similar samples
+can you draw sets of similar elements
+can you draw elements which are similar
+can you draw elements that are uniform
+can you draw uniform samples
+i want to see groups
+i want to see clusters
+i want to see sets
+i want to see similar samples
+i want to see groups of similar samples
+i want to see sets of similar samples
+i want to see sets of similar elements
+i want to see elements which are similar
+i want to see elements that are uniform
+i want to see uniform samples
+i want to visualize groups
+i want to visualize clusters
+i want to visualize sets
+i want to visualize similar samples
+i want to visualize groups of similar samples
+i want to visualize sets of similar samples
+i want to visualize sets of similar elements
+i want to visualize elements which are similar
+i want to visualize elements that are uniform
+i want to visualize uniform samples
+can i see groups of sequences
+can i see groups of cars
+can i see sets of sequences
+can i see sets of cars
+can i see clusters of sequences
+can i see clusters of cars
+can i see similar samples of sequences
+can i see similar samples of cars
+can i see sets of similar sequences
+can i see sets of similar cars
+can i see groups of similar sequences
+can i see groups of similar cars
+can i see uniform sequences
+can i see uniform cars
+can you show groups of sequences
+can you show groups of cars
+can you show sets of sequences
+can you show sets of cars
+can you show clusters of sequences
+can you show clusters of cars
+can you show similar samples of sequences
+can you show similar samples of cars
+can you show sets of similar sequences
+can you show sets of similar cars
+can you show groups of similar sequences
+can you show groups of similar cars
+can you show uniform sequences
+can you show uniform cars
+show me groups of sequences
+show me groups of cars
+show me sets of sequences
+show me sets of cars
+show me clusters of sequences
+show me clusters of cars
+show me similar samples of sequences
+show me similar samples of cars
+show me sets of similar sequences
+show me sets of similar cars
+show me groups of similar sequences
+show me groups of similar cars
+show me uniform sequences
+show me uniform cars
+can i visualize groups of sequences
+can i visualize groups of cars
+can i visualize sets of sequences
+can i visualize sets of cars
+can i visualize clusters of sequences
+can i visualize clusters of cars
+can i visualize similar samples of sequences
+can i visualize similar samples of cars
+can i visualize sets of similar sequences
+can i visualize sets of similar cars
+can i visualize groups of similar sequences
+can i visualize groups of similar cars
+can i visualize uniform sequences
+can i visualize uniform cars
+plot groups of sequences
+plot groups of cars
+plot sets of sequences
+plot sets of cars
+plot clusters of sequences
+plot clusters of cars
+plot similar samples of sequences
+plot similar samples of cars
+plot sets of similar sequences
+plot sets of similar cars
+plot groups of similar sequences
+plot groups of similar cars
+plot uniform sequences
+plot uniform cars
+draw groups of sequences
+draw groups of cars
+draw sets of sequences
+draw sets of cars
+draw clusters of sequences
+draw clusters of cars
+draw similar samples of sequences
+draw similar samples of cars
+draw sets of similar sequences
+draw sets of similar cars
+draw groups of similar sequences
+draw groups of similar cars
+draw uniform sequences
+draw uniform cars
+can you draw groups of sequences
+can you draw groups of cars
+can you draw sets of sequences
+can you draw sets of cars
+can you draw clusters of sequences
+can you draw clusters of cars
+can you draw similar samples of sequences
+can you draw similar samples of cars
+can you draw sets of similar sequences
+can you draw sets of similar cars
+can you draw groups of similar sequences
+can you draw groups of similar cars
+can you draw uniform sequences
+can you draw uniform cars
+i want to see groups of sequences
+i want to see groups of cars
+i want to see sets of sequences
+i want to see sets of cars
+i want to see clusters of sequences
+i want to see clusters of cars
+i want to see similar samples of sequences
+i want to see similar samples of cars
+i want to see sets of similar sequences
+i want to see sets of similar cars
+i want to see groups of similar sequences
+i want to see groups of similar cars
+i want to see uniform sequences
+i want to see uniform cars
+i want to visualize groups of sequences
+i want to visualize groups of cars
+i want to visualize sets of sequences
+i want to visualize sets of cars
+i want to visualize clusters of sequences
+i want to visualize clusters of cars
+i want to visualize similar samples of sequences
+i want to visualize similar samples of cars
+i want to visualize sets of similar sequences
+i want to visualize sets of similar cars
+i want to visualize groups of similar sequences
+i want to visualize groups of similar cars
+i want to visualize uniform sequences
+i want to visualize uniform cars
