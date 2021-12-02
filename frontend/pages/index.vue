@@ -105,11 +105,11 @@ export default {
     ...mapState(['e1', 'resultsReady', 'pipelineEdited']),
   },
   mounted() {
-    this.polling = setInterval(() => this.waitForResults(), 3000)
+    //this.polling = setInterval(() => this.waitForResults(), 3000)
   },
   methods: {
     ...mapMutations(['setStep', 'setResultsReady', 'setAvailable']),
-    ...mapActions(['toFramework', 'waitForResults']),
+    ...mapActions(['toFramework', 'waitForResults', 'setComputationResults']),
     restart() {
       this.setAvailable(true)
       this.setResultsReady(false)
@@ -127,6 +127,9 @@ export default {
     console.log('created invocato')
     console.log('UELLA', socket.connected)
     console.log('UELLA2')
+    socket.on('results', (results) => {
+      context.commit('setComputationResults', results)
+    })
     //this.sendOnSocket('ack', { message_id: 1, location: 'crated' })
     /*
     socket.on('message_response', (payload) => {

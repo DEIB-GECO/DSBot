@@ -124,6 +124,13 @@ export const actions = {
     return res
   },
 
+  setComputationResults(context, response) {
+    console.log('ho ricevuto questo', response)
+    context.commit('setRequestDescription', response.request)
+    context.commit('setStep', 4)
+    context.commit('receiveChat', response.comprehension_sentence)
+  },
+
   async waitForResults(context) {
     console.log('WAIT FOR RESULTS', this.state.e1)
     if (this.state.e1 === 4 && !this.state.resultsReady) {

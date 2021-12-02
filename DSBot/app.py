@@ -139,7 +139,7 @@ def receive_utterance():
     return jsonify({"message": "Errore"})
 
 
-@app.route('/results/<received_id>')
+# @app.route('/results/<received_id>')
 def get_results(received_id):
     session_id = received_id
     app.logger.info('Polling results for session: %s', session_id)
@@ -147,7 +147,8 @@ def get_results(received_id):
     # recupero il file
     filename = data[session_id]['dataset'].name_plot
     if filename is None:
-        return jsonify({"ready": False, "session_id": session_id, 'img': None, 'tuning': None})
+        pass
+        # return jsonify({"ready": False, "session_id": session_id, 'img': None, 'tuning': None})
 
     # codifico il file in bytecode
     with open(filename, "rb") as img_file:
@@ -162,11 +163,16 @@ def get_results(received_id):
     data[session_id]['framework'] = framework
     details = data[session_id]['dataset'].measures
     tuning_data = framework.handle_data_input({})
-    return jsonify({"ready": True,
+    emit('results', {"ready": True,
                     "session_id": session_id,
                     'img': str(base64_string),
                     'details': str(details),
                     'tuning': tuning_data})
+    #return jsonify({"ready": True,
+    #                "session_id": session_id,
+    #                'img': str(base64_string),
+    #                'details': str(details),
+    #                'tuning': tuning_data})
 
 
 @app.route('/tuning', methods=['POST'])
