@@ -274,8 +274,8 @@ def on_df_received(form_data):
     sep = form_data['separator']
     label = form_data['label']
     # format = request.form['format']
-    """
-    uploaded_file = request.files['ds']
+    uploaded_file = form_data['ds']
+    print("il tipo di DS è: ", type(uploaded_file))
     if uploaded_file.filename != '':
         # uploaded_file.save(uploaded_file.filename)
         try:
@@ -301,7 +301,7 @@ def on_df_received(form_data):
         kb.kb = dataset.filter_kb(kb.kb)
         data[session_id]['kb'] = kb
         data[session_id]['dataset'] = dataset
-    """
+
     print("SESSION ID", session_id)
     # print('label', label, dataset.label, dataset.hasLabel)
     emit('ds_received', {'session_id': session_id})
