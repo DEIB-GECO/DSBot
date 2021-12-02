@@ -82,7 +82,6 @@ class IRAutoClassification(IRClassification):
         pass
 
     def run(self, result, session_id):
-
         if not self._param_setted:
             self.set_model(result)
         if 'transformed_ds' in result:
@@ -95,26 +94,23 @@ class IRAutoClassification(IRClassification):
         result['predicted_labels'] = []
         result['y_score'] = []
         result['feat_imp'] = []
-        i=0
+
         for x_train, x_test, y_train,y_test in zip(result['x_train'],result['x_test'],result['y_train'],result['y_test']):
 
             model = self._model
             model.fit(x_train, y_train)
-            print('type', type(model.predict(x_test)), len(result['predicted_labels']))
-            print('i', i)
-            #print(type(model.predict_proba(x_test)))
             if result['predicted_labels']!=[]:
-                print('append', i)
                 result['predicted_labels'] = np.concatenate((result['predicted_labels'],model.predict(x_test)))
                 #result['y_score'] = np.concatenate((result['y_score'], model.predict_proba(x_test)))
             else:
                 result['predicted_labels'] = model.predict(x_test)
-            i+=1
+
                 #result['y_score'] = model.predict_proba(x_test)
-        print(result['predicted_labels'] )
+            exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
+            result['classifier'] = exctracted_best_model.fit(x_train, y_train.ravel())
         #print(result['y_score'])
         result['y_score'] = result['predicted_labels']
-        result['classifier'] = self._model
+
         self._param_setted = False
         return result
 

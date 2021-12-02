@@ -9,5 +9,7 @@
 "crossValidation":  ["crossValidation", "trainTestSplit", "kFold"],
 "featureImportance":  ["featureImportance"],
 "performance":  ["performance","roc", "regressionPerformance"],
-"regression": ["regression", "linearRegression", "ridgeRegression"],
-"prediction": ["prediction", "regression", "classification", "linearRegression", "ridgeRegression","autoClassification"]}
+"regression": ["regression", "autoRegression"],
+  "linearRegression" : ["linearRegression"],
+  "ridgeRegression" : ["ridgeRegression"],
+"prediction": ["prediction", "regression", "classification", "autoClassification", "autoRegression"]}
