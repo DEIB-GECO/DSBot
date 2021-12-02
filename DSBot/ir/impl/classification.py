@@ -3,13 +3,12 @@ from abc import abstractmethod
 from ir.ir_exceptions import LabelsNotAvailable
 from ir.ir_operations import IROp, IROpOptions
 from ir.ir_parameters import IRNumPar, IRCatPar
-
+from tpot import TPOTClassifier
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import KFold
-import autosklearn.classification
 from collections import Counter
 import numpy as np
 
@@ -21,7 +20,7 @@ class IRClassification(IROp):
         self.labels = None
 
     @abstractmethod
-    def parameter_tune(self, dataset):
+    def parameter_tune(self, result, dataset, labels):
         pass
 
     def set_model(self, result):
@@ -53,12 +52,68 @@ class IRClassification(IROp):
         result['feat_imp'] = []
 
         for x_train, x_test, y_train,y_test in zip(result['x_train'],result['x_test'],result['y_train'],result['y_test']):
-            cls = autosklearn.classification.AutoSklearnClassifier()
-            cls.fit(x_train, y_train)
-            result['predicted_labels'] += cls.predict(x_test)
-            result['y_score'] += cls.predict_proba(x_test)
-            #result['predicted_labels'] += list(self._model.fit(x_train, y_train).predict(x_test))
-            #result['y_score'] += list(self._model.predict_proba(x_test))
+            result['predicted_labels'] += list(self._model.fit(x_train, y_train).predict(x_test))
+            result['y_score'] += list(self._model.predict_proba(x_test))
+        result['classifier'] = self._model
+        self._param_setted = False
+        return result
+
+class IRAutoClassification(IRClassification):
+    def __init__(self):
+        super(IRAutoClassification, self).__init__("autoClassification",
+                                             [IRNumPar("generations", 5, "int", 2, 10, 1),
+                                              # TODO: what is the maximum? Which first value give?
+                                              IRNumPar("population_size", 50, "int", 10, 100, 10),
+                                              IRNumPar('verbosity', 2, "int", 2, 2, 1),
+                                              IRNumPar('n_jobs', -1, "int", -1, -1, 1),
+                                              IRCatPar('scoring', 'accuracy', ['accuracy']),
+                                              IRCatPar('cv', None, [None])],
+                                             # TODO: if I want to pass a list of values?,
+
+                                             TPOTClassifier)
+        self._param_setted = False
+
+    def get_labels(self):
+        if self.labels is None:
+            raise LabelsNotAvailable
+        return self.labels
+
+    def parameter_tune(self, result, dataset, labels):
+        pass
+
+    def run(self, result, session_id):
+
+        if not self._param_setted:
+            self.set_model(result)
+        if 'transformed_ds' in result:
+            dataset = result['transformed_ds']
+        elif 'new_dataset' in result:
+            dataset = result['new_dataset']
+        else:
+            dataset = result['original_dataset'].ds
+        labels = result['labels'].values
+        result['predicted_labels'] = []
+        result['y_score'] = []
+        result['feat_imp'] = []
+        i=0
+        for x_train, x_test, y_train,y_test in zip(result['x_train'],result['x_test'],result['y_train'],result['y_test']):
+
+            model = self._model
+            model.fit(x_train, y_train)
+            print('type', type(model.predict(x_test)), len(result['predicted_labels']))
+            print('i', i)
+            #print(type(model.predict_proba(x_test)))
+            if result['predicted_labels']!=[]:
+                print('append', i)
+                result['predicted_labels'] = np.concatenate((result['predicted_labels'],model.predict(x_test)))
+                #result['y_score'] = np.concatenate((result['y_score'], model.predict_proba(x_test)))
+            else:
+                result['predicted_labels'] = model.predict(x_test)
+            i+=1
+                #result['y_score'] = model.predict_proba(x_test)
+        print(result['predicted_labels'] )
+        #print(result['y_score'])
+        result['y_score'] = result['predicted_labels']
         result['classifier'] = self._model
         self._param_setted = False
         return result
@@ -137,7 +192,7 @@ class IRAdaBoostClassifier(IRClassification):
 
 class IRGenericClassification(IROpOptions):
     def __init__(self):
-        super(IRGenericClassification, self).__init__([IRRandomForest(), IRLogisticRegression(), IRKNeighborsClassifier(), IRAdaBoostClassifier()], "randomForest")
+        super(IRGenericClassification, self).__init__([IRAutoClassification(), IRRandomForest(), IRLogisticRegression(), IRKNeighborsClassifier(), IRAdaBoostClassifier()], "autoClassification")
 
 
 

@@ -1,6 +1,8 @@
 {"clustering": ["clustering","kmeans","hierarchicalClust","dbscan", "agglomerativeClustering"],
 "plot":  ["plot","scatterplot","heatmap","clustermap", "distplot", "barplot", "featureImportancePlot", "scatterAssociationRules", "tableRegression", "tableAssociationRules" ],
-"classification" :  ["classification","randomForest","logisticRegression"],
+"classification" :  ["classification", "autoClassification"],
+  "randomForest": ["randomForest"],
+  "logisticRegression": ["logisticRegression"],
 "correlation":  ["correlation","pearson", "spearman"],
 "featureSelection": ["featureSelection", "laplace", "varianceThreshold", "selectKBest", "selectPercentile"],
 "associationRules":  ["associationRules","aPriori"],
@@ -8,4 +10,4 @@
 "featureImportance":  ["featureImportance"],
 "performance":  ["performance","roc", "regressionPerformance"],
 "regression": ["regression", "linearRegression", "ridgeRegression"],
-"prediction": ["prediction", "regression", "classification", "linearRegression", "ridgeRegression", "randomForest","logisticRegression"]}
+"prediction": ["prediction", "regression", "classification", "linearRegression", "ridgeRegression","autoClassification"]}
