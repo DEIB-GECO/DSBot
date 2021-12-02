@@ -120,13 +120,16 @@ export default {
       socket.emit(eventType, payolad)
     },
     sendFormOnSocket(payload) {
-      this.sendOnSocket('ack', payload)
+      this.sendOnSocket('receiveds', payload)
     },
   },
   created() {
     console.log('created invocato')
     console.log('UELLA', socket.connected)
     console.log('UELLA2')
+    socket.on('ds_received', (payload) => {
+      console.log('ho ricevuto questo', payload)
+    })
     //this.sendOnSocket('ack', { message_id: 1, location: 'crated' })
     /*
     socket.on('message_response', (payload) => {

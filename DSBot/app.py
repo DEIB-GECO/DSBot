@@ -61,6 +61,7 @@ simple_page = Blueprint('root_pages',
 
 @app.route('/receiveds', methods=['POST'])
 def receive_ds():
+    """
     global dataset
     global session_id
     session_id = session_serializer.dumps(dict(session))
@@ -100,7 +101,8 @@ def receive_ds():
     print("SESSION ID", session_id)
     # print('label', label, dataset.label, dataset.hasLabel)
     return jsonify({"session_id": session_id})
-
+"""
+    return jsonify({"session_id": 1})
 
 @app.route('/utterance', methods=['POST'])
 def receive_utterance():
@@ -262,7 +264,49 @@ def test_connect():
 
 @socketio.on('receiveds')
 def on_df_received(form_data):
-    print("user data received!")
+    print("user data received!"+ str(form_data))
+    global dataset
+    global session_id
+    session_id = session_serializer.dumps(dict(session))
+    data[session_id] = {}
+    has_index = 0 if form_data['has_index'] == 'true' else None
+    has_columns_name = 0 if form_data['has_column_names'] == 'true' else None
+    sep = form_data['separator']
+    label = form_data['label']
+    # format = request.form['format']
+    """
+    uploaded_file = request.files['ds']
+    if uploaded_file.filename != '':
+        # uploaded_file.save(uploaded_file.filename)
+        try:
+            os.makedirs('./temp/temp_' + str(session_id))
+        except:
+            pass
+        uploaded_file.save('./temp/temp_' + str(session_id) + '/' + uploaded_file.filename)
+        dataset = pd.read_csv('./temp/temp_' + str(session_id) + '/' + str(uploaded_file.filename),
+                              header=has_columns_name, index_col=has_index, sep=sep, engine='python')
+        # print(dataset)
+        dataset.to_csv('./temp/temp_' + str(session_id) + '/' + uploaded_file.filename)
+        dataset = Dataset(dataset)
+        dataset.session = session_id
+        print(label)
+
+        if label is not None and label != '':
+            dataset.set_label(label)
+            # dataset.label = label
+            # dataset.hasLabel = True
+            print('dslabel', dataset.label, dataset.hasLabel)
+        dataset.set_characteristics()
+        kb = KnowledgeBase()
+        kb.kb = dataset.filter_kb(kb.kb)
+        data[session_id]['kb'] = kb
+        data[session_id]['dataset'] = dataset
+    """
+    print("SESSION ID", session_id)
+    # print('label', label, dataset.label, dataset.hasLabel)
+    emit('ds_received', {'session_id': session_id})
+    #return jsonify({"session_id": session_id})
+
 
 app.register_blueprint(simple_page, url_prefix=base_url)
 

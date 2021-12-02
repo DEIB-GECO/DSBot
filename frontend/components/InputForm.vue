@@ -78,8 +78,8 @@ export default {
         this.separatorError = false
         const inputData = {
           ds: this.dataset,
-          hasColumnNames: this.hasColumnNames,
-          hasIndex: this.hasIndex,
+          has_column_names: this.hasColumnNames,
+          has_index: this.hasIndex,
           separator: this.separator,
           format: '.csv',
           label: this.label,
