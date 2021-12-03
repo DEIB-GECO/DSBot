@@ -208,6 +208,7 @@ def execute_algorithm(ir, session_id):
     result = run(ir, results, session_id)
 
     app.logger.info('Exiting execute_algorithm function')
+    get_results(session_id)
 
 
 def re_execute_algorithm(ir, session_id):
@@ -247,8 +248,8 @@ def comprehension_chat():
 
     ir_tuning = create_IR(max_key, message_queue)
     data[session_id]['ir_tuning'] = ir_tuning
-    threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
-
+    #threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
+    execute_algorithm(ir_tuning, session_id)
     return jsonify(comprehension_conversation_handler(json_data, data[json_data['session_id']]['dataset']))
 
 @socketio.on('message_sent')
