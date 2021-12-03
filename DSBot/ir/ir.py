@@ -18,9 +18,11 @@ def create_IR(pipeline, message_queue):
     dict_pipeline = []
     for item in pipeline:
         try:
+
             module = modules[item]()
             module.set_message_queue(message_queue)
             module.set_model(item)
+            print(module.actual_model)
             dict_pipeline.append(module)
         except KeyError:
             logging.getLogger(__name__).error('Missing module implementation for: %s', item)
@@ -35,5 +37,6 @@ modules = []
 for loader, module_name, is_pkg in pkgutil.walk_packages(ir.impl.__path__, ir.impl.__name__ + '.'):
     generic_classes = inspect.getmembers(importlib.import_module(module_name), is_generic)
     modules.extend(generic_classes)
+
 
 modules = {m: r[1] for r in modules for m in r[1]().get_models()}

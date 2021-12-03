@@ -213,14 +213,26 @@ class IRFeatureImportance(IRFeatureImportanceOp):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
+        labels = result['labels'].values
         try:
             if 'classifier' in result:
-                fi = result['classifier'].feature_importances_
+                try:
+                    fi = result['classifier'].feature_importances_
+                    print(fi)
+                except:
+                    # result['regressor'].fit(dataset,labels.ravel())
+                    fi = result['classifier'].coef_[0]
+                    print(fi)
             else:
                 raise ClassifierNotAvailable
         except ClassifierNotAvailable:
-            fi = result['regressor'].coef_[0]
-            print(fi)
+            try:
+                fi = result['regressor'].coef_[0]
+                print(fi)
+            except:
+                #result['regressor'].fit(dataset,labels.ravel())
+                fi = result['regressor'].feature_importances_
+                print(fi)
         except:
             fi = np.array(len(dataset.columns))
         d = {'Cols': dataset.columns, 'FI': fi}

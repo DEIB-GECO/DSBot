@@ -286,7 +286,8 @@ class IROutliersRemove(IRPreprocessing):
         if len(result['original_dataset'].cat_cols)!=0:
             cat_dataset = dataset[list(result['original_dataset'].cat_cols)]
             cat_dataset.index = value_dataset.index
-            cat_dataset = cat_dataset.drop(set(value_dataset.index) - set(ds.index))
+            cat_dataset = cat_dataset.T[index_new.index].T
+            print(len(cat_dataset))
             cat_dataset.index = index_new.iloc[:, 0].values
             ds = pd.concat([cat_dataset, ds], axis=1)
         result['new_dataset'] = ds
