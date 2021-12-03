@@ -239,7 +239,7 @@ export const actions = {
             response.data.comprehension_state
           )
           if (response.data.complete) {
-            context.commit('setStep', 4)
+            context.commit('setStep', 5)
           }
           // Do something with the response if necessary, for example:
           // console.log(response)
