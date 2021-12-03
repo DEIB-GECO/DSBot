@@ -11,7 +11,14 @@ export const state = () => ({
   pipelineEdited: false,
   comprehensionConversationState: '',
   comprehensionPipeline: '',
+  comprehensionChatCompleted: false,
 })
+
+export const getters = {
+  getComprehensionChatCompleted: (state) => {
+    return state.comprehensionChatCompleted
+  },
+}
 
 export const mutations = {
   setStep(state, newValue) {
@@ -51,10 +58,21 @@ export const mutations = {
 
   setComprehensionConversationState(state, newState) {
     state.comprehensionConversationState = newState
+    console.log('new comprehension state', newState)
   },
 
   setComprehensionPipeline(state, newPipeline) {
     state.comprehensionPipeline = newPipeline
+  },
+
+  setComprehensionChatCompleted(state, newValue) {
+    console.log(
+      'Ho messo comprehension da a',
+      state.comprehensionChatCompleted,
+      this.newValue
+    )
+    state.comprehensionChatCompleted = true
+    console.log('Ora vale', state.comprehensionChatCompleted)
   },
 }
 
@@ -240,6 +258,7 @@ export const actions = {
           )
           if (response.data.complete) {
             context.commit('setStep', 5)
+            context.commit('setComprehensionChatCompleted', true)
           }
           // Do something with the response if necessary, for example:
           // console.log(response)

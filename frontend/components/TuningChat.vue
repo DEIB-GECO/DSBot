@@ -82,13 +82,22 @@ export default {
     }
   },
   computed: {
-    ...mapState(['tuningChat']),
+    ...mapState([
+      'tuningChat',
+      'comprehensionChatCompleted',
+      'sessionId',
+      'comprehensionPipeline',
+      'comprehensionConversationState',
+    ]),
   },
   updated() {
     this.scrollToEnd()
   },
   created() {
-    if (this.destination === 'refinement') {
+    if (
+      this.destination === 'refinement' ||
+      this.destination === 'comprehension'
+    ) {
       console.log('created invocato')
       console.log('UELLA', socket.connected)
       socket.emit('ack', { message_id: 1, location: 'crated' })
@@ -100,6 +109,26 @@ export default {
         } else {
           console.log('ERRORE STRANO', payload)
         }
+      })
+      socket.on('comprehension_response', (payload) => {
+        console.log('server sent JSON_response', payload)
+        this.receiveChat(payload.message)
+
+        this.setComprehensionConversationState(payload.comprehension_state)
+        if (payload.complete) {
+          this.setStep(5),
+            socket.emit('execute', {
+              comprehension_pipeline: this.comprehensionPipeline,
+            })
+        }
+
+        /*
+        if (payload.type) {
+          console.log('server sent JSON_response', payload)
+          this.receiveChat(payload.message)
+        } else {
+          console.log('ERRORE STRANO', payload)
+        } */
       })
       socket.on('freeze_chat', () => {
         this.isChatActive = false
@@ -124,18 +153,28 @@ export default {
   },
   methods: {
     ...mapActions(['toFramework', 'sendChatMessage']),
-    ...mapMutations(['sendChat', 'receiveChat']),
+    ...mapMutations([
+      'sendChat',
+      'receiveChat',
+      'setComprehensionChatCompleted',
+      'setComprehensionConversationState',
+      'setStep',
+    ]),
     sendText() {
       if (this.isChatActive) {
         if (this.utterance.trim() !== '' && this.utterance !== '\n') {
           if (this.destination === 'mmcc') this.toFramework(this.utterance)
           else if (this.destination === 'comprehension') {
-            this.sendChatMessage({
-              destination: this.destination,
-              message: this.utterance,
-            })
+            this.sendSocketMessage('comprehension')
+            //const res = this.sendChatMessage({
+            //  destination: this.destination,
+            //  message: this.utterance,
+            //})
+            //.then(function (response) {
+            //  console.log('RES:', response.completed)
+            //})
           } else if (this.destination === 'refinement') {
-            this.sendSocketMessage()
+            this.sendSocketMessage('message_sent')
           }
           this.utterance = ''
         }
@@ -148,9 +187,18 @@ export default {
         container.scrollTop = container.scrollHeight
       }
     },
-    sendSocketMessage() {
+    sendSocketMessage(destination) {
       this.sendChat(this.utterance)
-      socket.emit('message_sent', { message: this.utterance })
+      if (destination === 'comprehension') {
+        let payload = {}
+        payload.message = this.utterance
+        payload.comprehension_state = this.comprehensionConversationState
+        payload.session_id = this.sessionId
+        payload.comprehension_pipeline = this.comprehensionPipeline
+        socket.emit(destination, payload)
+      } else {
+        socket.emit(destination, { message: this.utterance })
+      }
     },
   },
 }

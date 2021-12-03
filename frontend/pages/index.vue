@@ -48,7 +48,10 @@
           </v-stepper-content>
 
           <v-stepper-content step="3" class="px-10 pb-8">
-            <tuning-chat :destination="'comprehension'" />
+            <tuning-chat
+              :destination="'comprehension'"
+              @comprehensionCompleted="launchExecution"
+            />
           </v-stepper-content>
 
           <v-stepper-content step="4" class="px-10 pb-8">
@@ -89,7 +92,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
 import io from 'socket.io-client'
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 import TuningChat from '../components/TuningChat.vue'
 
 const socket = io('http://127.0.0.1:5000/')
@@ -102,7 +105,18 @@ export default {
     }
   },
   computed: {
-    ...mapState(['e1', 'resultsReady', 'pipelineEdited']),
+    ...mapGetters(['getComprehensionChatCompleted']),
+    ...mapState([
+      'e1',
+      'resultsReady',
+      'pipelineEdited',
+      'comprehensionChatCompleted',
+    ]),
+  },
+  whatch: {
+    e1(old, newV) {
+      console.log('AASASSAASAS')
+    },
   },
   mounted() {
     //this.polling = setInterval(() => this.waitForResults(), 3000)
@@ -131,10 +145,11 @@ export default {
     emitComputationResults(results) {
       context.commit('setComputationResults', results)
     },
+    launchExecution() {
+      console.log('AAAAAA')
+    },
   },
   created() {
-    console.log('created invocato')
-    console.log('UELLA', socket.connected)
     console.log('UELLA2')
     socket.on('results', (response) => {
       console.log('ho ricevuto questo', response)

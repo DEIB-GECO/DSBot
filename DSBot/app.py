@@ -229,30 +229,15 @@ def echo():
     return f"echo -> {json_data['payload']}"
 
 
-@app.route('/comprehension', methods=['POST'])
-def comprehension_chat():
-    json_data = request.get_json(force=True)
+#@app.route('/comprehension', methods=['POST'])
+@socketio.on('comprehension')
+def comprehension_chat(results):
+    print("Ricevuto comprehension", results)
+    #json_data = request.get_json(force=True)
+    #return jsonify(comprehension_conversation_handler(json_data, data[json_data['session_id']]['dataset']))
+    result = comprehension_conversation_handler(results, data[results['session_id']]['dataset'])
+    emit('comprehension_response', result)
 
-    scores = {}
-    wf = json_data['comprehension_pipeline']
-    kb = data[session_id]['kb']
-    print(kb.kb)
-    for i in range(len(kb.kb)):
-        sent = [x for x in kb.kb.values[i, 1:] if str(x) != 'nan']
-        print(sent)
-        scores[i] = NW(wf, sent, kb.voc) / len(sent)
-        print(scores[i])
-
-    print(scores)
-    max_key = max(scores, key=scores.get)
-    max_key = [x for x in kb.kb.values[max_key, 1:] if str(x) != 'nan']
-    print('MAX', max_key)
-
-    ir_tuning = create_IR(max_key, message_queue)
-    data[session_id]['ir_tuning'] = ir_tuning
-    #threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
-    execute_algorithm(ir_tuning, session_id)
-    return jsonify(comprehension_conversation_handler(json_data, data[json_data['session_id']]['dataset']))
 
 @socketio.on('message_sent')
 def handle_message(data):
@@ -272,6 +257,29 @@ def test_connect():
 @socketio.on('receiveds')
 def on_df_received(form_data):
     print("user data received!")
+
+@socketio.on('execute')
+def on_execute_received(payload):
+    scores = {}
+    wf = payload['comprehension_pipeline']
+    kb = data[session_id]['kb']
+    print(kb.kb)
+    for i in range(len(kb.kb)):
+        sent = [x for x in kb.kb.values[i, 1:] if str(x) != 'nan']
+        print(sent)
+        scores[i] = NW(wf, sent, kb.voc) / len(sent)
+        print(scores[i])
+
+    print(scores)
+    max_key = max(scores, key=scores.get)
+    max_key = [x for x in kb.kb.values[max_key, 1:] if str(x) != 'nan']
+    print('MAX', max_key)
+
+    ir_tuning = create_IR(max_key, message_queue)
+    data[session_id]['ir_tuning'] = ir_tuning
+    # threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
+    execute_algorithm(ir_tuning, session_id)
+    pass
 
 app.register_blueprint(simple_page, url_prefix=base_url)
 
