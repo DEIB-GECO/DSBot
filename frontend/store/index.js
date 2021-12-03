@@ -2,7 +2,7 @@ export const state = () => ({
   e1: 1,
   sessionId: 1,
   requestDescription: '',
-  resultsReady: false,
+  resultsReady: true,
   imageBase64: null,
   resultsDetails: '',
   tuningChat: [],

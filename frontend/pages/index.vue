@@ -108,7 +108,13 @@ export default {
     //this.polling = setInterval(() => this.waitForResults(), 3000)
   },
   methods: {
-    ...mapMutations(['setStep', 'setResultsReady', 'setAvailable']),
+    ...mapMutations([
+      'setStep',
+      'setResultsReady',
+      'setAvailable',
+      'setRequestDescription',
+      'receiveChat',
+    ]),
     ...mapActions(['toFramework', 'waitForResults', 'setComputationResults']),
     restart() {
       this.setAvailable(true)
@@ -130,9 +136,11 @@ export default {
     console.log('created invocato')
     console.log('UELLA', socket.connected)
     console.log('UELLA2')
-    socket.on('results', (results) => {
-      console.log('ricevuto results', results)
-      this.emitComputationResults(results)
+    socket.on('results', (response) => {
+      console.log('ho ricevuto questo', response)
+      this.setRequestDescription(response.request)
+      this.setStep(5)
+      this.receiveChat(response.comprehension_sentence)
     })
     //this.sendOnSocket('ack', { message_id: 1, location: 'crated' })
     /*
