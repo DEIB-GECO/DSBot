@@ -283,14 +283,13 @@ class IROutliersRemove(IRPreprocessing):
             print('len index', len(index_new))
             ds.index = index_new.iloc[:,0].values
 
-        if len(result['original_dataset'].cat_cols)!=0:
-            cat_dataset = dataset[list(result['original_dataset'].cat_cols)]
-            cat_dataset.index = value_dataset.index
-            cat_dataset = cat_dataset.T[index_new.index].T
-            print(len(cat_dataset))
-            cat_dataset.index = index_new.iloc[:, 0].values
-            ds = pd.concat([cat_dataset, ds], axis=1)
-        result['new_dataset'] = ds
+            if len(result['original_dataset'].cat_cols)!=0:
+                cat_dataset = dataset[list(result['original_dataset'].cat_cols)]
+                cat_dataset.index = value_dataset.index
+                cat_dataset = cat_dataset.T[index_new.index].T
+                cat_dataset.index = index_new.iloc[:, 0].values
+                ds = pd.concat([cat_dataset, ds], axis=1)
+            result['new_dataset'] = ds
         return result
 
 class IRStandardization(IRPreprocessing):

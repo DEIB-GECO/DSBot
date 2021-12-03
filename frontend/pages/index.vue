@@ -122,13 +122,17 @@ export default {
     sendFormOnSocket(payload) {
       this.sendOnSocket('ack', payload)
     },
+    emitComputationResults(results) {
+      context.commit('setComputationResults', results)
+    },
   },
   created() {
     console.log('created invocato')
     console.log('UELLA', socket.connected)
     console.log('UELLA2')
     socket.on('results', (results) => {
-      context.commit('setComputationResults', results)
+      console.log('ricevuto results', results)
+      this.emitComputationResults(results)
     })
     //this.sendOnSocket('ack', { message_id: 1, location: 'crated' })
     /*

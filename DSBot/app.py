@@ -129,7 +129,7 @@ def receive_utterance():
 
         # comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
         temp_dataset = data[session_id]['dataset']
-        comprehension_sentence = summary_producer(wf, temp_dataset.label)
+        comprehension_sentence = summary_producer(wf, "")
 
         return jsonify({"session_id": session_id,
                         "request": wf,
@@ -141,6 +141,7 @@ def receive_utterance():
 
 # @app.route('/results/<received_id>')
 def get_results(received_id):
+    print("Entrato in GET RESULTS")
     session_id = received_id
     app.logger.info('Polling results for session: %s', session_id)
 
@@ -163,11 +164,12 @@ def get_results(received_id):
     data[session_id]['framework'] = framework
     details = data[session_id]['dataset'].measures
     tuning_data = framework.handle_data_input({})
+    print("STO PER RESTITUIRE")
     emit('results', {"ready": True,
                     "session_id": session_id,
                     'img': str(base64_string),
                     'details': str(details),
-                    'tuning': tuning_data})
+                    'tuning': tuning_data}, namespace='/', broadcast=True)
     #return jsonify({"ready": True,
     #                "session_id": session_id,
     #                'img': str(base64_string),
