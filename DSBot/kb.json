@@ -5,6 +5,7 @@
   "logisticRegression": ["logisticRegression"],
 "correlation":  ["correlation","pearson", "spearman"],
 "featureSelection": ["featureSelection", "laplace", "varianceThreshold", "selectKBest", "selectPercentile"],
+  "relation": ["relation","correlation", "associationRules"],
 "associationRules":  ["associationRules","aPriori"],
 "crossValidation":  ["crossValidation", "trainTestSplit", "kFold"],
 "featureImportance":  ["featureImportance"],

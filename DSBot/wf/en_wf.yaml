@@ -30,7 +30,7 @@ both_embeddings: ./wf/glove_new_300.txt
 embeddings_type: "word2vec"
 
 # word_vec_size need to match with the pretrained embeddings dimensions
-word_vec_size: 100
+word_vec_size: 300
 
 # Train on a single GPU
 world_size: 1
@@ -41,3 +41,5 @@ save_model: wf/run/model1
 save_checkpoint_steps: 500
 train_steps: 1000
 valid_steps: 500
+layers: 1
+rnn_size: 250
