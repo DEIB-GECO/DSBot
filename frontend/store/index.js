@@ -122,7 +122,7 @@ export const actions = {
     const res = await this.$axios
       .post('/utterance', bodyRequest)
       .then(function (response) {
-        console.log('ho ricevuto questo', response.data)
+        console.log('REST: ho ricevuto questo', response.data)
         context.commit('setRequestDescription', response.data.request)
         context.commit('setStep', 3)
         context.commit('receiveChat', response.data.comprehension_sentence)
@@ -147,6 +147,8 @@ export const actions = {
     context.commit('setRequestDescription', response.request)
     context.commit('setStep', 4)
     context.commit('receiveChat', response.comprehension_sentence)
+    context.commit('setImage', response.img)
+    console.log('Ora img vale', context.state.imageBase64)
   },
 
   async waitForResults(context) {

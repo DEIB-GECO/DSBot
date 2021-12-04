@@ -128,6 +128,7 @@ export default {
       'setAvailable',
       'setRequestDescription',
       'receiveChat',
+      'setImage',
     ]),
     ...mapActions(['toFramework', 'waitForResults', 'setComputationResults']),
     restart() {
@@ -156,6 +157,7 @@ export default {
       this.setRequestDescription(response.request)
       this.setStep(5)
       this.receiveChat(response.comprehension_sentence)
+      this.setImage(response.img)
     })
     //this.sendOnSocket('ack', { message_id: 1, location: 'crated' })
     /*
