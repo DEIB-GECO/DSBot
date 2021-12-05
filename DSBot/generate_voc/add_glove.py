@@ -17,7 +17,7 @@ stemmer = nltk.stem.WordNetLemmatizer()
 #glove2word2vec.glove2word2vec(glove_6b,'word2vec_out_300.txt')
 
 #Loading the word2vec vector
-with open('word2vec_out_300.txt', "rb") as lines:
+with open('word2vec_out_100.txt', "rb") as lines:
      wvec = {line.split()[0].decode('utf-8'):np.array(line.split()[1:],dtype=np.float32) for line in lines}
        # line.split()[0].decode(encoding): np.array(line.split()[1:],
        #                                                  dtype=np.float32)
@@ -37,7 +37,7 @@ lines = texts #+ text
 y = [i.lower().replace('-',' ').translate(str.maketrans('', '', string.punctuation)).split(' ') for i in lines]
 text_data2 = y
 
-em_model = Word2Vec(text_data2, size=300, window=30, min_count=2, workers=8, sg = 1)
+em_model = Word2Vec(text_data2, size=100, window=30, min_count=2, workers=8, sg = 1)
 w2v = {w: vec for w, vec in zip(em_model.wv.index2word, em_model.wv.vectors)}
 #print(w2v)
 a = list(w2v.keys())
@@ -51,6 +51,6 @@ for i in a:
         print(i)
 print(len(wvec))
 
-with open('../wf/glove_new_300.txt', "w") as f:
+with open('../wf/glove_new_100.txt', "w") as f:
     for k,v in wvec.items():
         f.write(str(k)+' '+' '.join(map(str, v))+'\n')
