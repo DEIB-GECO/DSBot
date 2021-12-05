@@ -19,3 +19,5 @@ clustering plot
 clustering scatterplot
 kmeans
 pca kmeans performance plot
+classification
+userFeatureSelection classification

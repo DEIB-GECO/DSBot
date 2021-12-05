@@ -19,3 +19,5 @@ Please locate and display the community in the details.
 Present me the cluster scatterplot.
 using kmeans, divide the data into groups
 Compute the pca of the data and find groups using kmeans algorithm, show me visually the performances
+classify my data
+select age and gender and classify the data
