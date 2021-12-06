@@ -210,6 +210,7 @@ export const actions = {
             // context.commit('setStep', 3) // Assume already in step 3 and can't come back from 4
             context.commit('setImage', response.data.tuning.payload.result)
           } else if (response.data.tuning.payload.status === 'edit_param') {
+            console.log('unooo')
             context.commit('setStep', 5)
             context.commit(
               'setTuningPipeline',
@@ -259,6 +260,8 @@ export const actions = {
             response.data.comprehension_state
           )
           if (response.data.complete) {
+            console.log('dueeee')
+
             context.commit('setStep', 5)
             context.commit('setComprehensionChatCompleted', true)
           }
