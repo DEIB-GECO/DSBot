@@ -277,9 +277,15 @@ def on_execute_received(payload):
 
     ir_tuning = create_IR(max_key, message_queue)
     data[session_id]['ir_tuning'] = ir_tuning
+    ask_user('weilaaaa')
     # threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
     execute_algorithm(ir_tuning, session_id)
     pass
+
+def ask_user(question):
+    emit('message_response', {'message': question, 'type': 'message', 'comprehension_state': 'new_state', 'comprehension_pipeline': 'new_pipeline_string'})
+    print('CIAOONEEEEEEE')
+
 
 app.register_blueprint(simple_page, url_prefix=base_url)
 

@@ -116,7 +116,7 @@ export default {
 
         this.setComprehensionConversationState(payload.comprehension_state)
         if (payload.complete) {
-          this.setStep(5),
+          this.setStep(4),
             socket.emit('execute', {
               comprehension_pipeline: this.comprehensionPipeline,
             })
