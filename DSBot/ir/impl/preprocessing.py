@@ -64,6 +64,7 @@ class IRMissingValuesHandle(IROp):
         else:
             dataset = result['original_dataset'].ds
         ask_user('Ciao vuoi togliere o no i dati mancanti?')
+
         if (dataset.isna().sum(axis=1)>0).sum()<0.05*len(dataset):
             result = IRMissingValuesRemove().run(result, session_id)
         else:
