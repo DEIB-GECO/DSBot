@@ -117,7 +117,7 @@ def receive_utterance():
             f.write(args['message'])
 
         os.system(
-            'onmt_translate -model wf/run/model1_step_1000.pt -src temp/temp_' + str(session_id) + '/message' + str(
+            'onmt_translate -model wf/run/model1_step_4000.pt -src temp/temp_' + str(session_id) + '/message' + str(
                 session_id) + '.txt -output ./temp/temp_' + str(session_id) + '/pred' + str(
                 session_id) + '.txt -gpu -1 -verbose')
 
