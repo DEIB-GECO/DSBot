@@ -50,12 +50,13 @@
           <v-stepper-content step="3" class="px-10 pb-8">
             <tuning-chat
               :destination="'comprehension'"
+              :socket="socket"
               @comprehensionCompleted="launchExecution"
             />
           </v-stepper-content>
 
           <v-stepper-content step="4" class="px-10 pb-8">
-            <tuning-chat :destination="'refinement'" />
+            <tuning-chat :destination="'refinement'" :socket="socket" />
           </v-stepper-content>
 
           <v-stepper-content step="5" class="px-10 pb-8">
@@ -95,13 +96,15 @@ import io from 'socket.io-client'
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 import TuningChat from '../components/TuningChat.vue'
 
-const socket = io('http://127.0.0.1:5000/')
+//const socket = io('http://127.0.0.1:5000/')
 
 export default {
   components: { TuningChat },
   data() {
     return {
       polling: null,
+      lastSocketMessage: {},
+      socket: io('http://127.0.0.1:5000/'),
     }
   },
   computed: {
@@ -138,7 +141,7 @@ export default {
     },
     sendOnSocket(eventType, payolad) {
       console.log('SOCKET', typeof payolad)
-      socket.emit(eventType, payolad)
+      this.socket.emit(eventType, payolad)
     },
     sendFormOnSocket(payload) {
       this.sendOnSocket('ack', payload)
@@ -152,8 +155,10 @@ export default {
   },
   created() {
     console.log('UELLA2')
-    socket.on('results', (response) => {
-      console.log('ho ricevuto questo', response)
+    this.socket.on('results', (response) => {
+      console.log('ho ricevuto questo', JSON.stringify(response))
+
+      this.lastSocketMessage = response
       this.setRequestDescription(response.request)
       this.setStep(5)
       this.receiveChat(response.comprehension_sentence)
@@ -176,6 +181,12 @@ export default {
       this.isChatActive = true
     })
     */
+  },
+  mounted() {
+    //this.socket = this.$nuxtSocket({ channel: '/index', withCredentials: true })
+    //this.socket.on('results', (msg, cb) => {
+    //  console.log('NUOVO SOCKET', msg)
+    //})
   },
 }
 </script>

@@ -1,4 +1,5 @@
-module.exports = {
+export default {
+  modules: ['nuxt-socket-io'],
   assetsDir: 'static',
   devServer: {
     proxy: {
@@ -8,4 +9,12 @@ module.exports = {
     },
   },
   publicPath: '/inspire/',
+  io: {
+    sockets: [
+      {
+        name: 'main',
+        url: 'http://localhost:5000',
+      },
+    ],
+  },
 }
