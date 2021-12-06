@@ -30,7 +30,7 @@ To train the model:
 - join the files 'split_glove_**.txt' in a single file 'glove_new.txt'
 > cd wf
 > 
-> cat split_glove/* > glove_new.txt
+> cat split_glove50/* > glove_new_50.txt
 > 
 > cd ..
 > 
