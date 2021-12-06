@@ -40,7 +40,7 @@
 
         <v-stepper-items>
           <v-stepper-content step="1" class="px-10 pb-8">
-            <input-form @sendData="sendFormOnSocket"></input-form>
+            <input-form></input-form>
           </v-stepper-content>
 
           <v-stepper-content step="2" class="px-10 pb-8">
@@ -89,13 +89,13 @@
   </v-row>
 </template>
 
-<script src="/socket.io/socket.io.js"></script>
+<!-- <script src="/socket.io/socket.io.js"></script> -->
 <script>
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 import TuningChat from '../components/TuningChat.vue'
 
-const socket = io('http://127.0.0.1:5000/')
+// const socket = io('http://127.0.0.1:5000/')
 
 export default {
   components: { TuningChat },
@@ -119,7 +119,7 @@ export default {
     },
   },
   mounted() {
-    //this.polling = setInterval(() => this.waitForResults(), 3000)
+    // this.polling = setInterval(() => this.waitForResults(), 3000)
   },
   methods: {
     ...mapMutations([
@@ -138,44 +138,14 @@ export default {
     },
     sendOnSocket(eventType, payolad) {
       console.log('SOCKET', typeof payolad)
-      socket.emit(eventType, payolad)
-    },
-    sendFormOnSocket(payload) {
-      this.sendOnSocket('ack', payload)
+      // socket.emit(eventType, payolad)
     },
     emitComputationResults(results) {
-      context.commit('setComputationResults', results)
+      // context.commit('setComputationResults', results)
     },
     launchExecution() {
       console.log('AAAAAA')
     },
-  },
-  created() {
-    console.log('UELLA2')
-    socket.on('results', (response) => {
-      console.log('ho ricevuto questo', response)
-      this.setRequestDescription(response.request)
-      this.setStep(5)
-      this.receiveChat(response.comprehension_sentence)
-      this.setImage(response.img)
-    })
-    //this.sendOnSocket('ack', { message_id: 1, location: 'crated' })
-    /*
-    socket.on('message_response', (payload) => {
-      if (payload.type) {
-        console.log('server sent JSON_response', payload)
-        this.receiveChat(payload.message)
-      } else {
-        console.log('ERRORE STRANO', payload)
-      }
-    })
-    socket.on('freeze_chat', () => {
-      this.isChatActive = false
-    })
-    socket.on('unfreeze_chat', () => {
-      this.isChatActive = true
-    })
-    */
   },
 }
 </script>

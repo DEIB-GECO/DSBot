@@ -58,13 +58,13 @@
   </div>
 </template>
 
-<script src="/socket.io/socket.io.js"></script>
+<!-- <script src="/socket.io/socket.io.js"></script> -->
 <script>
 import { mapActions, mapState, mapMutations } from 'vuex'
 import io from 'socket.io-client'
 
-const SOCKET_PATH = '/inspire/socket.io'
-const SOCKET_ENDPOINT = '/test'
+// const SOCKET_PATH = '/inspire/socket.io'
+// const SOCKET_ENDPOINT = '/test'
 const socket = io('http://127.0.0.1:5000/')
 
 export default {
@@ -79,6 +79,7 @@ export default {
     return {
       utterance: '',
       isChatActive: true,
+      lastMessage: '',
     }
   },
   computed: {
@@ -95,32 +96,43 @@ export default {
   },
   created() {
     if (
-      this.destination === 'refinement' ||
+      // this.destination === 'refinement' ||
       this.destination === 'comprehension'
     ) {
-      console.log('created invocato')
       console.log('UELLA', socket.connected)
       socket.emit('ack', { message_id: 1, location: 'crated' })
       console.log('UELLA2')
       socket.on('message_response', (payload) => {
-        if (payload.type) {
-          console.log('server sent JSON_response', payload)
-          this.receiveChat(payload.message)
-        } else {
-          console.log('ERRORE STRANO', payload)
+        console.log('comparo stringhe', this.lastMessage, payload.message)
+        if (this.lastMessage !== payload.message) {
+          if (payload.type) {
+            console.log('server sent JSON_response', payload)
+            this.receiveChat(payload.message)
+          } else {
+            console.log('ERRORE STRANO', payload)
+          }
         }
       })
       socket.on('comprehension_response', (payload) => {
         console.log('server sent JSON_response', payload)
-        this.receiveChat(payload.message)
-
-        this.setComprehensionConversationState(payload.comprehension_state)
-        if (payload.complete) {
-          this.setStep(4),
+        if (this.lastMessage !== payload.message) {
+          this.lastMessage = payload.message
+          this.receiveChat(payload.message)
+          this.setComprehensionConversationState(payload.comprehension_state)
+          if (payload.complete) {
+            this.setStep(4)
             socket.emit('execute', {
               comprehension_pipeline: this.comprehensionPipeline,
             })
+          }
         }
+        socket.on('results', (response) => {
+          console.log('ho ricevuto questo', response)
+          this.setRequestDescription(response.request)
+          this.setStep(5)
+          this.receiveChat(response.comprehension_sentence)
+          this.setImage(response.img)
+        })
 
         /*
         if (payload.type) {
@@ -159,6 +171,8 @@ export default {
       'setComprehensionChatCompleted',
       'setComprehensionConversationState',
       'setStep',
+      'setRequestDescription',
+      'setImage',
     ]),
     sendText() {
       if (this.isChatActive) {
@@ -166,13 +180,13 @@ export default {
           if (this.destination === 'mmcc') this.toFramework(this.utterance)
           else if (this.destination === 'comprehension') {
             this.sendSocketMessage('comprehension')
-            //const res = this.sendChatMessage({
+            // const res = this.sendChatMessage({
             //  destination: this.destination,
             //  message: this.utterance,
-            //})
-            //.then(function (response) {
+            // })
+            // .then(function (response) {
             //  console.log('RES:', response.completed)
-            //})
+            // })
           } else if (this.destination === 'refinement') {
             this.sendSocketMessage('message_sent')
           }
@@ -190,7 +204,7 @@ export default {
     sendSocketMessage(destination) {
       this.sendChat(this.utterance)
       if (destination === 'comprehension') {
-        let payload = {}
+        const payload = {}
         payload.message = this.utterance
         payload.comprehension_state = this.comprehensionConversationState
         payload.session_id = this.sessionId
