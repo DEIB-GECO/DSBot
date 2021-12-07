@@ -27,6 +27,8 @@ from flask import Blueprint, render_template
 from flask import Flask, session, request, copy_current_request_context
 from flask_session import Session
 from flask_socketio import SocketIO, emit, disconnect
+import gevent
+import socketio
 async_mode = "gevent"
 
 base_url = '/inspire/'
@@ -35,6 +37,7 @@ socketio_path = 'socket.io/'
 setup_logger()
 
 app = Flask(__name__)
+
 cors = CORS(app, supports_credentials=True)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = 'secret!'
@@ -50,8 +53,11 @@ Session(app)
 session_serializer = SecureCookieSessionInterface().get_signing_serializer(app)
 data = {}
 session_id = None
-socketio = SocketIO(app, manage_session=False, cors_allowed_origins='*', async_mode=async_mode,
-                    path=socketio_path, logger=False, engineio_logger=False, debug=False, )
+#async_mode='threading'
+sio = SocketIO(app, manage_session=False, cors_allowed_origins='*', async_mode=async_mode,
+               path=socketio_path, logger=False, engineio_logger=False, debug=False, )
+#app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
+
 message_queue = []
 dataset = None
 simple_page = Blueprint('root_pages',
@@ -190,13 +196,13 @@ def tuning():
 @simple_page.route('/')
 def index():
     flask.current_app.logger.info("serve index")
-    return render_template('inspire.html', async_mode=socketio.async_mode)
+    return render_template('inspire.html', async_mode=sio.async_mode)
 
 
 @app.route('/')
 def index():
     flask.current_app.logger.info("serve index")
-    return render_template('inspire.html', async_mode=socketio.async_mode)
+    return render_template('inspire.html', async_mode=sio.async_mode)
 
 def create_algorithm(ir, session_id):
     app.logger.debug('Entering execute_algorithm function')
@@ -209,6 +215,7 @@ def create_algorithm(ir, session_id):
     result = question(ir, ir, session_id)
 
     #app.logger.info('Exiting execute_algorithm function')
+
     #get_results(session_id)
 
 
@@ -220,10 +227,10 @@ def execute_algorithm(ir, session_id):
         results = {'original_dataset': dataset, 'labels': dataset.label}
     else:
         results = {'original_dataset': dataset}
-    result = run(ir, results, session_id)
+    result = run(ir, results, session_id)#Thread(target = run, kwargs= {'ir':ir, 'dataset':results, 'session_id':session_id}).start()
 
     app.logger.info('Exiting execute_algorithm function')
-    get_results(session_id)
+    #get_results(session_id)
 
 
 def re_execute_algorithm(ir, session_id):
@@ -243,7 +250,7 @@ def echo():
 
 
 #@app.route('/comprehension', methods=['POST'])
-@socketio.on('comprehension')
+@sio.on('comprehension')
 def comprehension_chat(results):
     print("Ricevuto comprehension", results)
     #json_data = request.get_json(force=True)
@@ -251,27 +258,31 @@ def comprehension_chat(results):
     result = comprehension_conversation_handler(results, data[results['session_id']]['dataset'])
     emit('comprehension_response', result)
 
+# TODO: ADD IN THE FRONTEND A FUNCTION THAT REQUIRES THE RESULTS AT THE END OF THE REFINEMENT STEP
+@sio.on('results')
+def results(payload):
+    get_results(session_id)
 
-@socketio.on('message_sent')
+@sio.on('message_sent')
 def handle_message(data):
     global message_queue
     print('received_message', data)
     message_queue.append(data['message'])
 
-@socketio.on('ack')
+@sio.on('ack')
 def handle_message(data):
     print('received_message', data)
 
 
-@socketio.on('connect')
+@sio.on('connect')
 def test_connect():
     print("\n\n\nCONNESSO\n\n\n")
 
-@socketio.on('receiveds')
+@sio.on('receiveds')
 def on_df_received(form_data):
     print("user data received!")
 
-@socketio.on('execute')
+@sio.on('execute')
 def on_execute_received(payload):
     scores = {}
     wf = payload['comprehension_pipeline']
@@ -292,28 +303,31 @@ def on_execute_received(payload):
     print(ir_tuning)
 
     data[session_id]['ir_tuning'] = ir_tuning
-    ask_user('weilaaaa')
     # threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
-    create_algorithm(ir_tuning, session_id)
-    print('done')
+    #create_algorithm(ir_tuning, session_id)
     execute_algorithm(ir_tuning, session_id)
     pass
 
+#@socketio.on('message_sent')
 def ask_user(question):
-    emit('message_response', {'message': question, 'type': 'message', 'comprehension_state': 'new_state', 'comprehension_pipeline': 'new_pipeline_string'})
+    emit('message_response', {'message': question, 'type': 'message'})
+    gevent.sleep(1)
     print('CIAOONEEEEEEE')
+    @sio.on('message_sent')
+    def wait_response(data):
+        global message_queue
+        while message_queue==[]:
+            #def handle_message(data):
+                #global message_queue
+            emit('message_response', {'message': question, 'type': 'message'})
+
+            if data!={}:
+                print('received_message', data)
+                message_queue.append(data)
+
+        print(message_queue)
+        return message_queue
     #wait_response()
-
-def wait_response():
-    message_queue == []
-    while message_queue==[]:
-        @socketio.on('message_sent')
-        def handle_message(data):
-            #global message_queue
-            print('received_message', data)
-            message_queue.append(data['message'])
-
-    print(message_queue)
     return message_queue
 
 
@@ -321,4 +335,4 @@ def wait_response():
 app.register_blueprint(simple_page, url_prefix=base_url)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, port=5000, use_reloader=False)
+    sio.run(app, debug=True, port=5000, use_reloader=False)

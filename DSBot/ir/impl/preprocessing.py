@@ -9,7 +9,7 @@ from ir.ir_operations import IROp, IROpOptions
 from app import ask_user
 import time
 from flask_socketio import SocketIO, emit
-
+from app import sio
 class IRPreprocessing(IROp):
     def __init__(self, name, parameters=None, model = None):
         super(IRPreprocessing, self).__init__(name, parameters if parameters is not None else [])
@@ -71,15 +71,23 @@ class IRMissingValuesHandle(IROp):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-        ask_user('Ciao vuoi togliere o no i dati mancanti?')
+        message_queue = ask_user('Do you want to REMOVE the missing values or to FILL them?')
 
-        if (dataset.isna().sum(axis=1)>0).sum()<0.05*len(dataset):
+        if message_queue=={'message':'remove'}:
+            print('here')
+            ask_user('I will remove them!')
             result = IRMissingValuesRemove().run(result, session_id)
+
         else:
-            if (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
-                result = IRMissingValuesFill().run(result, session_id)
-            else:
-                pass
+            result = IRMissingValuesFill().run(result, session_id)
+
+        # if (dataset.isna().sum(axis=1)>0).sum()<0.05*len(dataset):
+        #     result = IRMissingValuesRemove().run(result, session_id)
+        # else:
+        #     if (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
+        #         result = IRMissingValuesFill().run(result, session_id)
+        #     else:
+        #         pass
                 #AskModuleToUser(self, [IRMissingValuesRemove,IRMissingValuesFill])
         return result
 
