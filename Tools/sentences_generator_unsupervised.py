@@ -23,7 +23,7 @@ synonyms_correlation_with_data = ['correlations among']
 synonyms_associationRules_with_data = ['rules of association between', 'rules that associates','association rules between']
 synonyms_outliersDetection_with_data = ['strange samples among', 'anomalies in', 'outliers in','inchoerent', 'irregularities among']
 
-verbs = ['can you find',  'i want', 'can you compute', 'do they exist', 'i want to compute', 'are there', 'i want to identify', 'let\'s search for', 'look for']
+verbs = ['can you find',  'i want', 'can you compute', 'do they exist', 'i want to compute', 'are there', 'i want to identify', 'let\'s search for', 'look for'] # usa condizionale --> dividere parte i want to/can/could (spezzare verbo semantico)
 plot_verbs = ['can i see', 'can you show', 'show me', 'can i visualize','plot', 'draw', 'can you draw', 'i want to see', 'i want to visualize']
 
 

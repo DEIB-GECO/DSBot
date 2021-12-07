@@ -6,7 +6,7 @@ from sklearn.impute._iterative import IterativeImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
 from pandas.api.types import is_numeric_dtype
 from ir.ir_operations import IROp, IROpOptions
-from user import ask_user
+from app import ask_user
 import time
 from flask_socketio import SocketIO, emit
 
@@ -56,6 +56,14 @@ class IRMissingValuesHandle(IROp):
         #for p,v in self.parameters.items():
         #    self._model.__setattr__(p,v.value)
         self._param_setted = True
+
+    def question(self, ir, session_id):
+        print(ir)
+        ir_new = [x.name for x in ir]
+
+        ir_new[ir_new.index(self.name)] = ask_user('Ciao vuoi togliere o no i dati mancanti?')
+        print(ir_new)
+        return ir_new
 
     #TDB cosa deve restituire questa funzione?
     def run(self, result, session_id):

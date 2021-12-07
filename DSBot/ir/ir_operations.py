@@ -29,6 +29,10 @@ class IROp(TuningOpMixin, ABC):
         except KeyError:
             raise UnknownParameter()
 
+
+    def question(self, result, session_id):
+        pass
+
     @abstractmethod
     def run(self, result, session_id):
         pass

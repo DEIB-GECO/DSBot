@@ -13,6 +13,12 @@ def run(ir, dataset, session_id):
     else:
         return run(ir[1:], ir[0].run(dataset, session_id), session_id)
 
+def question(ir, new_ir, session_id):
+    if len(ir) == 1:
+        if hasattr(ir[0], 'question'):
+            return ir[0].question(ir, session_id)
+    else:
+        return  question(ir[1:], ir[0].question(ir, session_id), session_id)
 
 def create_IR(pipeline, message_queue):
     dict_pipeline = []

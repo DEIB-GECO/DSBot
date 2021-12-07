@@ -6,7 +6,7 @@ from flask import Flask, jsonify, request, send_file, session
 from flask_cors import CORS
 from flask_restful import reqparse
 
-from ir.ir import create_IR, run
+from ir.ir import create_IR, run, question
 from comprehension.summary_producer import summary_producer
 from comprehension.comprehension_conversation_handler import comprehension_conversation_handler
 from log_helpers import setup_logger
@@ -27,7 +27,7 @@ from flask import Blueprint, render_template
 from flask import Flask, session, request, copy_current_request_context
 from flask_session import Session
 from flask_socketio import SocketIO, emit, disconnect
-async_mode = "eventlet"
+async_mode = "gevent"
 
 base_url = '/inspire/'
 socketio_path = 'socket.io/'
@@ -198,6 +198,19 @@ def index():
     flask.current_app.logger.info("serve index")
     return render_template('inspire.html', async_mode=socketio.async_mode)
 
+def create_algorithm(ir, session_id):
+    app.logger.debug('Entering execute_algorithm function')
+    app.logger.info('Executing pipeline: %s', [i.to_json() for i in ir])
+    dataset = data[session_id]['dataset']
+    if hasattr(dataset, 'label'):
+        results = {'original_dataset': dataset, 'labels': dataset.label}
+    else:
+        results = {'original_dataset': dataset}
+    result = question(ir, ir, session_id)
+
+    #app.logger.info('Exiting execute_algorithm function')
+    #get_results(session_id)
+
 
 def execute_algorithm(ir, session_id):
     app.logger.debug('Entering execute_algorithm function')
@@ -276,18 +289,36 @@ def on_execute_received(payload):
     print('MAX', max_key)
 
     ir_tuning = create_IR(max_key, message_queue)
+    print(ir_tuning)
+
     data[session_id]['ir_tuning'] = ir_tuning
     ask_user('weilaaaa')
     # threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
+    create_algorithm(ir_tuning, session_id)
+    print('done')
     execute_algorithm(ir_tuning, session_id)
     pass
 
 def ask_user(question):
     emit('message_response', {'message': question, 'type': 'message', 'comprehension_state': 'new_state', 'comprehension_pipeline': 'new_pipeline_string'})
     print('CIAOONEEEEEEE')
+    #wait_response()
+
+def wait_response():
+    message_queue == []
+    while message_queue==[]:
+        @socketio.on('message_sent')
+        def handle_message(data):
+            #global message_queue
+            print('received_message', data)
+            message_queue.append(data['message'])
+
+    print(message_queue)
+    return message_queue
+
 
 
 app.register_blueprint(simple_page, url_prefix=base_url)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, port=5000)
+    socketio.run(app, debug=True, port=5000, use_reloader=False)
