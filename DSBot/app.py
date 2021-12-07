@@ -1,7 +1,6 @@
 import threading
 from functools import partial
 
-import flask
 from flask import Flask, jsonify, request, send_file, session
 from flask_cors import CORS
 from flask_restful import reqparse
@@ -27,8 +26,6 @@ from flask import Blueprint, render_template
 from flask import Flask, session, request, copy_current_request_context
 from flask_session import Session
 from flask_socketio import SocketIO, emit, disconnect
-import gevent
-import socketio
 async_mode = "gevent"
 
 base_url = '/inspire/'
@@ -214,14 +211,11 @@ def create_algorithm(ir, session_id):
         results = {'original_dataset': dataset}
     result = question(ir, ir, session_id)
 
-    #app.logger.info('Exiting execute_algorithm function')
-
-    #get_results(session_id)
 
 
 def execute_algorithm(ir, session_id):
     app.logger.debug('Entering execute_algorithm function')
-    app.logger.info('Executing pipeline: %s', [i.to_json() for i in ir])
+    app.logger.info('Executing pipeline: %s', [i for i in ir])
     dataset = data[session_id]['dataset']
     if hasattr(dataset, 'label'):
         results = {'original_dataset': dataset, 'labels': dataset.label}
@@ -307,30 +301,6 @@ def on_execute_received(payload):
     #create_algorithm(ir_tuning, session_id)
     execute_algorithm(ir_tuning, session_id)
     pass
-
-#@socketio.on('message_sent')
-def ask_user(question):
-    emit('message_response', {'message': question, 'type': 'message'})
-    gevent.sleep(1)
-    print('CIAOONEEEEEEE')
-    @sio.on('message_sent')
-    def wait_response(data):
-        global message_queue
-        while message_queue==[]:
-            #def handle_message(data):
-                #global message_queue
-            emit('message_response', {'message': question, 'type': 'message'})
-
-            if data!={}:
-                print('received_message', data)
-                message_queue.append(data)
-
-        print(message_queue)
-        return message_queue
-    #wait_response()
-    return message_queue
-
-
 
 app.register_blueprint(simple_page, url_prefix=base_url)
 
