@@ -83,9 +83,9 @@ class Reformulation(ComprehensionConversationState):
         elif user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerificationPrediction()
             new_message, new_state, new_pipeline_array = next_state.generate(pipeline_array, dataset)
-            return "Oh, I am sorry I did not understand your request. I will ask you some questions to better" \
+            return "I think I misinterpreted your original request. I will ask you some questions to better" \
                    " understand what you want to do. " + new_message, new_state, new_pipeline_array
-        elif user_message_parsed['intent']['name'] == 'don_t_know':
+        elif user_message_parsed['intent']['name'] in ['don_t_know', 'clarification_request']:
             return self.help(pipeline_array)
         elif user_message_parsed['intent']['name'] == 'example':
             return self.example(pipeline_array)
@@ -111,6 +111,7 @@ class Reformulation(ComprehensionConversationState):
         return 'ciaooo', 'reformulation', pipeline_array
 
 
+"""
 class AlgorithmVerfication(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
@@ -131,8 +132,8 @@ class AlgorithmVerfication(ComprehensionConversationState):
             return next_state.generate(pipeline_array, dataset)
         elif user_message_parsed['intent']['name'] == 'affirm':
             return 'ok, we can proceed', 'comprehension_end', pipeline_array
-        else:
-            return 'TBD', 'comprehension_end', pipeline_array
+        
+"""
 
 
 class AlgorithmVerificationPrediction(ComprehensionConversationState):
@@ -152,8 +153,39 @@ class AlgorithmVerificationPrediction(ComprehensionConversationState):
         elif user_message_parsed['intent']['name'] == 'affirm':
             next_state = RegressionOrClassification()
             return next_state.generate(pipeline_array, dataset)
+        elif user_message_parsed['intent']['name'] in ['don_t_know', 'clarification_request']:
+            return self.help(pipeline_array, dataset)
+        elif user_message_parsed['intent']['name'] == 'example':
+            return self.example(pipeline_array, dataset)
+
+    def help(self, pipeline_array, dataset):
+        base_sentence = "Predicting a value means training an algorithm to predict a target value -  the value " \
+                        "contained in the \"label\" column - starting from the other data. "
+        end_sentence = "Do you want to perform this kind of analysis? "
+        if dataset.hasCategoricalLabel:
+            label_sentence = "Since the column you indicated as label seems to describe categories, I suggest to use a " \
+                             "classification algorithm. "
         else:
-            return 'TBD', 'comprehension_end', pipeline_array
+            label_sentence = "Since the column you indicated as label seems to describe a value, I suggest to use a " \
+                             "regression algorithm."
+        return base_sentence + label_sentence + end_sentence, 'algorithm_verification_prediction', pipeline_array
+
+    def example(self, pipeline_array, dataset):
+        if dataset.hasCategoricalLabel:
+            label_sentence = "Suppose you own a helmet company, you gather data along the productive process for " \
+                             "every helmet (e.g. amount of plastic, temperature in the mold, etc.), and you take note " \
+                             "of the outcome of the security test of every item. With a prediction algorithm, " \
+                             "you can try to predict with the data you are gathering whether a helmet will pass the " \
+                             "security test. On top of that, you can run a further analysis, going to understand" \
+                             " which data influence the most the outcome of the security test. "
+        else:
+            label_sentence = "Suppose you are the owner of vineyard and every year you collect information about the " \
+                             "harvest (e.g., average temperature, rain amount, etc.), together with a score (1-10) of " \
+                             "the quality of the wine you produce from the harvest. With a prediction algorithm, " \
+                             "you can try to predict the quality of the wine for the next harvest. you can run a " \
+                             "further analysis, going to understand which data influence the most the outcome of the " \
+                             "wine quality. "
+        return label_sentence + "Are you interested in this kind of analysis?", 'algorithm_verification_prediction', pipeline_array
 
 
 class AlgorithmVerificationRelationships(ComprehensionConversationState):
@@ -169,8 +201,52 @@ class AlgorithmVerificationRelationships(ComprehensionConversationState):
         elif user_message_parsed['intent']['name'] == 'affirm':
             next_state = CorrelationOrAssociationRules()
             return next_state.generate(pipeline_array, dataset)
+        elif user_message_parsed['intent']['name'] in ['don_t_know', 'clarification_request']:
+            return self.help(pipeline_array, dataset)
+        elif user_message_parsed['intent']['name'] == 'example':
+            return self.example(pipeline_array, dataset, user_message_parsed)
         else:
-            return 'TBD', 'comprehension_end', pipeline_array
+            return "Sorry, I didn't understand your request, can you reformulate it?", 'comprehension_end', pipeline_array
+
+    def help(self, pipeline_array, dataset):
+        if dataset.onlyCategorical:
+            relation_sentence = 'Your dataset is set up to use Association Rules, an algorithm that scans your table to ' \
+                                'try to elicit rules that describe the data in your table. That rules are in the form of ' \
+                                '"if-then" clauses, for example "if the customer buys a shirt and a pair of trousers, ' \
+                                'then he buy also a pair of socks". '
+        elif not dataset.categorical:
+            relation_sentence = 'Your dataset is set up to use correlations, an algorithm that scans your dataset to ' \
+                                'find columns that are linearly dependent one each other. '
+        else:
+            relation_sentence = 'We can find 2 kind of relations on your data, association rules, rules in the form of ' \
+                                '\"if->then\" clauses that describe behaviours in your dataset, or correlation, ' \
+                                'linear dependence between variables in your table. '
+
+        end_sentence = 'Are you interested in this kind of analysis?'
+        return relation_sentence + end_sentence, 'algorithm_verification_relationship', pipeline_array
+
+    def example(self, pipeline_array, dataset, user_message_parsed):
+        user_entities = retrieve_entities_values(user_message_parsed['entities'])
+        association_rules_sentence = 'suppose you are the owner of an eCommerce, applying association rules on the ' \
+                                     'purchase history of your website you may discover that if a customer buys a ' \
+                                     'monitor, then it is very likely he will buy a HDMI cable. With this information,' \
+                                     ' you can suggest HDMI cables to the users who add some monitor in the shopping ' \
+                                     'chart to increase your revenue '
+        correlation_sentence = 'suppose you are a teacher and you have a file filled with students records: age, ' \
+                               'time spent studying, absences, GPA, etc. Looking for regression in your data you ' \
+                               'might discover that the GPA is inversely correlated with the GPA -that is, ' \
+                               'the lower the number of absences, the higher the GPA. Then, you could crate ' \
+                               'incentives to encourage students attending your lessons '
+        end_sentence = 'Are you interested in this kind of approach?'
+        if dataset.onlyCategorical or 'association_rules' in user_entities:
+            return association_rules_sentence.capitalize() + end_sentence, 'algorithm_verification_relationship', pipeline_array
+        elif not dataset.categorical or 'correlation' in user_entities:
+            return correlation_sentence.capitalize() + end_sentence, 'algorithm_verification_relationship', pipeline_array
+        else:
+            relation_sentence = "You can find relations with two algorithms: association rules and correlation " \
+                                "analysis: " + association_rules_sentence + "With correlation, instead, " \
+                                + correlation_sentence + "So, are you interested in finding relations in your data? "
+            return relation_sentence, 'algorithm_verification_relationship', pipeline_array
 
 
 class AlgorithmVerificationClustering(ComprehensionConversationState):
@@ -185,8 +261,24 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
             return next_state.generate(pipeline_array, dataset)
         elif user_message_parsed['intent']['name'] == 'affirm':
             return 'Ok, we will proceed with clustering analysis!', 'comprehension_end', ['clustering']
+        elif user_message_parsed['intent']['name'] in ['don_t_know', 'clarification_request']:
+            return self.help(pipeline_array, dataset)
+        elif user_message_parsed['intent']['name'] == 'example':
+            return self.example(pipeline_array, dataset)
         else:
             return 'TBD', 'comprehension_end', pipeline_array
+
+    def help(self, pipeline_array, dataset):
+        sentence = "Grouping items means applying clustering algorithm: an analysis that aims at finding groups of data similar each other (clusters). This " \
+                   "kind of analysis doesn't require any additional information from you, it works in total autonomy. "
+        return sentence, 'algorithm_verification_clustering', pipeline_array
+
+    def example(self, pipeline_array, dataset):
+        sentence = "Suppose you are a shop owner and you have demographic information about customers who subscribed " \
+                   "you fidelity plan. With clustering, you can group them by similarity, obtaining groups of people " \
+                   "that represent your customer base. You can use this information to create promotion tailored to " \
+                   "your customers. "
+        return sentence, 'algorithm_verification_clustering', pipeline_array
 
 
 # class PredictionIfNotLabel(ComprehensionConversationState):
@@ -214,7 +306,8 @@ class FeatureImportanceOrNot(ComprehensionConversationState):
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
         user_entities = retrieve_entities_values(user_message_parsed['entities'])
-        if len(user_entities) > 0 :
+        print("USer entities", str(user_entities))
+        if len(user_entities) > 0:
             if user_entities[0] in ['first', '1', 'prediction', 'classification', 'regression']:
                 return "Ok, we can proceed!", "comprehension_end", pipeline_array
             elif user_entities[0] in ['second', '2', 'features_importance', 'last']:
@@ -222,7 +315,7 @@ class FeatureImportanceOrNot(ComprehensionConversationState):
                 return "Ok, we will perform a Feature Importance analysis, to highlight which are the most important " \
                        "factors in the prediction outcome", "comprehension_end", pipeline_array
         return 'I am sorry, I did not understand what you prefer. Can you repeat it, using different words?', \
-               'correlation_or_association_rules', pipeline_array
+               'feature_importance_or_not', pipeline_array
 
 
 class CorrelationOrAssociationRules(ComprehensionConversationState):
@@ -255,7 +348,7 @@ class CorrelationOrAssociationRules(ComprehensionConversationState):
 
 switcher = {
     'reformulation': Reformulation,
-    'algorithm_verification': AlgorithmVerfication,
+    # 'algorithm_verification': AlgorithmVerfication,
     'algorithm_verification_prediction': AlgorithmVerificationPrediction,
     'algorithm_verification_relationship': AlgorithmVerificationRelationships,
     'algorithm_verification_clustering': AlgorithmVerificationClustering,

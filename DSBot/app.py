@@ -222,8 +222,6 @@ def comprehension_chat():
     json_data = request.get_json(force=True)
 
     # Do stuff with the data received
-    print(json_data)
-    print(str(data[json_data['session_id']]['dataset'].hasLabel))
     return jsonify(comprehension_conversation_handler(json_data, data[json_data['session_id']]['dataset']))
 
 

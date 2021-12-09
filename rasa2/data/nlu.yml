@@ -234,6 +234,9 @@ nlu:
       - I want to [classify]{"entity": "algorithm", "value":"classification"}
       - I want the [model]{"entity": "algorithm", "value":"prediction"}
       - I want the [classification model]{"entity": "algorithm", "value":"classification"}
+      - I am more interested in {"entity": "algorithm", "value":"prediction"} the value
+      - I am more interested in {"entity": "algorithm", "value":"prediction"} the values
+      - What are they?
 
   - intent: mood_unhappy
     examples: |

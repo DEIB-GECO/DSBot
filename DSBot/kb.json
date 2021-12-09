@@ -8,4 +8,5 @@
 "featureImportance":  ["featureImportance"],
 "performance":  ["roc"],
 "regression": ["regression", "linearRegression"],
-"outliersDetection": ["outliersDetection"]}
+"outliersDetection": ["outliersDetection"],
+  "ds":["ds"]}
