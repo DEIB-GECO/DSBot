@@ -34,11 +34,11 @@ class IROp(TuningOpMixin, ABC):
         pass
 
     @abstractmethod
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         pass
 
     def set_message_queue(self, message_queue):
-        self.set_message_queue = message_queue
+        self.message_queue = message_queue
 
 
 class IROpOptions(TuningOpOptionsMixin, object):

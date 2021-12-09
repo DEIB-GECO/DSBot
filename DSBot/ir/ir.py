@@ -7,11 +7,11 @@ import ir.impl
 from ir.ir_operations import IROpOptions
 
 
-def run(ir, dataset, session_id):
+def run(ir, dataset, session_id, **kwargs):
     if len(ir) == 1:
-        return ir[0].run(dataset, session_id)
+        return ir[0].run(dataset, session_id, **kwargs)
     else:
-        return run(ir[1:], ir[0].run(dataset, session_id), session_id)
+        return run(ir[1:], ir[0].run(dataset, session_id, **kwargs), session_id)
 
 def question(ir, new_ir, session_id):
     if len(ir) == 1:
@@ -24,11 +24,10 @@ def create_IR(pipeline, message_queue):
     dict_pipeline = []
     for item in pipeline:
         try:
-
             module = modules[item]()
             module.set_message_queue(message_queue)
             module.set_model(item)
-            print(module.actual_model)
+            module.actual_model.set_message_queue(message_queue)
             dict_pipeline.append(module)
         except KeyError:
             logging.getLogger(__name__).error('Missing module implementation for: %s', item)

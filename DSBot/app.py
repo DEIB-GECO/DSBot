@@ -1,5 +1,6 @@
 import threading
 from functools import partial
+import asyncio
 
 from flask import Flask, jsonify, request, send_file, session
 from flask_cors import CORS
@@ -26,7 +27,7 @@ from flask import Blueprint, render_template
 from flask import Flask, session, request, copy_current_request_context
 from flask_session import Session
 from flask_socketio import SocketIO, emit, disconnect
-async_mode = "gevent"
+import utils
 
 base_url = '/inspire/'
 socketio_path = 'socket.io/'
@@ -41,21 +42,20 @@ app.config['SECRET_KEY'] = 'secret!'
 app.config['CORS_HEADERS'] = 'application/json'
 app.config['CORS_SUPPORTS_CREDENTIALS'] = True
 Session(app)
-# app.config['SESSION_TYPE'] = 'filesystem'
-# session config
-# app.config['SESSION_FILE_DIR'] = 'flask_session'
-# DEFAULT 31 days
-# app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=31)
-# Session(app)
+
 session_serializer = SecureCookieSessionInterface().get_signing_serializer(app)
 data = {}
 session_id = None
-#async_mode='threading'
-sio = SocketIO(app, manage_session=False, cors_allowed_origins='*', async_mode=async_mode,
-               path=socketio_path, logger=False, engineio_logger=False, debug=False, )
-#app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
+sio = SocketIO(app,
+               manage_session=False,
+               cors_allowed_origins='http://localhost:3000',
+               async_mode="gevent",
+               path=socketio_path,
+               logger=False,
+               engineio_logger=False,
+               debug=False)
 
-message_queue = []
+message_queue = utils.MessageContainer()
 dataset = None
 simple_page = Blueprint('root_pages',
                         __name__,
@@ -142,7 +142,6 @@ def receive_utterance():
     return jsonify({"message": "Errore"})
 
 
-# @app.route('/results/<received_id>')
 def get_results(received_id):
     print("Entrato in GET RESULTS")
     session_id = received_id
@@ -152,7 +151,6 @@ def get_results(received_id):
     filename = data[session_id]['dataset'].name_plot
     if filename is None:
         pass
-        # return jsonify({"ready": False, "session_id": session_id, 'img': None, 'tuning': None})
 
     # codifico il file in bytecode
     with open(filename, "rb") as img_file:
@@ -173,11 +171,6 @@ def get_results(received_id):
                     'img': str(base64_string),
                     'details': str(details),
                     'tuning': tuning_data}, namespace='/', broadcast=True)
-    #return jsonify({"ready": True,
-    #                "session_id": session_id,
-    #                'img': str(base64_string),
-    #                'details': str(details),
-    #                'tuning': tuning_data})
 
 
 @app.route('/tuning', methods=['POST'])
@@ -212,8 +205,10 @@ def create_algorithm(ir, session_id):
     result = question(ir, ir, session_id)
 
 
-
 def execute_algorithm(ir, session_id):
+    asyncio.run(execute_algorithm_logic(ir, session_id))
+
+async def execute_algorithm_logic(ir, session_id):
     app.logger.debug('Entering execute_algorithm function')
     app.logger.info('Executing pipeline: %s', [i for i in ir])
     dataset = data[session_id]['dataset']
@@ -221,7 +216,7 @@ def execute_algorithm(ir, session_id):
         results = {'original_dataset': dataset, 'labels': dataset.label}
     else:
         results = {'original_dataset': dataset}
-    result = run(ir, results, session_id)#Thread(target = run, kwargs= {'ir':ir, 'dataset':results, 'session_id':session_id}).start()
+    result = run(ir, results, session_id, socketio=sio)
 
     app.logger.info('Exiting execute_algorithm function')
     #get_results(session_id)
@@ -243,12 +238,9 @@ def echo():
     return f"echo -> {json_data['payload']}"
 
 
-#@app.route('/comprehension', methods=['POST'])
 @sio.on('comprehension')
 def comprehension_chat(results):
     print("Ricevuto comprehension", results)
-    #json_data = request.get_json(force=True)
-    #return jsonify(comprehension_conversation_handler(json_data, data[json_data['session_id']]['dataset']))
     result = comprehension_conversation_handler(results, data[results['session_id']]['dataset'])
     emit('comprehension_response', result)
 
@@ -260,8 +252,7 @@ def results(payload):
 @sio.on('message_sent')
 def handle_message(data):
     global message_queue
-    print('received_message', data)
-    message_queue.append(data['message'])
+    message_queue.push(data['message'].strip())
 
 @sio.on('ack')
 def handle_message(data):
@@ -297,10 +288,7 @@ def on_execute_received(payload):
     print(ir_tuning)
 
     data[session_id]['ir_tuning'] = ir_tuning
-    # threading.Thread(target=execute_algorithm, kwargs={'ir': ir_tuning, 'session_id': session_id}).start()
-    #create_algorithm(ir_tuning, session_id)
     execute_algorithm(ir_tuning, session_id)
-    pass
 
 app.register_blueprint(simple_page, url_prefix=base_url)
 

@@ -7,6 +7,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
 from pandas.api.types import is_numeric_dtype
 from ir.ir_operations import IROp, IROpOptions
 from utils import ask_user
+import asyncio
 import time
 from flask_socketio import SocketIO, emit
 from app import sio
@@ -66,14 +67,25 @@ class IRMissingValuesHandle(IROp):
         return ir_new
 
     #TDB cosa deve restituire questa funzione?
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'new_dataset' in result:
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-        message_queue = ask_user('Do you want to REMOVE the missing values or to FILL them?')
+        ask_user('Do you want to REMOVE the missing values or to FILL them?')
+        print(self.message_queue)
+        self.message_queue.clean()
+        while True:
+            asyncio.sleep(100)
+            if self.message_queue.has_message():
+                reply = self.message_queue.pop()
+                break
+            if 'socketio' in kwargs:
+                kwargs['socketio'].sleep(0)
+        if 'socketio' in kwargs:
+            kwargs['socketio'].sleep(0)
 
-        if message_queue=={'message':'remove'}:
+        if reply=='remove':
             print('here')
             ask_user('I will remove them!')
             result = IRMissingValuesRemove().run(result, session_id)
