@@ -42,7 +42,34 @@
           </v-stepper-content>
 
           <v-stepper-content step="3" class="px-10 pb-8">
-            <tuning-chat :destination="'comprehension'" />
+            <v-row>
+              <v-col>
+                <tuning-chat :destination="'comprehension'" />
+              </v-col>
+              <v-col v-if="isVisible" cols="5" sm="5" md="5">
+                <img
+                  v-if="image_to_show == 'classification'"
+                  src="~/assets/classification.jpg"
+                  style="max-width: 100%"
+                />
+                <img
+                  v-if="image_to_show == 'correlation'"
+                  src="~/assets/correlation.jpg"
+                  style="max-width: 100%"
+                />
+                <img
+                  v-if="image_to_show == 'association_rules'"
+                  src="~/assets/association_rules.jpg"
+                  style="max-width: 100%"
+                />
+                <img
+                  v-if="image_to_show == 'regression'"
+                  src="~/assets/regression.jpg"
+                  style="max-width: 100%"
+                />
+                <v-button @click="isVisible = false">sparisci</v-button></v-col
+              >
+            </v-row>
           </v-stepper-content>
 
           <v-stepper-content step="4" class="px-10 pb-8">
@@ -85,6 +112,8 @@ export default {
   data() {
     return {
       polling: null,
+      isVisible: true,
+      image_to_show: 'classification',
     }
   },
   computed: {
