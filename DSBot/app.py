@@ -16,15 +16,12 @@ from kb import KnowledgeBase
 import os
 import pandas as pd
 import base64
-from threading import Thread
-import copy
-from datetime import timedelta
 from flask.sessions import SecureCookieSessionInterface
 
 from tuning import get_framework
 import flask
 from flask import Blueprint, render_template
-from flask import Flask, session, request, copy_current_request_context
+from flask import Flask, session, request
 from flask_session import Session
 from flask_socketio import SocketIO, emit, disconnect
 import utils
@@ -72,10 +69,8 @@ def receive_ds():
     has_columns_name = 0 if request.form['has_column_names'] == 'true' else None
     sep = request.form['separator']
     label = request.form['label']
-    # format = request.form['format']
     uploaded_file = request.files['ds']
     if uploaded_file.filename != '':
-        # uploaded_file.save(uploaded_file.filename)
         try:
             os.makedirs('./temp/temp_' + str(session_id))
         except:
@@ -83,7 +78,6 @@ def receive_ds():
         uploaded_file.save('./temp/temp_' + str(session_id) + '/' + uploaded_file.filename)
         dataset = pd.read_csv('./temp/temp_' + str(session_id) + '/' + str(uploaded_file.filename),
                               header=has_columns_name, index_col=has_index, sep=sep, engine='python')
-        # print(dataset)
         dataset.to_csv('./temp/temp_' + str(session_id) + '/' + uploaded_file.filename)
         dataset = Dataset(dataset)
         dataset.session = session_id
@@ -91,8 +85,6 @@ def receive_ds():
 
         if label is not None and label != '':
             dataset.set_label(label)
-            # dataset.label = label
-            # dataset.hasLabel = True
             print('dslabel', dataset.label, dataset.hasLabel)
         dataset.set_characteristics()
         kb = KnowledgeBase()
@@ -101,14 +93,11 @@ def receive_ds():
         data[session_id]['dataset'] = dataset
 
     print("SESSION ID", session_id)
-    # print('label', label, dataset.label, dataset.hasLabel)
     return jsonify({"session_id": session_id})
 
 
 @app.route('/utterance', methods=['POST'])
 def receive_utterance():
-    # print(dataset.dataset)
-    # ds = copy.deepcopy(dataset)
     parser = reqparse.RequestParser()
     parser.add_argument('session_id', required=True, help='No session provided')
     parser.add_argument('message', required=True)
@@ -129,8 +118,6 @@ def receive_utterance():
         with open('./temp/temp_' + str(session_id) + '/pred' + str(session_id) + '.txt', 'r') as f:
             wf = f.readlines()[0].strip().split(' ')
 
-        # comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
-        temp_dataset = data[session_id]['dataset']
         comprehension_sentence = summary_producer(wf, "")
 
         return jsonify({"session_id": session_id,
@@ -229,7 +216,6 @@ def echo():
 
 @sio.on('comprehension')
 def comprehension_chat(results):
-    print("Ricevuto comprehension", results)
     result = comprehension_conversation_handler(results, data[results['session_id']]['dataset'])
     emit('comprehension_response', result)
 
@@ -245,7 +231,7 @@ def handle_message(data):
 
 @sio.on('connect')
 def test_connect():
-    print("\n\n\nCONNESSO\n\n\n")
+    pass
 
 @sio.on('receiveds')
 def on_df_received(form_data):
