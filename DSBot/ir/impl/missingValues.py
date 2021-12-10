@@ -62,27 +62,27 @@ class IRMissingValuesHandle(IROp):
                 result = IRMissingValuesFill().run(result, session_id)
             else:
                 ask_user('Do you want to REMOVE the rows with missing values or to FILL them?')
-        print(self.message_queue)
-        self.message_queue.clean()
-        while True:
-            asyncio.sleep(100)
-            if self.message_queue.has_message():
-                reply = self.message_queue.pop()
-                break
-            if 'socketio' in kwargs:
-                kwargs['socketio'].sleep(0)
-        if 'socketio' in kwargs:
-            kwargs['socketio'].sleep(0)
+                print(self.message_queue)
+                self.message_queue.clean()
+                while True:
+                    asyncio.sleep(100)
+                    if self.message_queue.has_message():
+                        reply = self.message_queue.pop()
+                        break
+                    if 'socketio' in kwargs:
+                        kwargs['socketio'].sleep(0)
+                if 'socketio' in kwargs:
+                    kwargs['socketio'].sleep(0)
 
-        if reply=='remove':
-            print('remove')
-            ask_user('I will remove them!')
-            result = IRMissingValuesRemove().run(result, session_id)
+                if reply=='remove':
+                    print('remove')
+                    ask_user('I will remove them!')
+                    result = IRMissingValuesRemove().run(result, session_id)
 
-        else:
-            print('fill')
-            ask_user('I will fill them!')
-            result = IRMissingValuesFill().run(result, session_id)
+                else:
+                    print('fill')
+                    ask_user('I will fill them!')
+                    result = IRMissingValuesFill().run(result, session_id)
 
         return result
 
