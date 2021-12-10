@@ -49,7 +49,18 @@ class IRMissingValuesHandle(IROp):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-        ask_user('Do you want to REMOVE the missing values or to FILL them?')
+        if (dataset.isna().sum(axis=1) > 0).sum() < 0.05 * len(dataset):
+            result = IRMissingValuesRemove().run(result, session_id)
+        else:
+            for c in dataset.columns:
+                if dataset[c].isna().sum()>0.5*len(dataset):
+                    dataset=dataset.drop(c, axis=1)
+            if (dataset.isna().sum(axis=1) > 0).sum() < 0.05 * len(dataset):
+                result = IRMissingValuesRemove().run(result, session_id)
+            elif (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
+                result = IRMissingValuesFill().run(result, session_id)
+            else:
+                ask_user('Do you want to REMOVE the rows with missing values or to FILL them?')
         print(self.message_queue)
         self.message_queue.clean()
         while True:
@@ -72,14 +83,6 @@ class IRMissingValuesHandle(IROp):
             ask_user('I will fill them!')
             result = IRMissingValuesFill().run(result, session_id)
 
-        # if (dataset.isna().sum(axis=1)>0).sum()<0.05*len(dataset):
-        #     result = IRMissingValuesRemove().run(result, session_id)
-        # else:
-        #     if (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
-        #         result = IRMissingValuesFill().run(result, session_id)
-        #     else:
-        #         pass
-                #AskModuleToUser(self, [IRMissingValuesRemove,IRMissingValuesFill])
         return result
 
 
