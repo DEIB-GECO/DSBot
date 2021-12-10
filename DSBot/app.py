@@ -6,7 +6,7 @@ from flask import Flask, jsonify, request, send_file, session
 from flask_cors import CORS
 from flask_restful import reqparse
 
-from ir.ir import create_IR, run, question
+from ir.ir import create_IR, run
 from comprehension.summary_producer import summary_producer
 from comprehension.comprehension_conversation_handler import comprehension_conversation_handler
 from log_helpers import setup_logger
@@ -108,7 +108,6 @@ def receive_ds():
 @app.route('/utterance', methods=['POST'])
 def receive_utterance():
     # print(dataset.dataset)
-
     # ds = copy.deepcopy(dataset)
     parser = reqparse.RequestParser()
     parser.add_argument('session_id', required=True, help='No session provided')
@@ -194,17 +193,6 @@ def index():
     flask.current_app.logger.info("serve index")
     return render_template('inspire.html', async_mode=sio.async_mode)
 
-def create_algorithm(ir, session_id):
-    app.logger.debug('Entering execute_algorithm function')
-    app.logger.info('Executing pipeline: %s', [i.to_json() for i in ir])
-    dataset = data[session_id]['dataset']
-    if hasattr(dataset, 'label'):
-        results = {'original_dataset': dataset, 'labels': dataset.label}
-    else:
-        results = {'original_dataset': dataset}
-    result = question(ir, ir, session_id)
-
-
 def execute_algorithm(ir, session_id):
     asyncio.run(execute_algorithm_logic(ir, session_id))
 
@@ -216,10 +204,11 @@ async def execute_algorithm_logic(ir, session_id):
         results = {'original_dataset': dataset, 'labels': dataset.label}
     else:
         results = {'original_dataset': dataset}
-    result = run(ir, results, session_id, socketio=sio)
+    run(ir, results, session_id, socketio=sio)
 
     app.logger.info('Exiting execute_algorithm function')
-    #get_results(session_id)
+    get_results(session_id)
+
 
 
 def re_execute_algorithm(ir, session_id):
@@ -243,11 +232,6 @@ def comprehension_chat(results):
     print("Ricevuto comprehension", results)
     result = comprehension_conversation_handler(results, data[results['session_id']]['dataset'])
     emit('comprehension_response', result)
-
-# TODO: ADD IN THE FRONTEND A FUNCTION THAT REQUIRES THE RESULTS AT THE END OF THE REFINEMENT STEP
-@sio.on('results')
-def results(payload):
-    get_results(session_id)
 
 @sio.on('message_sent')
 def handle_message(data):

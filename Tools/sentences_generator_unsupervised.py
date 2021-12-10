@@ -22,10 +22,13 @@ synonyms_relation_with_data = ['relations among', 'associations among', 'associa
 synonyms_correlation_with_data = ['correlations among']
 synonyms_associationRules_with_data = ['rules of association between', 'rules that associates','association rules between']
 synonyms_outliersDetection_with_data = ['strange samples among', 'anomalies in', 'outliers in','inchoerent', 'irregularities among']
-
-verbs = ['can you find',  'i want', 'can you compute', 'do they exist', 'i want to compute', 'are there', 'i want to identify', 'let\'s search for', 'look for'] # usa condizionale --> dividere parte i want to/can/could (spezzare verbo semantico)
-plot_verbs = ['can i see', 'can you show', 'show me', 'can i visualize','plot', 'draw', 'can you draw', 'i want to see', 'i want to visualize']
-
+auxiliary_plusverbs = ['can you', 'i want to', 'let\'s', 'could you', 'i would like to', 'i would', '', 'are you able to', 'do you manage to', 'shall we', 'may you', 'might you', 'would you']
+auxiliary_plusnouns = ['i want', 'are there', 'look for', 'let\'s search for', 'perform', 'compute', 'do', 'do they exist', 'analyze', 'have you' ,'shall we look for']
+verbs = ['find',  'compute', 'perform', 'identify', 'analyze', 'look for', 'search for', 'produce', 'consider', 'inspect', 'investigate' ] # usa condizionale --> dividere parte i want to/can/could (spezzare verbo semantico)
+plot_verbs = ['see', 'show', 'show me', 'visualize','plot', 'draw', 'look at','observe', 'spot', 'view', 'watch', 'inspect','display','exhibit' , 'present', 'expose'
+              'foresee']
+clustering_verbs = ['cluster', 'assemble', 'group','associate','gather','aggregate','collect']
+synonyms_data = ['data','samples','rows', 'my data','examples','information']
 
 synonyms_userFeatureSel = ['according to', 'selecting only', 'considering only', 'if you consider only', 'if you select', 'looking at', 'keeping into consideration',
                            'taking into account', 'taking into consideration only', 'filtering out']
