@@ -55,6 +55,7 @@ class IRMissingValuesHandle(IROp):
             for c in dataset.columns:
                 if dataset[c].isna().sum()>0.5*len(dataset):
                     dataset=dataset.drop(c, axis=1)
+            result['new_dataset'] = dataset
             if (dataset.isna().sum(axis=1) > 0).sum() < 0.05 * len(dataset):
                 result = IRMissingValuesRemove().run(result, session_id)
             elif (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
