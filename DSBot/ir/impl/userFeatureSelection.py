@@ -12,12 +12,12 @@ from utils import ask_user
 import asyncio
 
 class IRUserFeatureSelection(IROp):
-    def __init__(self, name, parameters, model = None):
-        super(IRUserFeatureSelection, self).__init__(name,parameters)
+    def __init__(self, name, parameters=None, model = None):
+        super(IRUserFeatureSelection, self).__init__(name,parameters if parameters is not None else [])
         #self._model = model(**{v.name: v.value for v in parameters if hasattr(self, v.name)})
         #self.labels = None
 
-    @abstractmethod
+
     def parameter_tune(self, dataset):
         pass
 
@@ -43,6 +43,7 @@ class IRUserFeatureSelection(IROp):
             dataset = result['original_dataset'].ds
 
         ask_user('List the features you want to remove using a comma to separate them: '+ ','.join(dataset.columns))
+
         print(self.message_queue)
         self.message_queue.clean()
         while True:
