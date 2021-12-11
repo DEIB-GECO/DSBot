@@ -10,7 +10,7 @@ from utils import ask_user
 import asyncio
 import time
 from flask_socketio import SocketIO, emit
-from app import sio
+
 
 class IRMissingValuesHandle(IROp):
     def __init__(self, name, parameters=None, model = None ):
@@ -39,7 +39,6 @@ class IRMissingValuesHandle(IROp):
         ir_new = [x.name for x in ir]
 
         ir_new[ir_new.index(self.name)] = ask_user('Ciao vuoi togliere o no i dati mancanti?')
-        print(ir_new)
         return ir_new
 
     #TDB cosa deve restituire questa funzione?
@@ -61,7 +60,6 @@ class IRMissingValuesHandle(IROp):
                 result = IRMissingValuesFill().run(result, session_id)
             else:
                 ask_user('Do you want to REMOVE the rows with missing values or to FILL them?')
-                print(self.message_queue)
                 self.message_queue.clean()
                 while True:
                     asyncio.sleep(100)
@@ -87,7 +85,6 @@ class IRMissingValuesHandle(IROp):
 class IRMissingValuesRemove(IRMissingValuesHandle):
     def __init__(self):
         super(IRMissingValuesRemove, self).__init__("missingValuesRemove")
-
 
     def parameter_tune(self, dataset):
         # TODO: implement

@@ -6,11 +6,8 @@ from sklearn.impute._iterative import IterativeImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
 from pandas.api.types import is_numeric_dtype
 from ir.ir_operations import IROp, IROpOptions
-from utils import ask_user
-import asyncio
-import time
-from flask_socketio import SocketIO, emit
-from app import sio
+
+
 class IRPreprocessing(IROp):
     def __init__(self, name, parameters=None, model = None):
         super(IRPreprocessing, self).__init__(name, parameters if parameters is not None else [])
@@ -105,7 +102,6 @@ class IRLabelRemove(IRLabelOperation):
 
             if len(dataset)<len(label):
                 label = label[set(dataset.index.values)]
-                print('hola',len(label))
 
         else:
 

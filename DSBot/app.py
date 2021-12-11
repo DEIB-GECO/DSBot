@@ -112,10 +112,7 @@ def receive_utterance():
                 session_id) + '.txt -output ./temp/temp_' + str(session_id) + '/pred' + str(
                 session_id) + '.txt -gpu -1 -verbose')
 
-        with open('./temp/temp_' + str(session_id) + '/pred' + str(session_id) + '.txt', 'r') as f:
-            wf = f.readlines()[0].strip().split(' ')
-
-        with open('./temp/temp_' + str(session_id) + '/pred' + str(session_id) + '.txt', 'r') as f:
+        with open(f'./temp/temp_{session_id}/pred{session_id}.txt', 'r') as f:
             wf = f.readlines()[0].strip().split(' ')
 
         comprehension_sentence = summary_producer(wf, "")
@@ -174,7 +171,6 @@ def index():
     flask.current_app.logger.info("serve index")
     return render_template('inspire.html', async_mode=sio.async_mode)
 
-
 @app.route('/')
 def index():
     flask.current_app.logger.info("serve index")
@@ -196,12 +192,9 @@ async def execute_algorithm_logic(ir, session_id):
     app.logger.info('Exiting execute_algorithm function')
     get_results(session_id)
 
-
-
 def re_execute_algorithm(ir, session_id):
     data[session_id]['dataset'].name_plot = None
     threading.Thread(target=execute_algorithm, kwargs={'ir': ir, 'session_id': session_id}).start()
-
 
 @app.route('/echo', methods=['POST'])
 def echo():
@@ -227,7 +220,6 @@ def handle_message(data):
 @sio.on('ack')
 def handle_message(data):
     print('received_message', data)
-
 
 @sio.on('connect')
 def test_connect():
