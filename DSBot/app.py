@@ -118,7 +118,13 @@ def receive_utterance():
         with open('./temp/temp_' + str(session_id) + '/pred' + str(session_id) + '.txt', 'r') as f:
             wf = f.readlines()[0].strip().split(' ')
 
-        comprehension_sentence = summary_producer(wf, "")
+        # comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
+        temp_dataset = data[session_id]['dataset']
+        if hasattr(temp_dataset, 'label'):
+            label = temp_dataset.label
+        else:
+            label = ""
+        comprehension_sentence = summary_producer(wf, label)
 
         return jsonify({"session_id": session_id,
                         "request": wf,

@@ -18,7 +18,7 @@ def summary_producer(operations_array, label):
             if user_module in knowledge_base[algorithm_family]:
                 sentences_array.append(producible_sentences[algorithm_family]['summary'])
 
-    #sentences_array = [producible_sentences[sentence]["summary"] for sentence in operations_array]
+    # sentences_array = [producible_sentences[sentence]["summary"] for sentence in operations_array]
     sentences_array = list(filter(None, sentences_array))
     sentences_number = len(sentences_array)
 
@@ -27,9 +27,11 @@ def summary_producer(operations_array, label):
         central_sentence = sentences_array[0].capitalize()
     elif sentences_number == 2:
         central_sentence = f"First, {sentences_array[0]} Then, {sentences_array[1]}"
+    elif sentences_number > 2:
+        central_sentence = f"First, {sentences_array[0]} Then, {sentences_array[1]}{' '.join([str(elem) for elem in sentences_array[2:-2]])} Finally, {sentences_array[-1]}"
     else:
-        central_sentence = f"First, {sentences_array[0]} Then, {sentences_array[1]}{ ' '.join([str(elem) for elem in sentences_array[2:-2]])} Finally, {sentences_array[-1]}"
-
+        central_sentence = ""
+    print(str(operations_array))
     if label != "":
         print("The label is:", label)
         central_sentence = central_sentence.replace('##LABEL##', f"'{label}'")
