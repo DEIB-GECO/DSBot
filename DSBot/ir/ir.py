@@ -18,17 +18,8 @@ def create_IR(pipeline, message_queue):
     dict_pipeline = []
     for item in pipeline:
         try:
-            print(generic_classes, item, item in generic_classes)
-            if item in generic_classes:
-                print('HOLA')
-                print(modules)
-                print(modules[item])
-                #print(type(module).__name__)
-                #item = module.run()
-                print(item)
             module = modules[item]()
             module.set_message_queue(message_queue)
-
             module.set_model(item)
             module.actual_model.set_message_queue(message_queue)
             dict_pipeline.append(module)

@@ -44,7 +44,6 @@ class IRMissingValuesHandle(IROp):
 
     #TDB cosa deve restituire questa funzione?
     def run(self, result, session_id, **kwargs):
-        print('hey')
         if 'new_dataset' in result:
             dataset = result['new_dataset']
         else:
@@ -75,12 +74,10 @@ class IRMissingValuesHandle(IROp):
                     kwargs['socketio'].sleep(0)
 
                 if reply=='remove':
-                    print('remove')
                     ask_user('I will remove them!')
                     result = IRMissingValuesRemove().run(result, session_id)
 
                 else:
-                    print('fill')
                     ask_user('I will fill them!')
                     result = IRMissingValuesFill().run(result, session_id)
 

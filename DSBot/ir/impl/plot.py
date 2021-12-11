@@ -211,6 +211,34 @@ class IRTableRegression(IRPlot):
         # plt.show()
         return  result
 
+class IRLassoPlot(IRPlot):
+    def __init__(self):
+        super(IRLassoPlot, self).__init__("lassoPlot",
+                                            [],
+                                            None)
+
+    def parameter_tune(self, dataset):
+        pass
+
+    def run(self, result, session_id):
+        df = result['feature_selection']
+        fig, axs = plt.subplots(2, figsize=(15, 10))
+        fig.suptitle('Importance of selected features')
+        axs[0].barh(df.index, np.absolute(df.values))
+        axs[1].barh(df.index, df.values)
+        axs[1].axvline(0, color="black", linestyle='--', lw=2)
+        plt.figure(figsize=(12, 8))
+        plt.title('Features Selected')
+        plt.xlabel('Relative Importance')
+        # plotly.offline.plot(fig, filename='./temp/temp_' + str(session_id) + '/featureImportancePlot.html')
+        plt.savefig('./temp/temp_' + str(session_id) + '/featureSelectionPlot.png')
+        if 'plot' not in result:
+            result['plot'] = ['./temp/temp_' + str(session_id) + '/featureSelectionPlot.png']
+        else:
+            result['plot'].append('./temp/temp_' + str(session_id) + '/featureSelectionPlot.png')
+        result['original_dataset'].name_plot = './temp/temp_' + str(session_id) + '/featureSelectionPlot.png'
+        return result
+
 class IRDistplot(IRPlot):
     def __init__(self):
         super(IRDistplot, self).__init__("distplot",
@@ -454,4 +482,6 @@ class IRFeatureImportanceBarPlot(IRPlot):
 # FIXME: this class was commented out because the implementation raises errors
 class IRGenericPlot(IROpOptions):
      def __init__(self):
-         super(IRGenericPlot, self).__init__([IRScatterplot(), IRClustermap(), IRDistplot(), IRBoxplot(), IRBarplot(), IRROC(), IRScatterAssociationRules(), IRTableAssociationRules(), IRFeatureImportancePlot(), IRFeatureImportanceBarPlot(), IRTableRegression()], "scatterplot")
+         super(IRGenericPlot, self).__init__([IRScatterplot(), IRClustermap(), IRDistplot(), IRBoxplot(), IRBarplot(),
+                                              IRROC(), IRScatterAssociationRules(), IRTableAssociationRules(), IRLassoPlot(),
+                                              IRFeatureImportancePlot(), IRFeatureImportanceBarPlot(), IRTableRegression()], "scatterplot")

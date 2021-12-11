@@ -207,11 +207,11 @@ class IRStandardization(IRPreprocessing):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-        cat_dataset = dataset[result['original_dataset'].cat_cols]
-        values_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
-        values_dataset = pd.DataFrame(StandardScaler().fit_transform(values_dataset), index=values_dataset.index, columns=values_dataset.columns)
+        #cat_dataset = dataset[result['original_dataset'].cat_cols]
+        #values_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+        dataset = pd.DataFrame(StandardScaler().fit_transform(dataset), index=dataset.index, columns=dataset.columns)
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
-        dataset = pd.concat([cat_dataset, values_dataset], axis=1)
+        #dataset = pd.concat([cat_dataset, values_dataset], axis=1)
         result['new_dataset'] = dataset
         print(dataset)
         return result

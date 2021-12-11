@@ -260,6 +260,7 @@ def on_execute_received(payload):
     for i in range(len(kb.kb)):
         sent = [x for x in kb.kb.values[i, 1:] if str(x) != 'nan']
         print(sent)
+        sent = [x for x in sent if x not in ['missingValuesHandle', 'labelRemove','oneHotEncode','labelAppend', 'zerVarRemove','outliersRemove','standardization','normalization']]
         scores[i] = NW(wf, sent, kb.voc) / len(sent)
         print(scores[i])
 
