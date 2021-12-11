@@ -20,6 +20,7 @@ def create_IR(pipeline, message_queue):
         try:
             module = modules[item]()
             module.set_message_queue(message_queue)
+
             module.set_model(item)
             module.actual_model.set_message_queue(message_queue)
             dict_pipeline.append(module)
