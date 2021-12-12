@@ -48,33 +48,41 @@
           </v-stepper-content>
 
           <v-stepper-content step="3" class="px-10 pb-8">
-            <v-row>
+            <v-row align="center" justify="center">
               <v-col>
                 <tuning-chat :destination="'comprehension'" />
               </v-col>
-              <v-col v-if="isVisible" cols="5" sm="5" md="5">
-                <img
-                  v-if="image_to_show == 'classification'"
-                  src="~/assets/classification.jpg"
-                  style="max-width: 100%"
-                />
-                <img
-                  v-if="image_to_show == 'correlation'"
-                  src="~/assets/correlation.jpg"
-                  style="max-width: 100%"
-                />
-                <img
-                  v-if="image_to_show == 'association_rules'"
-                  src="~/assets/association_rules.jpg"
-                  style="max-width: 100%"
-                />
-                <img
-                  v-if="image_to_show == 'regression'"
-                  src="~/assets/regression.jpg"
-                  style="max-width: 100%"
-                />
-                <v-button @click="isVisible = false">sparisci</v-button></v-col
-              >
+              <v-col v-show="imageToShow != ''" cols="7" sm="7" md="7">
+                <v-expand-x-transition>
+                  <v-card flat>
+                    Here is an example to better explain it!
+                    <v-divider></v-divider>
+                    <img
+                      v-if="imageToShow == 'classification'"
+                      src="~/assets/classification.jpg"
+                      style="max-width: 100%"
+                    />
+                    <img
+                      v-if="imageToShow == 'correlation'"
+                      src="~/assets/correlation.jpg"
+                      style="max-width: 100%"
+                    />
+                    <img
+                      v-if="imageToShow == 'association_rules'"
+                      src="~/assets/association_rules.jpg"
+                      style="max-width: 100%"
+                    />
+                    <img
+                      v-if="imageToShow == 'regression'"
+                      src="~/assets/regression.jpg"
+                      style="max-width: 100%"
+                    />
+                    <v-btn @click="setImageToShow('')" color="primary"
+                      >GOTCHA</v-btn
+                    >
+                  </v-card>
+                </v-expand-x-transition>
+              </v-col>
             </v-row>
           </v-stepper-content>
 
@@ -127,7 +135,6 @@ export default {
     return {
       polling: null,
       isVisible: true,
-      image_to_show: 'classification',
     }
   },
   computed: {
@@ -137,6 +144,7 @@ export default {
       'resultsReady',
       'pipelineEdited',
       'comprehensionChatCompleted',
+      'imageToShow',
     ]),
   },
   whatch: {
@@ -155,6 +163,7 @@ export default {
       'setRequestDescription',
       'receiveChat',
       'setImage',
+      'setImageToShow',
     ]),
     ...mapActions(['toFramework', 'waitForResults', 'setComputationResults']),
     restart() {

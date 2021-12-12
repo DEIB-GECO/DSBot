@@ -43,7 +43,9 @@ def parse(utterance: str):
 
 def prepare_standard_response(message, state, pipeline):
     new_pipeline_string = pipeline_array_to_string(pipeline)
-    return {'message': message, 'comprehension_state': state, 'comprehension_pipeline': new_pipeline_string}
+    response = {'message': message, 'comprehension_state': state, 'comprehension_pipeline': new_pipeline_string}
+    print("prepared response is", str(response))
+    return response
 
 
 def retrieve_specific_entity_value(entities_list, entity_name):
@@ -83,7 +85,9 @@ class Reformulation(ComprehensionConversationState):
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
         if user_message_parsed['intent']['name'] == 'affirm':
-            return prepare_standard_response('ok, we can proceed', 'comprehension_end', pipeline_array)
+            response = prepare_standard_response('ok, we can proceed', 'comprehension_end', pipeline_array)
+            print("RESPONSE GENERATA", str(response))
+            return response
         elif user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerificationPrediction()
             new_message, new_state, new_pipeline_array = next_state.generate(pipeline_array, dataset)
@@ -170,14 +174,14 @@ class AlgorithmVerificationPrediction(ComprehensionConversationState):
         if dataset.hasCategoricalLabel:
             label_sentence = "Since the column you indicated as label seems to describe categories, I suggest to use a " \
                              "classification algorithm. "
-            picture = "classification"
+            show = "classification"
         else:
             label_sentence = "Since the column you indicated as label seems to describe a value, I suggest to use a " \
                              "regression algorithm."
-            picture = "regression"
+            show = "regression"
         to_return = prepare_standard_response(base_sentence + label_sentence + end_sentence,
-                                         'algorithm_verification_prediction', pipeline_array)
-        to_return['picture']= picture
+                                              'algorithm_verification_prediction', pipeline_array)
+        to_return['show'] = show
         return to_return
 
     def example(self, pipeline_array, dataset):
@@ -221,22 +225,28 @@ class AlgorithmVerificationRelationships(ComprehensionConversationState):
                                              'comprehension_end', pipeline_array)
 
     def help(self, pipeline_array, dataset):
+        show = ""
         if dataset.onlyCategorical:
             relation_sentence = 'Your dataset is set up to use Association Rules, an algorithm that scans your table to ' \
                                 'try to elicit rules that describe the data in your table. That rules are in the form of ' \
                                 '"if-then" clauses, for example "if the customer buys a shirt and a pair of trousers, ' \
                                 'then he buy also a pair of socks". '
+            show = 'association_rules'
         elif not dataset.categorical:
             relation_sentence = 'Your dataset is set up to use correlations, an algorithm that scans your dataset to ' \
                                 'find columns that are linearly dependent one each other. '
+            show = 'association_rules'
         else:
             relation_sentence = 'We can find 2 kind of relations on your data, association rules, rules in the form of ' \
                                 '\"if->then\" clauses that describe behaviours in your dataset, or correlation, ' \
                                 'linear dependence between variables in your table. '
 
         end_sentence = 'Are you interested in this kind of analysis?'
-        return prepare_standard_response(relation_sentence + end_sentence, 'algorithm_verification_relationship',
+        standard_response = prepare_standard_response(relation_sentence + end_sentence, 'algorithm_verification_relationship',
                                          pipeline_array)
+        if(show == ""):
+            return standard_response
+        return {**standard_response, 'show': show}
 
     def example(self, pipeline_array, dataset, user_message_parsed):
         user_entities = retrieve_entities_values(user_message_parsed['entities'])
@@ -285,9 +295,11 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
             return prepare_standard_response('TBD', 'comprehension_end', pipeline_array)
 
     def help(self, pipeline_array, dataset):
-        sentence = "Grouping items means applying clustering algorithm: an analysis that aims at finding groups of data similar each other (clusters). This " \
-                   "kind of analysis doesn't require any additional information from you, it works in total autonomy. "
-        return prepare_standard_response(sentence, 'algorithm_verification_clustering', pipeline_array)
+        sentence = "Grouping items means applying clustering algorithm: an analysis that aims at finding groups of " \
+                   "data similar each other (clusters). This kind of analysis doesn't require any additional " \
+                   "information from you, it works in total autonomy. "
+        standard_response = prepare_standard_response(sentence, 'algorithm_verification_clustering', pipeline_array)
+        return {**standard_response, 'show': 'clustering'}
 
     def example(self, pipeline_array, dataset):
         sentence = "Suppose you are a shop owner and you have demographic information about customers who subscribed " \
@@ -344,28 +356,34 @@ class CorrelationOrAssociationRules(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
         if dataset.onlyCategorical:
-            return prepare_standard_response('Given the composition of your dataset, we will apply association rules algorithm to find ' \
-                   'relationships between your data in the form of "if -> then" rules', 'comprehension_end', \
-                   ['associationRules'])
+            return prepare_standard_response(
+                'Given the composition of your dataset, we will apply association rules algorithm to find ' \
+                'relationships between your data in the form of "if -> then" rules', 'comprehension_end', \
+                ['associationRules'])
         elif not dataset.categorical:
-            return prepare_standard_response('Given the composition of your dataset, we will use correlation to find direct relationships ' \
-                   'between columns in your table', 'comprehension_end', ['correlation'])
-        return prepare_standard_response('Are you more interested in finding direct relationships between numerical columns, or rules in the ' \
-               '"if -> then" form that describe behaviours of more columns? ', 'correlation_or_association_rules', \
-               pipeline_array)
+            return prepare_standard_response(
+                'Given the composition of your dataset, we will use correlation to find direct relationships ' \
+                'between columns in your table', 'comprehension_end', ['correlation'])
+        return prepare_standard_response(
+            'Are you more interested in finding direct relationships between numerical columns, or rules in the ' \
+            '"if -> then" form that describe behaviours of more columns? ', 'correlation_or_association_rules', \
+            pipeline_array)
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
         if user_message_parsed['intent']['name'] == 'preference':
             user_interest = retrieve_entities_values(user_message_parsed['entities'])
             if len(user_interest) > 0:
                 if user_interest[0] in ['correlation', 'first', '1']:
-                    return prepare_standard_response('Ok, we will proceed with correlation analysis!', 'comprehension_end', ['correlation'])
+                    return prepare_standard_response('Ok, we will proceed with correlation analysis!',
+                                                     'comprehension_end', ['correlation'])
                 elif user_interest[0] in ['association_rules', 'second', '2']:
-                    return prepare_standard_response('Ok, we will proceed with association rules analysis!', 'comprehension_end', [
-                        'associationRules'])
+                    return prepare_standard_response('Ok, we will proceed with association rules analysis!',
+                                                     'comprehension_end', [
+                                                         'associationRules'])
 
-        return prepare_standard_response('I am sorry, I did not understand what you prefer. Can you repeat it, using different words?', \
-               'correlation_or_association_rules', pipeline_array)
+        return prepare_standard_response(
+            'I am sorry, I did not understand what you prefer. Can you repeat it, using different words?', \
+            'correlation_or_association_rules', pipeline_array)
 
 
 switcher = {
@@ -398,7 +416,9 @@ def comprehension_conversation_handler(user_payload, dataset):
     func = switcher.get(conversation_state, "nothing")()
 
     # Execute the function
-    new_message, new_state, new_pipeline_array = func.handle(user_utterance, pipeline_array, dataset)
-    new_pipeline_string = pipeline_array_to_string(pipeline_array)
-    process_complete = {'complete': True} if new_state=='comprehension_end' else {}
-    return {'message': new_message, 'comprehension_state': new_state, 'comprehension_pipeline': new_pipeline_string, **process_complete}
+    result = func.handle(user_message_parsed, pipeline_array, dataset)
+    # print("MESSAGE è", new_message)
+    # new_pipeline_string = pipeline_array_to_string(pipeline_array)
+    process_complete = {'complete': True} if result['comprehension_state'] == 'comprehension_end' else {}
+    # return {'message': new_message, 'comprehension_state': new_state, 'comprehension_pipeline': new_pipeline_string, **process_complete}
+    return {**result, **process_complete}

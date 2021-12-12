@@ -12,6 +12,7 @@ export const state = () => ({
   comprehensionConversationState: '',
   comprehensionPipeline: '',
   comprehensionChatCompleted: false,
+  imageToShow: '',
 })
 
 export const getters = {
@@ -43,6 +44,7 @@ export const mutations = {
     state.tuningChat.push({ isBot: false, message: msg })
   },
   receiveChat(state, msg) {
+    console.log('Sto pushando questo', msg)
     if (msg) state.tuningChat.push({ isBot: true, message: msg })
   },
   setTuningPipeline(state, pipeline) {
@@ -73,6 +75,10 @@ export const mutations = {
     )
     state.comprehensionChatCompleted = true
     console.log('Ora vale', state.comprehensionChatCompleted)
+  },
+
+  setImageToShow(state, newImage) {
+    state.imageToShow = newImage
   },
 }
 
