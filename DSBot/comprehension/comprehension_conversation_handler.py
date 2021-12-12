@@ -299,7 +299,8 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
                    "data similar each other (clusters). This kind of analysis doesn't require any additional " \
                    "information from you, it works in total autonomy. "
         standard_response = prepare_standard_response(sentence, 'algorithm_verification_clustering', pipeline_array)
-        return {**standard_response, 'show': 'clustering'}
+        standard_response['show']='clustering'
+        return standard_response
 
     def example(self, pipeline_array, dataset):
         sentence = "Suppose you are a shop owner and you have demographic information about customers who subscribed " \
@@ -417,7 +418,7 @@ def comprehension_conversation_handler(user_payload, dataset):
 
     # Execute the function
     result = func.handle(user_message_parsed, pipeline_array, dataset)
-    # print("MESSAGE è", new_message)
+    print("RESULT è", result)
     # new_pipeline_string = pipeline_array_to_string(pipeline_array)
     process_complete = {'complete': True} if result['comprehension_state'] == 'comprehension_end' else {}
     # return {'message': new_message, 'comprehension_state': new_state, 'comprehension_pipeline': new_pipeline_string, **process_complete}

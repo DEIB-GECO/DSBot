@@ -78,7 +78,9 @@ export const mutations = {
   },
 
   setImageToShow(state, newImage) {
+    console.log('mi è arrivato questo', newImage)
     state.imageToShow = newImage
+    console.log('ora lo metto a', state.imageToShow)
   },
 }
 
