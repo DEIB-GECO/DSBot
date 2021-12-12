@@ -9,6 +9,7 @@ from ir.modules.laplace import Laplace
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.feature_selection import SelectKBest, SelectPercentile
 from utils import ask_user
+from difflib import SequenceMatcher
 import asyncio
 
 class IRUserFeatureSelection(IROp):
@@ -58,7 +59,12 @@ class IRUserFeatureSelection(IROp):
 
         reply = [x.strip() for x in reply.split(',')]
         for i in reply:
-            dataset = dataset.drop(i, axis=1)
+            if i in dataset:
+                dataset = dataset.drop(i, axis=1)
+            else:
+                for c in dataset.columns:
+                    if SequenceMatcher(None, c.strip().lower(), i.strip().lower()).ratio() > 0.75:
+                        dataset = dataset.drop(c, axis=1)
         result['transformed_ds'] = dataset
         return result
 
