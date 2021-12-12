@@ -222,13 +222,9 @@ class IRLassoPlot(IRPlot):
 
     def run(self, result, session_id):
         df = result['feature_selection']
-        fig, axs = plt.subplots(2, figsize=(15, 10))
-        fig.suptitle('Importance of selected features')
-        axs[0].barh(df.index, np.absolute(df.values))
-        axs[1].barh(df.index, df.values)
-        axs[1].axvline(0, color="black", linestyle='--', lw=2)
-        plt.figure(figsize=(12, 8))
-        plt.title('Features Selected')
+        fig = plt.figure(figsize=(15, 10))
+        plt.barh(df.index.values, np.absolute(df[0].values))
+        plt.title('Importance of selected features')
         plt.xlabel('Relative Importance')
         # plotly.offline.plot(fig, filename='./temp/temp_' + str(session_id) + '/featureImportancePlot.html')
         plt.savefig('./temp/temp_' + str(session_id) + '/featureSelectionPlot.png')

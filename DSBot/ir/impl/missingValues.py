@@ -1,24 +1,15 @@
-from abc import abstractmethod
-
 import pandas as pd
-import numpy as np
 from sklearn.impute._iterative import IterativeImputer
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
-from pandas.api.types import is_numeric_dtype
 from ir.ir_operations import IROp, IROpOptions
 from utils import ask_user
-import asyncio
-import time
-from flask_socketio import SocketIO, emit
-from app import sio
+
+
 
 class IRMissingValuesHandle(IROp):
     def __init__(self, name, parameters=None, model = None ):
         super(IRMissingValuesHandle, self).__init__(name, parameters if parameters is not None else [])
         #self.parameter = parameters['value']  # FIXME: use self.get_param('value'), but it will raise UnknownParameter
         self.labels = None
-        #self.message_queue = message_queue
-
 
     def parameter_tune(self, dataset):
         pass
@@ -33,14 +24,6 @@ class IRMissingValuesHandle(IROp):
         #for p,v in self.parameters.items():
         #    self._model.__setattr__(p,v.value)
         self._param_setted = True
-
-    def question(self, ir, session_id):
-        print(ir)
-        ir_new = [x.name for x in ir]
-
-        ir_new[ir_new.index(self.name)] = ask_user('Ciao vuoi togliere o no i dati mancanti?')
-        print(ir_new)
-        return ir_new
 
     #TDB cosa deve restituire questa funzione?
     def run(self, result, session_id, **kwargs):
@@ -60,18 +43,9 @@ class IRMissingValuesHandle(IROp):
             elif (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
                 result = IRMissingValuesFill().run(result, session_id)
             else:
-                ask_user('Do you want to REMOVE the rows with missing values or to FILL them?')
-                print(self.message_queue)
-                self.message_queue.clean()
-                while True:
-                    asyncio.sleep(100)
-                    if self.message_queue.has_message():
-                        reply = self.message_queue.pop()
-                        break
-                    if 'socketio' in kwargs:
-                        kwargs['socketio'].sleep(0)
-                if 'socketio' in kwargs:
-                    kwargs['socketio'].sleep(0)
+                reply = ask_user('Do you want to REMOVE the rows with missing values or to FILL them?',
+                                 self.message_queue,
+                                 socketio= kwargs['socketio'] if ('socketio' in kwargs) else None)
 
                 if reply=='remove':
                     ask_user('I will remove them!')
@@ -87,7 +61,6 @@ class IRMissingValuesHandle(IROp):
 class IRMissingValuesRemove(IRMissingValuesHandle):
     def __init__(self):
         super(IRMissingValuesRemove, self).__init__("missingValuesRemove")
-
 
     def parameter_tune(self, dataset):
         # TODO: implement

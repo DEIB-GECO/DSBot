@@ -21,3 +21,30 @@ using kmeans, divide the data into groups
 Compute the pca of the data and find groups using kmeans algorithm, show me visually the performances
 classify my data
 select age and gender and classify the data
+first select x, y and z then classify then extract the importance of the features
+select some features, classify the patients and show me the important features
+find groups in my data then show me
+my objective is to determine the classes of covid patients according only to age sex and gender
+classify data and extract the most important features
+find rules that correlate the features one with the others
+predict the data
+select the relevant features and find groups in my data
+find the correlation among the data
+divide the rows in different sets
+predict the disease of a patient using only the relevant features
+extract the most relevant features to classify the disease of a patient
+perform regression
+predict the label of my data
+use only weight and height to find rules among the features
+find the relations among the features
+show me the important features that predict my label
+classify data
+find the correlation among data
+define the important features that classify the covid patients
+select only x, t and g to classify patients
+use x and y to predict z
+study the rules that can connect features
+find the strange data
+after select some features, extract the anomalies
+where are the anomalies?
+find the rules that associate features and show them
