@@ -38,23 +38,25 @@ world_size: 1
 
 # Where to save the checkpoints
 save_model: wf/run/model1
-save_checkpoint_steps: 500
-train_steps: 10000
+save_checkpoint_steps: 1000
+train_steps: 50000
 valid_steps: 1000
+enc_layers: 2
+dec_layers: 1
+#heads: 4
+rnn_size: 250
+rnn_type: 'LSTM'
+word_vec_size: 50
+dropout: [0]
+start_decay_step: 25000
+decay_steps: 5000
+decay_method: 'noam'
 #encoder_type: brnn
 #decoder_type:
 #decoder_type: transformer_lm
 #position_encoding: true
-batch_size: 256
-#batch_type: 'tokens'
-enc_layers: 1
-dec_layers: 1
-heads: 4
-rnn_size: 64
-rnn_type: 'LSTM'
-word_vec_size: 50
+#batch_size: 256
 #dropout_steps: [0]
-dropout: [0]
 #global_attention: 'dot'
 #attention_dropout: [0.1]
 #enc_layers: 2
