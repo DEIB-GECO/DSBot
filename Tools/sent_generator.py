@@ -417,20 +417,31 @@ for x in synonyms_userFeatureSel:
             num = random.randint(1,len(d[1]))
             if num==2:
                 sent.append(x + ' ' + ' and '.join(random.sample(d[1], num)) + ' ' + v)
+                targ.append('userFeatureSelection clustering')
             else:
                 sent.append(x+' '+', '.join(random.sample(d[1],num))+' '+v)
-            targ.append('userFeatureSelection clustering')
+                targ.append('userFeatureSelection clustering')
     for v in verbs:
         for a in synonyms_clustering:
             for d in headers:
                 num = random.randint(1,len(d[1]))
                 if num==2:
                     sent.append(x + ' ' + ' and '.join(random.sample(d[1], num)) + ' ' + v+ ' ' + a)
+                    targ.append('userFeatureSelection clustering')
                 else:
                     sent.append(x+' '+', '.join(random.sample(d[1],num))+' '+v + ' ' + a)
-                targ.append('userFeatureSelection clustering')
+                    targ.append('userFeatureSelection clustering')
 print('ufs clustering', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for x in synonyms_userFeatureSel:
@@ -439,20 +450,31 @@ for x in synonyms_userFeatureSel:
             num = random.randint(1,len(d[1]))
             if num==2:
                 sent.append(x + ' ' + ' and '.join(random.sample(d[1], num)) + ' ' + v)
+                targ.append('userFeatureSelection classification')
             else:
                 sent.append(x+' '+', '.join(random.sample(d[1],num))+' '+v)
-            targ.append('userFeatureSelection classification')
+                targ.append('userFeatureSelection classification')
     for v in verbs:
         for a in synonyms_classification:
             for d in headers:
                 num = random.randint(1,len(d[1]))
                 if num==2:
                     sent.append(x + ' ' + ' and '.join(random.sample(d[1], num)) + ' ' + v+ ' ' + a)
+                    targ.append('userFeatureSelection classification')
                 else:
                     sent.append(x+' '+', '.join(random.sample(d[1],num))+' '+v + ' ' + a)
-                targ.append('userFeatureSelection classification')
+                    targ.append('userFeatureSelection classification')
 print('ufs classification', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for x in synonyms_userFeatureSel:
@@ -461,20 +483,31 @@ for x in synonyms_userFeatureSel:
             num = random.randint(1,len(d[1]))
             if num==2:
                 sent.append(x + ' ' + ' and '.join(random.sample(d[1], num)) + ' ' + v)
+                targ.append('userFeatureSelection prediction')
             else:
                 sent.append(x+' '+', '.join(random.sample(d[1],num))+' '+v)
-            targ.append('userFeatureSelection prediction')
+                targ.append('userFeatureSelection prediction')
     for v in verbs:
         for a in synonyms_classification:
             for d in headers:
                 num = random.randint(1,len(d[1]))
                 if num==2:
                     sent.append(x + ' ' + ' and '.join(random.sample(d[1], num)) + ' ' + v+ ' ' + a)
+                    targ.append('userFeatureSelection prediction')
                 else:
                     sent.append(x+' '+', '.join(random.sample(d[1],num))+' '+v + ' ' + a)
-                targ.append('userFeatureSelection prediction')
+                    targ.append('userFeatureSelection prediction')
 print('ufs prediction', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 sent = []
 targ = []
@@ -485,12 +518,22 @@ for x in synonyms_userFeatureSel:
                 num = random.randint(1,len(d[1]))
                 if num==2:
                     sent.append(x + ' ' + ' and '.join(random.sample(d[1], num)) + ' ' + v+ ' ' + a)
+                    targ.append('userFeatureSelection associationRules')
                 else:
                     sent.append(x+' '+', '.join(random.sample(d[1],num))+' '+v + ' ' + a)
-                targ.append('userFeatureSelection associationRules')
+                    targ.append('userFeatureSelection associationRules')
 print('ufs associationRules', len(sent))
 
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for x in synonyms_userFeatureSel:
@@ -500,12 +543,21 @@ for x in synonyms_userFeatureSel:
                 num = random.randint(1,len(d[1]))
                 if num==2:
                     sent.append(x + ' ' + ' and '.join(random.sample(d[1], num)) + ' ' + v+ ' ' + a)
+                    targ.append('userFeatureSelection correlation')
                 else:
                     sent.append(x+' '+', '.join(random.sample(d[1],num))+' '+v + ' ' + a)
-                targ.append('userFeatureSelection correlation')
+                    targ.append('userFeatureSelection correlation')
 print('ufs correlation', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
-
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for x in synonyms_userFeatureSel:
@@ -515,12 +567,22 @@ for x in synonyms_userFeatureSel:
                 num = random.randint(1,len(d[1]))
                 if num==2:
                     sent.append(x + ' ' + ' and '.join(random.sample(d[1], num)) + ' ' + v+ ' ' + a)
+                    targ.append('userFeatureSelection outliersDetection')
                 else:
                     sent.append(x+' '+', '.join(random.sample(d[1],num))+' '+v + ' ' + a)
-                targ.append('userFeatureSelection outliersDetection')
+                    targ.append('userFeatureSelection outliersDetection')
 print('ufs outliersDetection', len(sent))
 
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 sent = []
 targ = []
@@ -531,11 +593,21 @@ for x in synonyms_userFeatureSel:
                 num = random.randint(1,len(d[1]))
                 if num==2:
                     sent.append(x + ' ' + ' and '.join(random.sample(d[1], num)) + ' ' + v+ ' ' + a)
+                    targ.append('userFeatureSelection relation')
                 else:
                     sent.append(x+' '+', '.join(random.sample(d[1],num))+' '+v + ' ' + a)
-                targ.append('userFeatureSelection relation')
+                    targ.append('userFeatureSelection relation')
 print('ufs relation', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 # DONE
 sent = []
 targ = []
@@ -546,11 +618,21 @@ for a in synonyms_afterclass_with_data:
                 for d in headers:
                     if d[0]!=None:
                         sent.append(a + ' '+ d[0].lower()+' '+ av + ' ' + v + ' ' + i)
+                        targ.append('classification featureImportance')
                     else:
                         sent.append(a + ' ' + d[-1].lower() + ' ' + av + ' ' + v + ' ' + i)
-                    targ.append('classification featureImportance')
+                        targ.append('classification featureImportance')
 print('classification featureImportance', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for a in synonyms_afterpred_with_data:
@@ -560,11 +642,21 @@ for a in synonyms_afterpred_with_data:
                 for d in headers:
                     if d[0] != None:
                         sent.append(a + ' ' + d[0].lower() + ' ' + av + ' ' + v + ' ' + i)
+                        targ.append('prediction featureImportance')
                     else:
                         sent.append(a + ' ' + d[-1].lower() + ' ' + av + ' ' + v + ' ' + i)
-                    targ.append('prediction featureImportance')
+                        targ.append('prediction featureImportance')
 print('prediction featureImportance', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for a in synonyms_afterclass_with_data:
@@ -574,9 +666,18 @@ for a in synonyms_afterclass_with_data:
                 for d in headers:
                     if d[0] != None:
                         sent.append(a + ' ' + d[0].lower() + ' ' + av + ' ' + v + ' ' + i)
-                    targ.append('classification featureImportance plot')
+                        targ.append('classification featureImportance plot')
 print('classification featureImportance plot', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for a in synonyms_afterpred_with_data:
@@ -586,9 +687,18 @@ for a in synonyms_afterpred_with_data:
                 for d in headers:
                     if d[0] != None:
                         sent.append(a + ' ' + d[0].lower() + ' ' + av + ' ' + v + ' ' + i)
-                    targ.append('prediction featureImportance plot')
+                        targ.append('prediction featureImportance plot')
 print('prediction featureImportance plot', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 # DONE INSERTED
 sent = []
 targ = []
@@ -599,7 +709,16 @@ for a in synonyms_afterclass:
                 sent.append(a + ' '+ av + ' ' + v + ' ' + i)
                 targ.append('classification featureImportance')
 print('classification featureImportance', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 sent = []
 targ = []
@@ -610,7 +729,16 @@ for a in synonyms_afterpred:
                 sent.append(a + ' '+ av + ' ' + v + ' ' + i)
                 targ.append('prediction featureImportance')
 print('prediction featureImportance', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for a in synonyms_afterclass:
@@ -620,7 +748,16 @@ for a in synonyms_afterclass:
                 sent.append(a + ' '+ av + ' ' + v + ' ' + i)
                 targ.append('classification featureImportance plot')
 print('classification featureImportance plot', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for a in synonyms_afterpred:
@@ -630,7 +767,16 @@ for a in synonyms_afterpred:
                 sent.append(a + ' '+ av + ' ' + v + ' ' + i)
                 targ.append('prediction featureImportance plot')
 print('prediction featureImportance plot', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 #DONE
 sent = []
@@ -642,7 +788,16 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('clustering plot')
 print('clustering', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -652,7 +807,16 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('classification plot')
 print('classification', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -662,7 +826,26 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('prediction plot')
 print('prediction', len(sent)*2)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -672,7 +855,16 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('relation plot')
 print('relation', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -682,7 +874,16 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('associationRules plot')
 print('associationRules', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 sent = []
 targ = []
@@ -693,7 +894,16 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('correlation plot')
 print('correlation', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -703,7 +913,16 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('outliersDetection plot')
 print('outliersDetection', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 # DONE INSERTED
 sent = []
@@ -715,7 +934,16 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('clustering')
 print('clustering', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -725,7 +953,16 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('classification')
 print('classification', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -735,7 +972,36 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('prediction')
 print('prediction', len(sent)*3)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -745,7 +1011,16 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('relation')
 print('relation', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -755,7 +1030,16 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('associationRules')
 print('associationRules', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 sent = []
 targ = []
@@ -766,7 +1050,26 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v + ' ' + c + ' ' + d[-1])
                 targ.append('correlation')
 print('correlation', len(sent)*2)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 sent = []
 targ = []
@@ -778,7 +1081,16 @@ for av in auxiliary_plusverbs:
                 targ.append('outliersDetection')
 print('outliersDetection', len(sent))
 
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -792,7 +1104,16 @@ for av in auxiliary_plusverbs:
                 targ.append('clustering plot')
 
 print('clustering', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -806,7 +1127,16 @@ for av in auxiliary_plusverbs:
                 targ.append('classification plot')
 
 print('classification', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -820,7 +1150,36 @@ for av in auxiliary_plusverbs:
                 targ.append('prediction plot')
 
 print('prediction', len(sent)*3)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -834,7 +1193,16 @@ for av in auxiliary_plusverbs:
                 targ.append('relation plot')
 
 print('relation', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -848,7 +1216,16 @@ for av in auxiliary_plusverbs:
                 targ.append('associationRules plot')
 
 print('associationRules', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -862,7 +1239,26 @@ for av in auxiliary_plusverbs:
                 targ.append('correlation plot')
 
 print('correlation', len(sent)*2)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -876,7 +1272,16 @@ for av in auxiliary_plusverbs:
                 targ.append('outliersDetection plot')
 
 print('outliersDetection', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -889,7 +1294,16 @@ for av in auxiliary_plusverbs:
                 sent.append(av + ' ' + v+' '+c+' '+d)
                 targ.append('clustering')
 print('clustering', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 sent = []
 targ = []
@@ -904,7 +1318,16 @@ for av in auxiliary_plusverbs:
                 targ.append('classification')
 
 print('classification', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -918,7 +1341,36 @@ for av in auxiliary_plusverbs:
                 targ.append('prediction')
 
 print('prediction', len(sent)*3)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -932,6 +1384,16 @@ for av in auxiliary_plusverbs:
                 targ.append('relation')
 
 print('relation', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 sent = []
 targ = []
@@ -946,7 +1408,16 @@ for av in auxiliary_plusverbs:
                 targ.append('associationRules')
 
 print('associationRules', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -960,7 +1431,26 @@ for av in auxiliary_plusverbs:
                 targ.append('correlation')
 
 print('correlation', len(sent)*2)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 sent = []
 targ = []
@@ -975,6 +1465,17 @@ for av in auxiliary_plusverbs:
                 targ.append('outliersDetection')
 
 print('outliersDetection', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+
 
 sent = []
 targ = []
@@ -984,7 +1485,46 @@ for av in auxiliary_plusverbs:
         targ.append('featureSelection')
 
 print('featureSelection', len(sent)*4)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -996,6 +1536,16 @@ for av in auxiliary_plusverbs:
             targ.append('clustering')
 
 print('clustering', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 
 sent = []
 targ = []
@@ -1009,7 +1559,16 @@ for av in auxiliary_plusverbs:
             targ.append('classification')
 
 print('classification', len(sent))
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -1022,7 +1581,26 @@ for av in auxiliary_plusverbs:
             targ.append('prediction')
 
 print('prediction',len(sent)*2)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
 
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
 sent = []
 targ = []
 for av in auxiliary_plusverbs:
@@ -1035,3 +1613,43 @@ for av in auxiliary_plusverbs:
             targ.append('outliersDetection')
 
 print('outliersDetection',len(sent)*3)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)
+with open('../DSBot/wf/src-train2.txt','a') as f:
+    for s in sent:
+        f.write('\n')
+        f.write(s)
+        #f.write('\n')
+
+with open('../DSBot/wf/tgt-train2.txt','a') as f:
+    for s in targ:
+        f.write('\n')
+        f.write(s)

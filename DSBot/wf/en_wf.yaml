@@ -39,13 +39,14 @@ world_size: 1
 # Where to save the checkpoints
 save_model: wf/run/model1
 save_checkpoint_steps: 500
-train_steps: 5000
-valid_steps: 500
+train_steps: 10000
+valid_steps: 1000
 #encoder_type: brnn
 #decoder_type:
 #decoder_type: transformer_lm
 #position_encoding: true
-batch_size: 128
+batch_size: 256
+#batch_type: 'tokens'
 enc_layers: 1
 dec_layers: 1
 heads: 4

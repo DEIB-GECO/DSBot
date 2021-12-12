@@ -156,7 +156,7 @@ with open('../DSBot/wf/tgt-train2.txt','a') as f:
         f.write('\n')
         f.write(s)
 
-
+'''
 
 sentences_correlation = []
 list_target = []
@@ -329,3 +329,4 @@ with open('../DSBot/wf/tgt-train2.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
+        '''
