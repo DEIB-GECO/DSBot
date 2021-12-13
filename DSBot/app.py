@@ -187,7 +187,7 @@ def execute_algorithm(ir, session_id):
 
 async def execute_algorithm_logic(ir, session_id):
     app.logger.debug('Entering execute_algorithm function')
-    app.logger.info('Executing pipeline: %s', [i for i in ir])
+    app.logger.info('Executing pipeline:',  [i for i in ir])
     dataset = data[session_id]['dataset']
     if hasattr(dataset, 'label'):
         results = {'original_dataset': dataset, 'labels': dataset.label}
