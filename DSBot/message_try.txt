@@ -1,0 +1,4 @@
+My objective is  to classify COVID patients with 5 levels of severity (no sympthoms, mild, intense, care, incubated, dead) and understand which factors most determine them including sex age and  main comorbidities
+classify and extract important features
+select some features and then classify the data and then extract the most important ones
+divide data into groups
