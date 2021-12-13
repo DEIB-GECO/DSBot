@@ -32,15 +32,14 @@ class IRMissingValuesHandle(IROp):
         else:
             dataset = result['original_dataset'].ds
         if (dataset.isna().sum(axis=1) > 0).sum() < 0.05 * len(dataset):
+            print('meno del 5% di mv')
             result = IRMissingValuesRemove().run(result, session_id)
         else:
             for c in dataset.columns:
                 if dataset[c].isna().sum()>0.5*len(dataset):
                     dataset=dataset.drop(c, axis=1)
             result['new_dataset'] = dataset
-            if (dataset.isna().sum(axis=1) > 0).sum() < 0.05 * len(dataset):
-                result = IRMissingValuesRemove().run(result, session_id)
-            elif (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
+            if (dataset.isna().sum(axis=1) > 0).sum() < 0.10 * len(dataset):
                 result = IRMissingValuesFill().run(result, session_id)
             else:
                 reply = ask_user('Do you want to REMOVE the rows with missing values or to FILL them?',
@@ -48,11 +47,15 @@ class IRMissingValuesHandle(IROp):
                                  socketio= kwargs['socketio'] if ('socketio' in kwargs) else None)
 
                 if reply=='remove':
-                    ask_user('I will remove them!')
+                    ask_user('I will remove them!',
+                                 self.message_queue,
+                                 socketio= kwargs['socketio'] if ('socketio' in kwargs) else None)
                     result = IRMissingValuesRemove().run(result, session_id)
 
                 else:
-                    ask_user('I will fill them!')
+                    ask_user('I will fill them!',
+                                 self.message_queue,
+                                 socketio= kwargs['socketio'] if ('socketio' in kwargs) else None)
                     result = IRMissingValuesFill().run(result, session_id)
 
         return result

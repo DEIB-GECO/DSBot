@@ -115,9 +115,6 @@ def receive_utterance():
         with open(f'./temp/temp_{session_id}/pred{session_id}.txt', 'r') as f:
             wf = f.readlines()[0].strip().split(' ')
 
-        with open('./temp/temp_' + str(session_id) + '/pred' + str(session_id) + '.txt', 'r') as f:
-            wf = f.readlines()[0].strip().split(' ')
-
         # comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
         temp_dataset = data[session_id]['dataset']
         if hasattr(temp_dataset, 'label'):
@@ -190,7 +187,7 @@ def execute_algorithm(ir, session_id):
 
 async def execute_algorithm_logic(ir, session_id):
     app.logger.debug('Entering execute_algorithm function')
-    app.logger.info('Executing pipeline: %s', [i for i in ir])
+    app.logger.info('Executing pipeline:',  [i for i in ir])
     dataset = data[session_id]['dataset']
     if hasattr(dataset, 'label'):
         results = {'original_dataset': dataset, 'labels': dataset.label}
@@ -219,7 +216,6 @@ def echo():
 @sio.on('comprehension')
 def comprehension_chat(results):
     result = comprehension_conversation_handler(results, data[results['session_id']]['dataset'])
-    print("STO MANDANDO QUESTO", str(result))
     emit('comprehension_response', result)
 
 @sio.on('message_sent')
