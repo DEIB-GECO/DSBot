@@ -148,3 +148,5 @@ DSBot/flask_session/
 DSBot/wf/glove_new.txt
 
 rasa2/models/
+
+DSBot/wf/run/model1_step_50000.pt
