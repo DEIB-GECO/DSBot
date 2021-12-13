@@ -119,6 +119,11 @@ export default {
           this.lastMessage = payload.message
           this.receiveChat(payload.message)
           this.setComprehensionConversationState(payload.comprehension_state)
+          if (payload.show != null) {
+            console.log('payload non è null!')
+            this.setImageToShow(payload.show)
+            console.log('Ora imageToShow Vale', this.imageToShow)
+          }
           if (payload.complete) {
             this.setStep(4)
             socket.emit('execute', {
@@ -173,6 +178,7 @@ export default {
       'setStep',
       'setRequestDescription',
       'setImage',
+      'setImageToShow',
     ]),
     sendText() {
       if (this.isChatActive) {
@@ -209,6 +215,7 @@ export default {
         payload.comprehension_state = this.comprehensionConversationState
         payload.session_id = this.sessionId
         payload.comprehension_pipeline = this.comprehensionPipeline
+        console.log('mandato a comprehension')
         socket.emit(destination, payload)
       } else {
         socket.emit(destination, { message: this.utterance })

@@ -10,7 +10,7 @@ services:
     ports:
       - 5005:5005
     volumes:
-      - ./rasa:/app
+      - ./rasa2:/app
     
     # To train rasa:
     # - uncomment the following two lines
@@ -25,4 +25,4 @@ services:
     command: >
       run
       --enable-api
-      -m models/nlu-20211102-092506.tar.gz
+      -m 'models/nlu-20211211-141521.tar.gz'
