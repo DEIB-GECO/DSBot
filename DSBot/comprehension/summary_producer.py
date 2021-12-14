@@ -32,7 +32,6 @@ def summary_producer(operations_array, label):
     else:
         central_sentence = ""
     print(str(operations_array))
-    if label != "":
-        print("The label is:", label)
-        central_sentence = central_sentence.replace('##label##', f"'{label}'")
+    to_replace = label if label!= "" else "a"
+    central_sentence = central_sentence.replace('##label##', f"'{to_replace}'")
     return introductory_sentence + central_sentence + final_sentence
