@@ -21,3 +21,30 @@ kmeans
 pca kmeans performance plot
 classification
 userFeatureSelection classification
+userFeatureSelection classification featureImportance
+featureSelection classification featureImportance plot
+clustering plot
+userFeatureSelection classification
+classification featureImportance
+associationRules
+prediction
+featureSelection clustering
+correlation
+clustering
+featureSelection prediction
+classification featureImportance
+regression
+prediction
+userFeatureSelection associationRules
+relation
+prediction featureImportance
+classification
+correlation
+classification featureImportance
+userFeatureSelection classification
+userFeatureSelection prediction
+associationRules
+outliersDetection
+featureSelection outliersDetection
+outliersDetection
+associationRules plot

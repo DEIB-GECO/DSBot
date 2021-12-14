@@ -10,7 +10,7 @@ services:
     ports:
       - 5005:5005
     volumes:
-      - ./rasa:/app
+      - ./rasa2:/app
     
     # To train rasa:
     # - uncomment the following two lines
@@ -19,10 +19,10 @@ services:
     # - run 'rasa train nlu'
     # - take note of the output and replace it in the command below
 
-    # entrypoint: /bin/bash
-    # tty: true
+    entrypoint: /bin/bash
+    tty: true
 
-    command: >
-      run
-      --enable-api
-      -m models/nlu-20211102-092506.tar.gz
+    #command: >
+    #  run
+    #  --enable-api
+    #  -m 'models/nlu-20211213-152656.tar.gz'

@@ -211,6 +211,30 @@ class IRTableRegression(IRPlot):
         # plt.show()
         return  result
 
+class IRLassoPlot(IRPlot):
+    def __init__(self):
+        super(IRLassoPlot, self).__init__("lassoPlot",
+                                            [],
+                                            None)
+
+    def parameter_tune(self, dataset):
+        pass
+
+    def run(self, result, session_id):
+        df = result['feature_selection']
+        fig = plt.figure(figsize=(15, 10))
+        plt.barh(df.index.values, np.absolute(df[0].values))
+        plt.title('Importance of selected features')
+        plt.xlabel('Relative Importance')
+        # plotly.offline.plot(fig, filename='./temp/temp_' + str(session_id) + '/featureImportancePlot.html')
+        plt.savefig('./temp/temp_' + str(session_id) + '/featureSelectionPlot.png')
+        if 'plot' not in result:
+            result['plot'] = ['./temp/temp_' + str(session_id) + '/featureSelectionPlot.png']
+        else:
+            result['plot'].append('./temp/temp_' + str(session_id) + '/featureSelectionPlot.png')
+        result['original_dataset'].name_plot = './temp/temp_' + str(session_id) + '/featureSelectionPlot.png'
+        return result
+
 class IRDistplot(IRPlot):
     def __init__(self):
         super(IRDistplot, self).__init__("distplot",
@@ -454,4 +478,6 @@ class IRFeatureImportanceBarPlot(IRPlot):
 # FIXME: this class was commented out because the implementation raises errors
 class IRGenericPlot(IROpOptions):
      def __init__(self):
-         super(IRGenericPlot, self).__init__([IRScatterplot(), IRClustermap(), IRDistplot(), IRBoxplot(), IRBarplot(), IRROC(), IRScatterAssociationRules(), IRTableAssociationRules(), IRFeatureImportancePlot(), IRFeatureImportanceBarPlot(), IRTableRegression()], "scatterplot")
+         super(IRGenericPlot, self).__init__([IRScatterplot(), IRClustermap(), IRDistplot(), IRBoxplot(), IRBarplot(),
+                                              IRROC(), IRScatterAssociationRules(), IRTableAssociationRules(), IRLassoPlot(),
+                                              IRFeatureImportancePlot(), IRFeatureImportanceBarPlot(), IRTableRegression()], "scatterplot")

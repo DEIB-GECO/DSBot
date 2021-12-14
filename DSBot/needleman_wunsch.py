@@ -28,7 +28,7 @@ def Pointers(di,ho,ve):
 
 #--------------------------------------------------------
 #This function creates the aligment and pointers matrices
-def NW(s1,s2,voc,match = 1,mismatch = -1, gap = -2):
+def NW(s1,s2,voc,match = 3,mismatch = -1, gap = -2):
     penalty = {'MATCH': match, 'MISMATCH': mismatch, 'GAP': gap} #A dictionary for all the penalty valuse.
     n = len(s1) + 1 #The dimension of the matrix columns.
     m = len(s2) + 1 #The dimension of the matrix rows.

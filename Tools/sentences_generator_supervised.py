@@ -63,7 +63,7 @@ with open('../DSBot/wf/tgt-train2.txt','a') as f:
     for s in ['correlation']*1000:
         f.write('\n')
         f.write(s)
-'''
+
 sentences_fS_aR = []
 list_target = []
 
@@ -473,7 +473,7 @@ with open('../DSBot/wf/tgt-train2.txt','a') as f:
         f.write('\n')
         f.write(s)
 
-
+'''
 
 sentences_classification = []
 list_target = []

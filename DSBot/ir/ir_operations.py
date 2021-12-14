@@ -29,9 +29,16 @@ class IROp(TuningOpMixin, ABC):
         except KeyError:
             raise UnknownParameter()
 
-    @abstractmethod
-    def run(self, result, session_id):
+
+    def question(self, result, session_id):
         pass
+
+    @abstractmethod
+    def run(self, result, session_id, **kwargs):
+        pass
+
+    def set_message_queue(self, message_queue):
+        self.message_queue = message_queue
 
 
 class IROpOptions(TuningOpOptionsMixin, object):
