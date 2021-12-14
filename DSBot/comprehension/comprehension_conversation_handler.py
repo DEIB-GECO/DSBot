@@ -86,7 +86,6 @@ class Reformulation(ComprehensionConversationState):
     def handle(self, user_message_parsed, pipeline_array, dataset):
         if user_message_parsed['intent']['name'] == 'affirm':
             response = prepare_standard_response('ok, we can proceed', 'comprehension_end', pipeline_array)
-            print("RESPONSE GENERATA", str(response))
             return response
         elif user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerificationPrediction()
@@ -109,7 +108,8 @@ class Reformulation(ComprehensionConversationState):
                                                                                             'correctly your ' \
                                                                                             'request? '
                 return prepare_standard_response(explanation, 'reformulation', pipeline_array)
-        return prepare_standard_response('ciaooo', 'reformulation', pipeline_array)
+        return prepare_standard_response('I was not able to reformulate you analysis, do you want to continue anyway?',
+                                         'reformulation', pipeline_array)
 
     def example(self, pipeline_array):
         for module in pipeline_array:
@@ -118,31 +118,6 @@ class Reformulation(ComprehensionConversationState):
                 explanation = retrieve_message(module_family, 'example').capitalize() + ' Is this what you want?'
                 return prepare_standard_response(explanation, 'reformulation', pipeline_array)
         return prepare_standard_response('ciaooo', 'reformulation', pipeline_array)
-
-
-"""
-class AlgorithmVerfication(ComprehensionConversationState):
-
-    def generate(self, pipeline_array, dataset):
-        for user_module in pipeline_array:
-            algorithm_family = retrieve_family(user_module)
-            if algorithm_family:
-                with open(Path(__file__).parent / 'text_productions.json', "r") as process_file:
-                    producible_sentences = json.loads(process_file.read())
-                return 'You want to apply ' + producible_sentences[algorithm_family]["readableName"] + \
-                       ', don\'t you?', 'algorithm_verification', pipeline_array
-
-        return 'Non ho trovato la unit', "algorithm_verification", pipeline_array
-
-    def handle(self, user_message_parsed, pipeline_array, dataset):
-        print("AlgorithmVerification.handle eseguito")
-        if user_message_parsed['intent']['name'] == 'deny':
-            next_state = AlgorithmVerfication()
-            return next_state.generate(pipeline_array, dataset)
-        elif user_message_parsed['intent']['name'] == 'affirm':
-            return 'ok, we can proceed', 'comprehension_end', pipeline_array
-        
-"""
 
 
 class AlgorithmVerificationPrediction(ComprehensionConversationState):
@@ -206,8 +181,8 @@ class AlgorithmVerificationPrediction(ComprehensionConversationState):
 class AlgorithmVerificationRelationships(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
-        return "Are you interested in finding relations in your data?", \
-               'algorithm_verification_relationship', pipeline_array
+        return prepare_standard_response("Are you interested in finding relations in your data?",
+                                         'algorithm_verification_relationship', pipeline_array)
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
         if user_message_parsed['intent']['name'] == 'deny':
@@ -242,9 +217,10 @@ class AlgorithmVerificationRelationships(ComprehensionConversationState):
                                 'linear dependence between variables in your table. '
 
         end_sentence = 'Are you interested in this kind of analysis?'
-        standard_response = prepare_standard_response(relation_sentence + end_sentence, 'algorithm_verification_relationship',
-                                         pipeline_array)
-        if(show == ""):
+        standard_response = prepare_standard_response(relation_sentence + end_sentence,
+                                                      'algorithm_verification_relationship',
+                                                      pipeline_array)
+        if show == "":
             return standard_response
         return {**standard_response, 'show': show}
 
@@ -299,7 +275,7 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
                    "data similar each other (clusters). This kind of analysis doesn't require any additional " \
                    "information from you, it works in total autonomy. "
         standard_response = prepare_standard_response(sentence, 'algorithm_verification_clustering', pipeline_array)
-        standard_response['show']='clustering'
+        standard_response['show'] = 'clustering'
         return standard_response
 
     def example(self, pipeline_array, dataset):
