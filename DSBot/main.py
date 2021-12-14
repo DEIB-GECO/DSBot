@@ -87,16 +87,17 @@ class Dataset:
             if (str(i) in ['missingValues','categorical','onlyCategorical','zeroVariance','hasLabel','moreFeatures', 'outliers', 'hasCategoricalLabel']):
                 if getattr(self, i):
                     for j in range(len(kb)):
-                        kb_val = [i.strip() for i in kb.values[j,0].split(',')]
+                        kb_val =  [i.strip() for k,v in kb.items() for i in v[0].split(',')] # [i.strip() for i in kb.values[j,0].split(',')]
                         if not i in kb_val:
                             drop.append(j)
                 else:
                     for j in range(len(kb)):
-                        kb_val = [i.strip() for i in kb.values[j,0].split(',')]
+                        kb_val = [i.strip() for k,v in kb.items() for i in v[0].split(',')]#[i.strip() for i in kb.values[j,0].split(',')]
                         if i in kb_val:
                             drop.append(j)
 
-        kb = kb.drop(drop)
+        #kb = kb.drop(drop)
+        kb = {key: kb[key] for key in kb if key not in drop}
         return kb
 
 def filter_kb(kb, request):
