@@ -28,6 +28,7 @@ import utils
 
 base_url = '/inspire/'
 socketio_path = 'socket.io/'
+s2s_model = 'wf/run/model1_step_50000.pt'
 
 setup_logger()
 
@@ -104,31 +105,22 @@ def receive_utterance():
     args = parser.parse_args()
     session_id = args['session_id']
     if session_id in data:
-        with open('./temp/temp_' + str(session_id) + '/message' + str(session_id) + '.txt', 'w') as f:
+        with open(f'./temp/temp_{session_id}/message{session_id}.txt', 'w') as f:
             f.write(args['message'])
 
-        os.system(
-            'onmt_translate -model wf/run/model1_step_50000.pt -src temp/temp_' + str(session_id) + '/message' + str(
-                session_id) + '.txt -output ./temp/temp_' + str(session_id) + '/pred' + str(
-                session_id) + '.txt -gpu -1 -verbose')
+        os.system(f'onmt_translate -model {s2s_model} -src temp/temp_{session_id}/message{session_id}.txt -output ./temp/temp_{session_id}/pred{session_id}.txt -gpu -1 -verbose')
 
         with open(f'./temp/temp_{session_id}/pred{session_id}.txt', 'r') as f:
             wf = f.readlines()[0].strip().split(' ')
 
-        # comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
-        temp_dataset = data[session_id]['dataset']
-        if hasattr(temp_dataset, 'label'):
-            label = temp_dataset.label
-        else:
-            label = ""
-        comprehension_sentence = summary_producer(wf, label)
+        comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
 
         return jsonify({"session_id": session_id,
                         "request": wf,
                         "comprehension_sentence": comprehension_sentence,
                         "comprehension_state": "reformulation",
                         'comprehension_pipeline': wf})
-    return jsonify({"message": "Errore"})
+    return jsonify({"message": "Error"})
 
 
 def get_results(received_id):
@@ -187,7 +179,7 @@ def execute_algorithm(ir, session_id):
 
 async def execute_algorithm_logic(ir, session_id):
     app.logger.debug('Entering execute_algorithm function')
-    app.logger.info('Executing pipeline: %s', [i for i in ir])
+    app.logger.info('Executing pipeline:',  [i for i in ir])
     dataset = data[session_id]['dataset']
     if hasattr(dataset, 'label'):
         results = {'original_dataset': dataset, 'labels': dataset.label}

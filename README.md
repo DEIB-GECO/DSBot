@@ -36,14 +36,75 @@ To train the model:
 > 
 > onmt_train -config wf/en_wf.yaml   
 
-## How to run
+# Installing the Frontend
+
+## Creating RASA image
+1. Install [Docker desktop](https://www.docker.com/products/docker-desktop) on your device
+
+
+## Training RASA model
+1. Open project directory on an IDE
+2. Open docker compose file
+3. Ensuring that the docker container is not running:
+   - in VSCode right click on docker compose file and click on "compose down"
+   - in PYCharm click on the stop button next to the control panel in the lower part of the screen
+4. If uncommented, **comment** the following lines
+    > command: >   
+    >      run  
+    >      --enable-api  
+    >      -m 'models/<model-name>.tar.gz'
+5. **Uncomment** the following lines
+    >  entrypoint: /bin/bash  
+    >    tty: true
+6. Save the file
+7. Compose the docker:
+   - in VSCode right click on docker compose file and click on "compose up" 
+   - in PYCHarm click on the green arrow next to Rasa line in docker compose file
+8. Open a shell in the container
+   - in VSCode go to docker extension, right click on the container and click on "attach shell"
+   - in PYCharm right click on the container running and click "new terminal"
+9. Execute in the terminal the following command:
+    > rasa train nlu
+10. When the training is complete, a confirmation message will appear in the terminal as the following:
+    >Your Rasa model is trained and saved at '/app/models/<model-name>.tar.gz'.
+11. Copy the model name and modify it in the line commented at point 4:
+    >-m 'models/<model-name>.tar.gz'
+12. Compose down the docker running
+    - in VSCode right click on docker compose file and click on "compose down"
+    - in PYCharm click on the stop button next to the control panel in the lower part of the screen
+
+#Executing the application
+
+## Executing RASA
+1. Open docker compose file
+2. Ensuring that the docker container is not running:
+   - in VSCode right click on docker compose file and click on "compose down"
+   - in PYCharm click on the stop button next to the control panel in the lower part of the screen
+3. If commented, **uncomment** the following lines:
+    > command: >   
+    >      run  
+    >      --enable-api  
+    >      -m 'models/<model-name>.tar.gz'
+4. If uncommented, **comment** the following lines:
+    >  entrypoint: /bin/bash    
+    >    tty: true
+5. Save the file
+6. Compose the docker:
+   - in VSCode right click on docker compose file and click on "compose up" 
+   - in PYCHarm click on the green arrow next to Rasa line in docker compose file
+
+Rasa is up and running!
+
+## Executing the backend
+In a new Terminal
 > cd DSBot
 > 
-> python app.py 
+> python app.py
 
-# In another window
+## Executing the frontend
+In a new terminal Window
 > cd frontend
-
+>
 Only the first time install npm:
 > npm install 
 

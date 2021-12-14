@@ -10,10 +10,11 @@ from difflib import SequenceMatcher
 import numpy as np
 
 class Dataset:
-    def __init__(self, ds, label=None):
+    def __init__(self, ds):
         self.ds = ds
         self.name_plot = None
         self.hasLabel = False
+        self.label = ''
         self.measures = {}
 
 
