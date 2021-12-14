@@ -48,7 +48,12 @@ To train the model:
 3. Ensuring that the docker container is not running:
    - in VSCode right click on docker compose file and click on "compose down"
    - in PYCharm click on the stop button next to the control panel in the lower part of the screen
-4. If uncommented, **comment** the following lines
+   - in terminal go to DSBoot root folder (the one containing docker-compose.yml file) and execute
+     >docker container ls  
+     
+        and verify that rasa docker is not listed (i.e., running). It is running, execute
+     >docker-compose -f "docker-compose.yml" down
+4. Go on docker-compose.yml file. If uncommented, **comment** the following lines
     > command: >   
     >      run  
     >      --enable-api  
@@ -60,9 +65,15 @@ To train the model:
 7. Compose the docker:
    - in VSCode right click on docker compose file and click on "compose up" 
    - in PYCHarm click on the green arrow next to Rasa line in docker compose file
+   - in the terminal execute
+     >docker-compose -f "docker-compose.yml" up -d --build
 8. Open a shell in the container
    - in VSCode go to docker extension, right click on the container and click on "attach shell"
    - in PYCharm right click on the container running and click "new terminal"
+   - in the terminal execute
+        > docker exec -it <container_name> bash
+     
+     where <container_name> is the name of the container shown in the terminal when built. It should be dsbot_rasa_1
 9. Execute in the terminal the following command:
     > rasa train nlu
 10. When the training is complete, a confirmation message will appear in the terminal as the following:
@@ -72,6 +83,8 @@ To train the model:
 12. Compose down the docker running
     - in VSCode right click on docker compose file and click on "compose down"
     - in PYCharm click on the stop button next to the control panel in the lower part of the screen
+    - in terminal, digit ctrl-p ctrl-q to exit the bash, then execute
+        >docker-compose -f "docker-compose.yml" down
 
 #Executing the application
 
@@ -92,6 +105,9 @@ To train the model:
 6. Compose the docker:
    - in VSCode right click on docker compose file and click on "compose up" 
    - in PYCHarm click on the green arrow next to Rasa line in docker compose file
+   - in the terminal execute
+     >docker-compose -f "docker-compose.yml" up -d --build
+
 
 Rasa is up and running!
 
