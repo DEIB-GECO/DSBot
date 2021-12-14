@@ -148,3 +148,5 @@ rasa2/models/
 DSBot/wf/glove_new.txt
 
 
+
+DSBot/wf/run/model1_step_50000.pt
