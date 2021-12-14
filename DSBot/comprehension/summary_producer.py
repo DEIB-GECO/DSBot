@@ -9,7 +9,7 @@ def summary_producer(operations_array, label):
     print("Summary producer, array è: " + str(operations_array))
     with open(Path(__file__).parent / 'text_productions.json', "r") as process_file:
         producible_sentences = json.loads(process_file.read())
-    with open('./kb.json', "r") as knowledge_base_file:
+    with open('./kb_synonyms.json', "r") as knowledge_base_file:
         knowledge_base = json.loads(knowledge_base_file.read())
 
     sentences_array = []
@@ -32,6 +32,6 @@ def summary_producer(operations_array, label):
     else:
         central_sentence = ""
     print(str(operations_array))
-    to_replace = label if label!= "" else "a"
-    central_sentence = central_sentence.replace('##label##', f"'{to_replace}'")
+    to_replace = f"'{label}'" if label != "" else "a"
+    central_sentence = central_sentence.replace('##label##', to_replace)
     return introductory_sentence + central_sentence + final_sentence

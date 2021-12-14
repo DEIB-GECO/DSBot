@@ -1,6 +1,6 @@
 {
   "classification": {
-    "summary" : "your objective is to predict the value of the column ##label## using the other data in your table.",
+    "summary" : "your objective is to predict the value of the  ##label## column using the other data in your table.",
     "example": "suppose you have gene exp, you want to bla bla bla",
     "explanation" : "from your request I understood you want to apply classification, an analysis that tries to predict the value of a column of your dataset, called label, from the other data in the table. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict the value of that column.",
     "readableName" : "classification"
