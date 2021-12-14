@@ -6,7 +6,7 @@ from sklearn.impute._iterative import IterativeImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
 from pandas.api.types import is_numeric_dtype
 from ir.ir_operations import IROp, IROpOptions
-from user import AskModuleToUser, AskParameterToUser
+
 
 class IRPreprocessing(IROp):
     def __init__(self, name, parameters=None, model = None):
@@ -32,104 +32,6 @@ class IRPreprocessing(IROp):
     #TDB cosa deve restituire questa funzione?
     def run(self, result, session_id):
         pass
-
-class IRMissingValuesHandle(IROp):
-    def __init__(self, name, parameters=None, model = None):
-        super(IRMissingValuesHandle, self).__init__(name, parameters if parameters is not None else [])
-        #self.parameter = parameters['value']  # FIXME: use self.get_param('value'), but it will raise UnknownParameter
-        self.labels = None
-
-
-    def parameter_tune(self, dataset):
-        pass
-
-    def set_model(self, result):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
-        if self.parameter == None:
-            self.parameter_tune(dataset)
-        #for p,v in self.parameters.items():
-        #    self._model.__setattr__(p,v.value)
-        self._param_setted = True
-
-    #TDB cosa deve restituire questa funzione?
-    def run(self, result, session_id):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
-
-        if (dataset.isna().sum(axis=1)>0).sum()<0.05*len(dataset):
-            result = IRMissingValuesRemove().run(result, session_id)
-        else:
-            if (dataset.isna().sum(axis=1) > 0).sum() < 0.2 * len(dataset):
-                result = IRMissingValuesFill().run(result, session_id)
-            else:
-                AskModuleToUser(self, IRMissingValuesRemove(),IRMissingValuesFill())
-        return result
-
-
-class IRMissingValuesRemove(IRMissingValuesHandle):
-    def __init__(self):
-        super(IRMissingValuesRemove, self).__init__("missingValuesRemove")
-
-
-    def parameter_tune(self, dataset):
-        # TODO: implement
-        pass
-
-    def run(self, result, session_id):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
-
-        dataset = dataset.dropna()
-        result['new_dataset'] = dataset
-        print('missingvalremove', dataset.shape)
-        print(dataset.head())
-        return result
-
-class IRMissingValuesFill(IRMissingValuesHandle):
-    def __init__(self):
-        super(IRMissingValuesFill, self).__init__("missingValuesFill")
-
-    def parameter_tune(self, dataset):
-        pass
-
-    def run(self, result, session_id):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
-
-        imp = IterativeImputer(max_iter=10, random_state=0)
-        if len(result['original_dataset'].cat_cols) > 0:
-            values_col = dataset.columns.difference(result['original_dataset'].cat_cols)
-            if len(values_col)>0:
-                values_dataset = pd.DataFrame(imp.fit_transform(dataset[values_col]))
-                values_dataset.columns = values_col
-                cat_dataset = dataset[result['original_dataset'].cat_cols].apply(lambda col: col.fillna(col.value_counts().index[0]))
-                dataset = pd.concat([cat_dataset, values_dataset],axis=1)
-            else:
-                cat_dataset = dataset[result['original_dataset'].cat_cols].apply(
-                    lambda col: col.fillna(col.value_counts().index[0]))
-                dataset = cat_dataset
-        else:
-            dataset = pd.DataFrame(imp.fit_transform(dataset))
-
-        #dataset = dataset.apply(lambda col: col.fillna(self.parameter))
-        result['new_dataset'] = dataset
-        print('missingvalfill', dataset.shape)
-
-        return result
-
-class IRGenericMissingValues(IROpOptions):
-    def __init__(self):
-        super(IRGenericMissingValues, self).__init__([IRMissingValuesHandle('missingValuesHandle'), IRMissingValuesRemove(), IRMissingValuesFill()],
-                                                     "missingValuesHandle")
 
 
 class IROneHotEncode(IRPreprocessing):
@@ -200,7 +102,6 @@ class IRLabelRemove(IRLabelOperation):
 
             if len(dataset)<len(label):
                 label = label[set(dataset.index.values)]
-                print('hola',len(label))
 
         else:
 
@@ -279,14 +180,13 @@ class IROutliersRemove(IRPreprocessing):
             print('len index', len(index_new))
             ds.index = index_new.iloc[:,0].values
 
-        if len(result['original_dataset'].cat_cols)!=0:
-            cat_dataset = dataset[list(result['original_dataset'].cat_cols)]
-            cat_dataset.index = value_dataset.index
-            cat_dataset = cat_dataset.T[index_new.index].T
-            print(len(cat_dataset))
-            cat_dataset.index = index_new.iloc[:, 0].values
-            ds = pd.concat([cat_dataset, ds], axis=1)
-        result['new_dataset'] = ds
+            if len(result['original_dataset'].cat_cols)!=0:
+                cat_dataset = dataset[list(result['original_dataset'].cat_cols)]
+                cat_dataset.index = value_dataset.index
+                cat_dataset = cat_dataset.T[index_new.index].T
+                cat_dataset.index = index_new.iloc[:, 0].values
+                ds = pd.concat([cat_dataset, ds], axis=1)
+            result['new_dataset'] = ds
         return result
 
 class IRStandardization(IRPreprocessing):
@@ -303,11 +203,11 @@ class IRStandardization(IRPreprocessing):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-        cat_dataset = dataset[result['original_dataset'].cat_cols]
-        values_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
-        values_dataset = pd.DataFrame(StandardScaler().fit_transform(values_dataset), index=values_dataset.index, columns=values_dataset.columns)
+        #cat_dataset = dataset[result['original_dataset'].cat_cols]
+        #values_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+        dataset = pd.DataFrame(StandardScaler().fit_transform(dataset), index=dataset.index, columns=dataset.columns)
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
-        dataset = pd.concat([cat_dataset, values_dataset], axis=1)
+        #dataset = pd.concat([cat_dataset, values_dataset], axis=1)
         result['new_dataset'] = dataset
         print(dataset)
         return result
@@ -340,4 +240,5 @@ class IRGenericPreprocessing(IROpOptions):
     def __init__(self):
         super(IRGenericPreprocessing, self).__init__([IRLabelRemove(), IROneHotEncode(), IROutliersRemove(), IRStandardization(), IRNormalization()],
                                                      "labelRemove")
+
 

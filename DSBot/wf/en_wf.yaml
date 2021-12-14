@@ -11,8 +11,8 @@ overwrite: False
 # Corpus opts:
 data:
     corpus_1:
-        path_src: wf/src-train2.txt
-        path_tgt: wf/tgt-train2.txt
+        path_src: wf/src-train-2.txt
+        path_tgt: wf/tgt-train-2.txt
     valid:
         path_src: wf/src-val.txt
         path_tgt: wf/tgt-val.txt
@@ -38,20 +38,27 @@ world_size: 1
 
 # Where to save the checkpoints
 save_model: wf/run/model1
-save_checkpoint_steps: 500
-train_steps: 5000
-valid_steps: 500
+save_checkpoint_steps: 1000
+train_steps: 10000
+valid_steps: 1000
+enc_layers: 1
+dec_layers: 1
+#heads: 4
+learning_rate: 1
+rnn_size: 250
+rnn_type: 'LSTM'
+word_vec_size: 50
+dropout: [0]
+start_decay_step: 5000
+decay_steps: 2000
+##decay_method: 'noam'
 #encoder_type: brnn
+#decoder_type:
 #decoder_type: transformer_lm
 #position_encoding: true
 #batch_size: 256
-enc_layers: 1
-dec_layers: 1
-heads: 8
-rnn_size: 256
-word_vec_size: 50
 #dropout_steps: [0]
-#dropout: [0]
+#global_attention: 'dot'
 #attention_dropout: [0.1]
 #enc_layers: 2
 #dec_layers: 1

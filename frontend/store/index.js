@@ -2,14 +2,24 @@ export const state = () => ({
   e1: 1,
   sessionId: 1,
   requestDescription: '',
-  resultsReady: false,
+  resultsReady: true,
   imageBase64: null,
   resultsDetails: '',
   tuningChat: [],
   tuningPipeline: [],
   backendAvailable: true,
   pipelineEdited: false,
+  comprehensionConversationState: '',
+  comprehensionPipeline: '',
+  comprehensionChatCompleted: false,
+  imageToShow: '',
 })
+
+export const getters = {
+  getComprehensionChatCompleted: (state) => {
+    return state.comprehensionChatCompleted
+  },
+}
 
 export const mutations = {
   setStep(state, newValue) {
@@ -34,6 +44,7 @@ export const mutations = {
     state.tuningChat.push({ isBot: false, message: msg })
   },
   receiveChat(state, msg) {
+    console.log('Sto pushando questo', msg)
     if (msg) state.tuningChat.push({ isBot: true, message: msg })
   },
   setTuningPipeline(state, pipeline) {
@@ -45,6 +56,31 @@ export const mutations = {
 
   setPipelineEdited(state, edited) {
     state.pipelineEdited = edited
+  },
+
+  setComprehensionConversationState(state, newState) {
+    state.comprehensionConversationState = newState
+    console.log('new comprehension state', newState)
+  },
+
+  setComprehensionPipeline(state, newPipeline) {
+    state.comprehensionPipeline = newPipeline
+  },
+
+  setComprehensionChatCompleted(state, newValue) {
+    console.log(
+      'Ho messo comprehension da a',
+      state.comprehensionChatCompleted,
+      this.newValue
+    )
+    state.comprehensionChatCompleted = true
+    console.log('Ora vale', state.comprehensionChatCompleted)
+  },
+
+  setImageToShow(state, newImage) {
+    console.log('mi è arrivato questo', newImage)
+    state.imageToShow = newImage
+    console.log('ora lo metto a', state.imageToShow)
   },
 }
 
@@ -83,23 +119,49 @@ export const actions = {
   async sendUtterance(context, sentence) {
     if (sentence === '') return null
 
+    context.commit('receiveChat', 'What do you want to obtain?')
+    context.commit('sendChat', sentence)
+
     const bodyRequest = {
       session_id: this.state.sessionId,
       message: sentence,
     }
-    console.log(bodyRequest)
+    console.log('Ho ricevuto questo', bodyRequest)
     const res = await this.$axios
       .post('/utterance', bodyRequest)
       .then(function (response) {
+        console.log('REST: ho ricevuto questo', response.data)
         context.commit('setRequestDescription', response.data.request)
         context.commit('setStep', 3)
+        context.commit('receiveChat', response.data.comprehension_sentence)
+        context.commit(
+          'setComprehensionConversationState',
+          response.data.comprehension_state
+        )
+        context.commit(
+          'setComprehensionPipeline',
+          response.data.comprehension_pipeline
+        )
       })
+    console.log(
+      'Ora comprehension vale: ',
+      this.state.comprehensionConversationState
+    )
     return res
+  },
+
+  setComputationResults(context, response) {
+    console.log('ho ricevuto questo', response)
+    context.commit('setRequestDescription', response.request)
+    context.commit('setStep', 4)
+    context.commit('receiveChat', response.comprehension_sentence)
+    context.commit('setImage', response.img)
+    console.log('Ora img vale', context.state.imageBase64)
   },
 
   async waitForResults(context) {
     console.log('WAIT FOR RESULTS', this.state.e1)
-    if (this.state.e1 === 3 && !this.state.resultsReady) {
+    if (this.state.e1 === 4 && !this.state.resultsReady) {
       console.log('GET RESULTS CALLED')
       const pollingResponse = await this.$axios
         .get(`/results/${this.state.sessionId}`)
@@ -156,7 +218,8 @@ export const actions = {
             // context.commit('setStep', 3) // Assume already in step 3 and can't come back from 4
             context.commit('setImage', response.data.tuning.payload.result)
           } else if (response.data.tuning.payload.status === 'edit_param') {
-            context.commit('setStep', 4)
+            console.log('unooo')
+            context.commit('setStep', 5)
             context.commit(
               'setTuningPipeline',
               response.data.tuning.payload.pipeline
@@ -178,24 +241,56 @@ export const actions = {
   },
 
   async sendChatMessage(context, data) {
-    // The data can be {destination: '/yourDestination', payload: userUtterance}
+    // The data can be {destination: '/yourDestination', message: userUtterance}
 
     // Add the message to the chat panel
-    context.commit('sendChat', data.payload)
+    context.commit('sendChat', data.message)
+
+    let res = null
 
     // This is the data sent to the backend
-    const bodyRequest = {
-      payload: data.payload,
-    }
-    const res = await this.$axios
-      .post(data.destination, bodyRequest)
-      .then(function (response) {
-        // Add the response to the chat panel
-        context.commit('receiveChat', response.data)
+    if (data.destination === 'comprehension') {
+      console.log('Eseguito comprehension')
+      const bodyRequest = {
+        message: data.message,
+        comprehension_state: this.state.comprehensionConversationState,
+        session_id: this.state.sessionId,
+        comprehension_pipeline: this.state.comprehensionPipeline,
+      }
+      res = await this.$axios
+        .post(data.destination, bodyRequest)
+        .then(function (response) {
+          console.log('response:', response.data)
+          // Add the response to the chat panel
+          context.commit('receiveChat', response.data.message)
+          context.commit(
+            'setComprehensionConversationState',
+            response.data.comprehension_state
+          )
+          if (response.data.complete) {
+            console.log('dueeee')
 
-        // Do something with the response if necessary, for example:
-        // console.log(response)
-      })
+            context.commit('setStep', 5)
+            context.commit('setComprehensionChatCompleted', true)
+          }
+          // Do something with the response if necessary, for example:
+          // console.log(response)
+        })
+    } else {
+      console.log('eseguito else')
+      const bodyRequest = {
+        message: data.message,
+      }
+      res = await this.$axios
+        .post(data.destination, bodyRequest)
+        .then(function (response) {
+          console.log('response:', response.data)
+          // Add the response to the chat panel
+          context.commit('receiveChat', response.data.message)
+          // Do something with the response if necessary, for example:
+          // console.log(response)
+        })
+    }
     return res
   },
 }
