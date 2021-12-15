@@ -16,3 +16,4 @@
   "linearRegression" : ["linearRegression"],
   "ridgeRegression" : ["ridgeRegression"],
 "prediction": ["prediction", "regression", "classification", "autoClassification", "autoRegression"]}
+

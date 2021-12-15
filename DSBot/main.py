@@ -90,4 +90,6 @@ class Dataset:
                       'outliers',
                       'hasCategoricalLabel']
         key = frozenset(filter(lambda x : getattr(self, x), properties))
+        if len(key)==0:
+            key=frozenset(['ds'])
         return kb[key]

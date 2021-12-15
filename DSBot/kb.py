@@ -23,3 +23,17 @@ def create_kb_json():
     with open('kb.json','w') as f:
         json.dump(d, f)
 
+def kb_values():
+    with open('kb.json') as json_file:
+        kb = {frozenset(k.strip().split(',')): v for k, v in json.load(json_file).items()}
+    features = set()
+    operations = set()
+    for k,v in kb.items():
+        features.update(set(k))
+        operations.update({x for y in v for x in y })
+    print(features)
+    print(operations)
+
+
+
+
