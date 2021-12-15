@@ -31,8 +31,24 @@ def kb_values():
     for k,v in kb.items():
         features.update(set(k))
         operations.update({x for y in v for x in y })
-    print(features)
-    print(operations)
+    #print(features)
+    #print(operations)
+    properties = ['missingValues',
+                  'categorical',
+                  'onlyCategorical',
+                  'zeroVariance',
+                  'hasLabel',
+                  'moreFeatures',
+                  'outliers',
+                  'hasCategoricalLabel']
+    from itertools import compress, product
+    def combinations(items):
+        return ( set(compress(items,mask)) for mask in product(*[[0,1]]*len(items)) )
+    ds_feat = [set(x) for x in kb.keys()]
+    comb = list(combinations(properties))
+    print(set([tuple(x) for x in comb]) - set([tuple(x) for x in ds_feat]))
+
+
 
 
 
