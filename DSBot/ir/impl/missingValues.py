@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.impute._iterative import IterativeImputer
 from ir.ir_operations import IROp, IROpOptions
-from utils import ask_user
+from utils import ask_user, get_last_dataset
 
 
 class IRMissingValuesHandle(IROp):
@@ -18,10 +18,7 @@ class IRMissingValuesHandle(IROp):
 
     #TDB cosa deve restituire questa funzione?
     def run(self, result, session_id, **kwargs):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
+        dataset = get_last_dataset(result)
         if (dataset.isna().sum(axis=1) > 0).sum() < 0.05 * len(dataset):
             print('meno del 5% di mv')
             result = IRMissingValuesRemove().run(result, session_id)
@@ -61,13 +58,10 @@ class IRMissingValuesRemove(IRMissingValuesHandle):
         pass
 
     def run(self, result, session_id):
-        if 'new_dataset' in result:
-            result['new_dataset'] = result['new_dataset'].dropna()
-        else:
-            result['new_dataset'] = result['original_dataset'].ds.dropna()
+        result['new_dataset'] = get_last_dataset(result).dropna()
 
-        print('missingvalremove', dataset.shape)
-        print(dataset.head())
+        print('missingvalremove', get_last_dataset(result).shape)
+        print(get_last_dataset(result).head())
         return result
 
 class IRMissingValuesFill(IRMissingValuesHandle):
@@ -78,10 +72,7 @@ class IRMissingValuesFill(IRMissingValuesHandle):
         pass
 
     def run(self, result, session_id):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
+        dataset = get_last_dataset(result)
 
         imp = IterativeImputer(max_iter=10, random_state=0)
         if len(result['original_dataset'].cat_cols) > 0:
