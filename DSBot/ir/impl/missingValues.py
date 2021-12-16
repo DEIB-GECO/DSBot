@@ -19,14 +19,16 @@ class IRMissingValuesHandle(IROp):
     #TDB cosa deve restituire questa funzione?
     def run(self, result, session_id, **kwargs):
         dataset = get_last_dataset(result)
+        col_drop = []
+        for c in dataset.columns:
+            if dataset[c].isna().sum() > 0.5 * len(dataset):
+                col_drop.append(c)
+        dataset.drop(col_drop,axis=1)
+        result['new_dataset'] = dataset
         if (dataset.isna().sum(axis=1) > 0).sum() < 0.05 * len(dataset):
             print('meno del 5% di mv')
             result = IRMissingValuesRemove().run(result, session_id)
         else:
-            for c in dataset.columns:
-                if dataset[c].isna().sum()>0.5*len(dataset):
-                    dataset=dataset.drop(c, axis=1)
-            result['new_dataset'] = dataset
             if (dataset.isna().sum(axis=1) > 0).sum() < 0.10 * len(dataset):
                 result = IRMissingValuesFill().run(result, session_id)
             else:
