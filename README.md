@@ -36,80 +36,24 @@ To train the model:
 > 
 > onmt_train -config wf/en_wf.yaml   
 
-# Installing the Frontend
-
-## Creating RASA image
-1. Install [Docker desktop](https://www.docker.com/products/docker-desktop) on your device
-
-
-## Training RASA model
-1. Open project directory on an IDE
-2. Open docker compose file
-3. Ensuring that the docker container is not running:
-   - in VSCode right click on docker compose file and click on "compose down"
-   - in PYCharm click on the stop button next to the control panel in the lower part of the screen
-   - in terminal go to DSBoot root folder (the one containing docker-compose.yml file) and execute
-     >docker container ls  
-     
-        and verify that rasa docker is not listed (i.e., running). It is running, execute
-     >docker-compose -f "docker-compose.yml" down
-4. Go on docker-compose.yml file. If uncommented, **comment** the following lines
-    > command: >   
-    >      run  
-    >      --enable-api  
-    >      -m 'models/<model-name>.tar.gz'
-5. **Uncomment** the following lines
-    >  entrypoint: /bin/bash  
-    >    tty: true
-6. Save the file
-7. Compose the docker:
-   - in VSCode right click on docker compose file and click on "compose up" 
-   - in PYCHarm click on the green arrow next to Rasa line in docker compose file
-   - in the terminal execute
-     >docker-compose -f "docker-compose.yml" up -d --build
-8. Open a shell in the container
-   - in VSCode go to docker extension, right click on the container and click on "attach shell"
-   - in PYCharm right click on the container running and click "new terminal"
-   - in the terminal execute
-        > docker exec -it <container_name> bash
-     
-     where <container_name> is the name of the container shown in the terminal when built. It should be dsbot_rasa_1
-9. Execute in the terminal the following command:
-    > rasa train nlu
-10. When the training is complete, a confirmation message will appear in the terminal as the following:
-    >Your Rasa model is trained and saved at '/app/models/<model-name>.tar.gz'.
-11. Copy the model name and modify it in the line commented at point 4:
-    >-m 'models/<model-name>.tar.gz'
-12. Compose down the docker running
-    - in VSCode right click on docker compose file and click on "compose down"
-    - in PYCharm click on the stop button next to the control panel in the lower part of the screen
-    - in terminal, digit ctrl-p ctrl-q to exit the bash, then execute
-        >docker-compose -f "docker-compose.yml" down
-
 #Executing the application
 
 ## Executing RASA
-1. Open docker compose file
-2. Ensuring that the docker container is not running:
-   - in VSCode right click on docker compose file and click on "compose down"
-   - in PYCharm click on the stop button next to the control panel in the lower part of the screen
-3. If commented, **uncomment** the following lines:
-    > command: >   
-    >      run  
-    >      --enable-api  
-    >      -m 'models/<model-name>.tar.gz'
-4. If uncommented, **comment** the following lines:
-    >  entrypoint: /bin/bash    
-    >    tty: true
-5. Save the file
-6. Compose the docker:
-   - in VSCode right click on docker compose file and click on "compose up" 
-   - in PYCHarm click on the green arrow next to Rasa line in docker compose file
-   - in the terminal execute
-     >docker-compose -f "docker-compose.yml" up -d --build
 
+### Prerequisite 
+Install [Docker](https://www.docker.com/get-started) on your system
 
-Rasa is up and running!
+### Execution 
+If you need to train the model (either because it is the first time you are installing DSBot or you changed data/nlu.yml
+file), move in the main folder of DSBot and execute:
+
+> docker-compose up
+
+The above methods both train the model and deploy the RASA API.
+
+If you already have a trained model, you can skip the training by executing (in the main folder of DSBot):
+
+> docker compose start rasa
 
 ## Executing the backend
 In a new Terminal

@@ -19,6 +19,7 @@ from itertools import cycle
 import plotly.express as px
 from sklearn.preprocessing import label_binarize
 from plotly.express import bar_polar
+from plotly.io import to_json
 from ir.ir_parameters import IRNumPar
 #from autoviz.AutoViz_Class import AutoViz_Class#Instantiate the AutoViz class
 
@@ -441,13 +442,16 @@ class IRFeatureImportancePlot(IRPlot):
                            color="Cols", template="plotly_dark",
                            color_discrete_sequence=px.colors.sequential.Plasma_r)
         fig.write_image('./temp/temp_' + str(session_id) + '/featureImportancePlot.png')
+        figure = to_json(fig)
         #plotly.offline.plot(fig, filename='./temp/temp_' + str(session_id) + '/featureImportancePlot.html')
         #plt.savefig('./temp/temp_' + str(session_id) + '/featureImportancePlot.png')
+        result['plotly'] = figure
         if 'plot' not in result:
             result['plot'] = ['./temp/temp_' + str(session_id) + '/featureImportancePlot.png']
         else:
             result['plot'].append('./temp/temp_' + str(session_id) + '/featureImportancePlot.png')
         result['original_dataset'].name_plot = './temp/temp_' + str(session_id) + '/featureImportancePlot.png'
+        result['original_dataset'].plotly = figure
         return result
 
 class IRFeatureImportanceBarPlot(IRPlot):

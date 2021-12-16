@@ -128,16 +128,19 @@ def get_results(received_id):
     session_id = received_id
     app.logger.info('Polling results for session: %s', session_id)
 
+    if hasattr(data[session_id]['dataset'], 'plotly'):
+        base64_string = data[session_id]['dataset'].plolty
+    else:
     # recupero il file
-    filename = data[session_id]['dataset'].name_plot
-    if filename is None:
-        pass
+        filename = data[session_id]['dataset'].name_plot
+        if filename is None:
+            pass
 
-    # codifico il file in bytecode
-    with open(filename, "rb") as img_file:
-        my_string = base64.b64encode(img_file.read())
-        # trasformo il bytecode in stringa
-        base64_string = my_string.decode('utf-8')
+        # codifico il file in bytecode
+        with open(filename, "rb") as img_file:
+            my_string = base64.b64encode(img_file.read())
+            # trasformo il bytecode in stringa
+            base64_string = my_string.decode('utf-8')
 
     framework = get_framework(pipeline=data[session_id]['ir_tuning'],
                               result=base64_string,
@@ -234,7 +237,7 @@ def on_execute_received(payload):
     kb = data[session_id]['kb']
     print(kb.kb)
     for i in range(len(kb.kb)):
-        sent = [x for x in kb.kb.values[i, 1:] if str(x) != 'nan']
+        sent = kb.kb[i]
         print(sent)
         sent = [x for x in sent if x not in ['missingValuesHandle', 'labelRemove','oneHotEncode','labelAppend', 'zerVarRemove','outliersRemove','standardization','normalization']]
         scores[i] = NW(wf, sent, kb.voc) / len(sent)
@@ -242,7 +245,7 @@ def on_execute_received(payload):
 
     print(scores)
     max_key = max(scores, key=scores.get)
-    max_key = [x for x in kb.kb.values[max_key, 1:] if str(x) != 'nan']
+    max_key = kb.kb[max_key]
     print('MAX', max_key)
 
     ir_tuning = create_IR(max_key, message_queue)

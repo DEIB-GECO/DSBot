@@ -23,3 +23,33 @@ def create_kb_json():
     with open('kb.json','w') as f:
         json.dump(d, f)
 
+def kb_values():
+    with open('kb.json') as json_file:
+        kb = {frozenset(k.strip().split(',')): v for k, v in json.load(json_file).items()}
+    features = set()
+    operations = set()
+    for k,v in kb.items():
+        features.update(set(k))
+        operations.update({x for y in v for x in y })
+    #print(features)
+    #print(operations)
+    properties = ['missingValues',
+                  'categorical',
+                  'onlyCategorical',
+                  'zeroVariance',
+                  'hasLabel',
+                  'moreFeatures',
+                  'outliers',
+                  'hasCategoricalLabel']
+    from itertools import compress, product
+    def combinations(items):
+        return ( set(compress(items,mask)) for mask in product(*[[0,1]]*len(items)) )
+    ds_feat = [set(x) for x in kb.keys()]
+    comb = list(combinations(properties))
+    print(set([tuple(x) for x in comb]) - set([tuple(x) for x in ds_feat]))
+
+
+
+
+
+
