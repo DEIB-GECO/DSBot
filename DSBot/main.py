@@ -20,16 +20,13 @@ class Dataset:
 
 
     def more_features(self):
-        if self.ds.shape[1]>2:
-            return True
-        else:
-            False
+        return self.ds.shape[1]>2
 
     def set_label(self, label):
         for c in self.ds.columns:
             if SequenceMatcher(None, c.strip().lower(), label.strip().lower()).ratio()>0.75:
-                label = c
-        self.label = label
+                selected_label = c
+        self.label = selected_label
         self.hasLabel = True
         # If the label column is numeric and the values in the column are more than 5 then the label is not considered categorical
         if not (len(pd.DataFrame(self.ds[label])._get_numeric_data().columns)==1 and len(set(self.ds[label]))>5):
