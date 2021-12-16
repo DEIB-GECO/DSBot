@@ -46,7 +46,18 @@ def kb_values():
         return ( set(compress(items,mask)) for mask in product(*[[0,1]]*len(items)) )
     ds_feat = [set(x) for x in kb.keys()]
     comb = list(combinations(properties))
-    print(set([tuple(x) for x in comb]) - set([tuple(x) for x in ds_feat]))
+    diff = set([tuple(x) for x in comb]) - set([tuple(x) for x in ds_feat])
+    print(len(diff))
+    for i in set([tuple(x) for x in comb]) - set([tuple(x) for x in ds_feat]):
+        if 'hasCategoricalLabel' in i and 'hasLabel' not in i:
+            diff.remove(i)
+        if 'onlyCategorical' in i and 'categorical' not in i and i in diff:
+            diff.remove(i)
+        if set(i) in ds_feat and i in diff:
+            diff.remove(i)
+    print(len(diff))
+    print(diff)
+
 
 
 
