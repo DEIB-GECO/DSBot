@@ -19,14 +19,6 @@ class IRPreprocessing(IROp):
         pass
 
     def set_model(self, result):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
-        if self.parameter == None:
-            self.parameter_tune(dataset)
-        #for p,v in self.parameters.items():
-        #    self._model.__setattr__(p,v.value)
         self._param_setted = True
 
     #TDB cosa deve restituire questa funzione?

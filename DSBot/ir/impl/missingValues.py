@@ -4,7 +4,6 @@ from ir.ir_operations import IROp, IROpOptions
 from utils import ask_user
 
 
-
 class IRMissingValuesHandle(IROp):
     def __init__(self, name, parameters=None, model = None ):
         super(IRMissingValuesHandle, self).__init__(name, parameters if parameters is not None else [])
@@ -15,14 +14,6 @@ class IRMissingValuesHandle(IROp):
         pass
 
     def set_model(self, result):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
-        if self.parameter == None:
-            self.parameter_tune(dataset)
-        #for p,v in self.parameters.items():
-        #    self._model.__setattr__(p,v.value)
         self._param_setted = True
 
     #TDB cosa deve restituire questa funzione?
@@ -71,12 +62,10 @@ class IRMissingValuesRemove(IRMissingValuesHandle):
 
     def run(self, result, session_id):
         if 'new_dataset' in result:
-            dataset = result['new_dataset']
+            result['new_dataset'] = result['new_dataset'].dropna()
         else:
-            dataset = result['original_dataset'].ds
+            result['new_dataset'] = result['original_dataset'].ds.dropna()
 
-        dataset = dataset.dropna()
-        result['new_dataset'] = dataset
         print('missingvalremove', dataset.shape)
         print(dataset.head())
         return result
@@ -119,4 +108,3 @@ class IRGenericMissingValues(IROpOptions):
     def __init__(self):
         super(IRGenericMissingValues, self).__init__([IRMissingValuesHandle('missingValuesHandle'), IRMissingValuesRemove(), IRMissingValuesFill()],
                                                      "missingValuesHandle")
-
