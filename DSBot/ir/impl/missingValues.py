@@ -1,8 +1,7 @@
 import pandas as pd
 from sklearn.impute._iterative import IterativeImputer
 from ir.ir_operations import IROp, IROpOptions
-from utils import ask_user
-
+from utils import ask_user, get_last_dataset
 
 
 class IRMissingValuesHandle(IROp):
@@ -15,22 +14,11 @@ class IRMissingValuesHandle(IROp):
         pass
 
     def set_model(self, result):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
-        if self.parameter == None:
-            self.parameter_tune(dataset)
-        #for p,v in self.parameters.items():
-        #    self._model.__setattr__(p,v.value)
         self._param_setted = True
 
     #TDB cosa deve restituire questa funzione?
     def run(self, result, session_id, **kwargs):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
+        dataset = get_last_dataset(result)
         if (dataset.isna().sum(axis=1) > 0).sum() < 0.05 * len(dataset):
             print('meno del 5% di mv')
             result = IRMissingValuesRemove().run(result, session_id)
@@ -70,15 +58,10 @@ class IRMissingValuesRemove(IRMissingValuesHandle):
         pass
 
     def run(self, result, session_id):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
+        result['new_dataset'] = get_last_dataset(result).dropna()
 
-        dataset = dataset.dropna()
-        result['new_dataset'] = dataset
-        print('missingvalremove', dataset.shape)
-        print(dataset.head())
+        print('missingvalremove', get_last_dataset(result).shape)
+        print(get_last_dataset(result).head())
         return result
 
 class IRMissingValuesFill(IRMissingValuesHandle):
@@ -89,10 +72,7 @@ class IRMissingValuesFill(IRMissingValuesHandle):
         pass
 
     def run(self, result, session_id):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
+        dataset = get_last_dataset(result)
 
         imp = IterativeImputer(max_iter=10, random_state=0)
         if len(result['original_dataset'].cat_cols) > 0:
@@ -119,4 +99,3 @@ class IRGenericMissingValues(IROpOptions):
     def __init__(self):
         super(IRGenericMissingValues, self).__init__([IRMissingValuesHandle('missingValuesHandle'), IRMissingValuesRemove(), IRMissingValuesFill()],
                                                      "missingValuesHandle")
-
