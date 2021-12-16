@@ -31,6 +31,11 @@
     "example" : "suppose you are a ecommerce website owner and you have a table with all the purcase in your shop. If you discover that people who buy an item (e.g., bottle of wine), then buy also a second item (e.g., a cork), you can suggest the purchase of the second object when the first is added to the shopping cart to increase the revenues.",
     "readableName" : "association rules"
   },
+  "relation": {
+        "summary": "you want to see relationships between the values in your columns.",
+        "explanation": "from your request, I understood you want to apply association rules or correlation. These a machine learning algorithm that scans your table to try to find relations between data. Association rules elicit rules that describe the data in your table. That rules are in the form of \"if-then\" clauses, for example \"if the customer buys a shirt and a pair of trousers, then he buy also a pair of socks\". Correlation, instead, finds relations between pairs of columns in the dataset. Finding correlated variables (columns) means that the value of one increases, the other one increases as well, and vice versa. The two variables can be also anti-correlated: when one increases the other decreases and viceversa",
+        "example" : "suppose you are a ecommerce website owner and you have a table with all the purcase in your shop. If you discover that people who buy an item (e.g., bottle of wine), then buy also a second item (e.g., a cork), you can suggest the purchase of the second object when the first is added to the shopping cart to increase the revenues."
+  },
   "featureImportance": {
     "summary": "you want to see which are the most influencing features (columns of the table) in the final prediction."
   },

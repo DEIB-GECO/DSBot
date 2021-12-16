@@ -14,9 +14,12 @@ def summary_producer(operations_array, label):
 
     sentences_array = []
     for user_module in operations_array:
-        for algorithm_family in knowledge_base.keys():
-            if user_module in knowledge_base[algorithm_family]:
-                sentences_array.append(producible_sentences[algorithm_family]['summary'])
+        if user_module in knowledge_base.keys():
+            sentences_array.append(producible_sentences[user_module]['summary'])
+        else:
+            for algorithm_family in knowledge_base.keys():
+                if user_module in knowledge_base[algorithm_family]:
+                    sentences_array.append(producible_sentences[algorithm_family]['summary'])
 
     # sentences_array = [producible_sentences[sentence]["summary"] for sentence in operations_array]
     sentences_array = list(filter(None, sentences_array))
