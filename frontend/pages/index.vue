@@ -68,6 +68,11 @@
                       style="max-width: 100%"
                     />
                     <img
+                      v-if="imageToShow == 'clustering'"
+                      src="~/assets/clustering.jpg"
+                      style="max-width: 100%"
+                    />
+                    <img
                       v-if="imageToShow == 'association_rules'"
                       src="~/assets/association_rules.jpg"
                       style="max-width: 100%"

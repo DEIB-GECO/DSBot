@@ -122,7 +122,6 @@ export default {
           if (payload.show != null) {
             console.log('payload non è null!')
             this.setImageToShow(payload.show)
-            console.log('Ora imageToShow Vale', this.imageToShow)
           }
           if (payload.complete) {
             this.setStep(4)
