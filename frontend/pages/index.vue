@@ -52,9 +52,10 @@
               <v-col>
                 <tuning-chat :destination="'comprehension'" />
               </v-col>
-              <v-col v-show="imageToShow != ''" cols="7" sm="7" md="7">
-                <v-expand-x-transition>
-                  <v-card flat>
+              <!-- <v-col v-show="imageToShow != ''" cols="7" sm="7" md="7"> -->
+              <v-col cols="7" sm="7" md="7">
+                <v-scroll-x-transition hide-on-leave="true">
+                  <v-card v-show="imageToShow != ''" flat>
                     Here is an example to better explain it!
                     <v-divider></v-divider>
                     <img
@@ -82,11 +83,11 @@
                       src="~/assets/regression.jpg"
                       style="max-width: 100%"
                     />
-                    <v-btn @click="setImageToShow('')" color="primary"
+                    <v-btn color="primary" @click="setImageToShow('')"
                       >GOTCHA</v-btn
                     >
                   </v-card>
-                </v-expand-x-transition>
+                </v-scroll-x-transition>
               </v-col>
             </v-row>
           </v-stepper-content>
