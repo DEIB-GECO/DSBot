@@ -1,28 +1,18 @@
 version: "3.9"
 services:
-  # dsbot:
-  #   build: .
-  #   ports:
-  #     - 5000:5000
-
+  trainer:
+    image: rasa/rasa:2.8.6-full
+    volumes:
+      - ./rasa2:/app
+    command: >
+      train nlu --fixed-model-name nlu-rasa
   rasa:
     image: rasa/rasa:2.8.6-full
     ports:
       - 5005:5005
     volumes:
       - ./rasa2:/app
-    
-    # To train rasa:
-    # - uncomment the following two lines
-    # - remove the 'command' section
-    # - connect to the container
-    # - run 'rasa train nlu'
-    # - take note of the output and replace it in the command below
-
-    # entrypoint: /bin/bash
-    # tty: true
-
     command: >
       run
       --enable-api
-      -m 'models/nlu-20211213-152656.tar.gz'
+      -m 'models/nlu-rasa.tar.gz'

@@ -6,6 +6,7 @@ from sklearn.impute._iterative import IterativeImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
 from pandas.api.types import is_numeric_dtype
 from ir.ir_operations import IROp, IROpOptions
+from utils import get_last_dataset
 
 
 class IRPreprocessing(IROp):
@@ -19,14 +20,6 @@ class IRPreprocessing(IROp):
         pass
 
     def set_model(self, result):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
-        if self.parameter == None:
-            self.parameter_tune(dataset)
-        #for p,v in self.parameters.items():
-        #    self._model.__setattr__(p,v.value)
         self._param_setted = True
 
     #TDB cosa deve restituire questa funzione?
@@ -43,10 +36,7 @@ class IROneHotEncode(IRPreprocessing):
         pass
 
     def run(self, result, session_id):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
+        dataset = get_last_dataset(result)
         cols = dataset.columns
         num_cols = dataset._get_numeric_data().columns
         cat_dataset = pd.get_dummies(dataset, columns=list(set(cols) - set(num_cols)))
@@ -66,10 +56,7 @@ class IRLabelOperation(IROp):
         pass
 
     def set_model(self, result):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
+        dataset = get_last_dataset(result)
         if self.parameter == None:
             self.parameter_tune(dataset)
         #for p,v in self.parameters.items():
@@ -199,15 +186,8 @@ class IRStandardization(IRPreprocessing):
 
     def run(self, result, session_id):
         print('STANDARDIZATION')
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
-        #cat_dataset = dataset[result['original_dataset'].cat_cols]
-        #values_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+        dataset = get_last_dataset(result)
         dataset = pd.DataFrame(StandardScaler().fit_transform(dataset), index=dataset.index, columns=dataset.columns)
-        #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
-        #dataset = pd.concat([cat_dataset, values_dataset], axis=1)
         result['new_dataset'] = dataset
         print(dataset)
         return result
