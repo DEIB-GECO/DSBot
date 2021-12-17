@@ -92,7 +92,8 @@ class Reformulation(ComprehensionConversationState):
             response = next_state.generate(pipeline_array, dataset)
             return prepare_standard_response(
                 "I think I misinterpreted your original request. I will ask you some questions to better" \
-                " understand what you want to do. " + response['message'], response['comprehension_state'], response['comprehension_pipeline'])
+                " understand what you want to do. " + response['message'], response['comprehension_state'],
+                response['comprehension_pipeline'])
         elif user_message_parsed['intent']['name'] in ['don_t_know', 'clarification_request']:
             return self.help(pipeline_array)
         elif user_message_parsed['intent']['name'] == 'example':
@@ -124,8 +125,9 @@ class AlgorithmVerificationPrediction(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
         if dataset.hasLabel:
-            return prepare_standard_response("I see that you indicated the presence of a label in your dataset. Do you want to try to predict " \
-                   "its value from the other data? ", 'algorithm_verification_prediction', pipeline_array)
+            return prepare_standard_response(
+                "I see that you indicated the presence of a label in your dataset. Do you want to try to predict " \
+                "its value from the other data? ", 'algorithm_verification_prediction', pipeline_array)
         else:
             next_state = AlgorithmVerificationRelationships()
             return next_state.generate(pipeline_array, dataset)
@@ -253,13 +255,18 @@ class AlgorithmVerificationRelationships(ComprehensionConversationState):
 class AlgorithmVerificationClustering(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
-        return prepare_standard_response("Are you interested grouping your data by similarities?", \
+        return prepare_standard_response("Are you interested grouping your data by similarities?",
                                          'algorithm_verification_clustering', pipeline_array)
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
         if user_message_parsed['intent']['name'] == 'deny':
-            next_state = AlgorithmVerificationRelationships()
-            return next_state.generate(pipeline_array, dataset)
+            if not dataset.hasLabel:
+                next_state = AlgorithmVerificationPredictionIfNotLabel()
+                return next_state.generate(pipeline_array, dataset)
+            else:
+                return prepare_standard_response('I am sorry, I did not understand what you prefer. Can you repeat it, '
+                                          'using different words?',
+                                          'algorithm_verification_clustering', pipeline_array)
         elif user_message_parsed['intent']['name'] == 'affirm':
             return prepare_standard_response('Ok, we will proceed with clustering analysis!', 'comprehension_end',
                                              ['clustering'])
@@ -273,7 +280,7 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
     def help(self, pipeline_array, dataset):
         sentence = "Grouping items means applying clustering algorithm: an analysis that aims at finding groups of " \
                    "data similar each other (clusters). This kind of analysis doesn't require any additional " \
-                   "information from you, it works in total autonomy. "
+                   "information from you, it works in total autonomy. Are you interested in this kind of analysis?"
         standard_response = prepare_standard_response(sentence, 'algorithm_verification_clustering', pipeline_array)
         standard_response['show'] = 'clustering'
         return standard_response
@@ -282,11 +289,50 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
         sentence = "Suppose you are a shop owner and you have demographic information about customers who subscribed " \
                    "you fidelity plan. With clustering, you can group them by similarity, obtaining groups of people " \
                    "that represent your customer base. You can use this information to create promotion tailored to " \
-                   "your customers. "
+                   "your customers. Are you interested in this kind of analysis?"
         return prepare_standard_response(sentence, 'algorithm_verification_clustering', pipeline_array)
 
 
-# class PredictionIfNotLabel(ComprehensionConversationState):
+class AlgorithmVerificationPredictionIfNotLabel(ComprehensionConversationState):
+    def generate(self, pipeline_array, dataset):
+        sentence = "Do you want to try to predict a the value of a column in your dataset, using the data in the " \
+                   "other columns? "
+        return prepare_standard_response(sentence, 'algorithm_verification_prediction_if_not_label', pipeline_array)
+
+    def handle(self, user_message_parsed, pipeline_array, dataset):
+        if user_message_parsed['intent']['name'] == 'deny':
+            sentence = "Oh no, we were not able to find anything suitable for you." \
+                       "I suggest to start over and try describe what you want to do with different words"
+            print("Ehilaaaa")
+            return prepare_standard_response(sentence, "algorithm_verification_prediction_if_not_label", pipeline_array)
+        elif user_message_parsed['intent']['name'] == 'affirm':
+            pass
+            # TODO: chiedi label e poi dopo chiama classification or regression
+            # next_state = RegressionOrClassification()
+            # return next_state.generate(pipeline_array, dataset)
+        elif user_message_parsed['intent']['name'] in ['don_t_know', 'clarification_request']:
+            return self.help(pipeline_array, dataset)
+        elif user_message_parsed['intent']['name'] == 'example':
+            return self.example(pipeline_array, dataset)
+
+    def help(self, pipeline_array, dataset):
+        sentence = "Predicting a value means training an algorithm to predict a target value - that we will call  " \
+                   "\"label\" - starting from the other data. Do you want to perform this kind of analysis? "
+        to_return = prepare_standard_response(sentence,
+                                              'algorithm_verification_prediction_if_not_label', pipeline_array)
+        to_return['show'] = "classification"
+        return to_return
+
+    def example(self, pipeline_array, dataset):
+        label_sentence = "Suppose you own a helmet company, you gather data along the productive process for " \
+                         "every helmet (e.g. amount of plastic, temperature in the mold, etc.), and you take note " \
+                         "of the outcome of the security test of every item. With a prediction algorithm, " \
+                         "you can try to predict with the data you are gathering whether a helmet will pass the " \
+                         "security test. On top of that, you can run a further analysis, going to understand" \
+                         " which data influence the most the outcome of the security test. "
+        return prepare_standard_response(label_sentence + "Are you interested in this kind of analysis?",
+                                         'algorithm_verification_prediction_if_not_label', pipeline_array)
+
 
 class RegressionOrClassification(ComprehensionConversationState):
 
@@ -365,10 +411,10 @@ class CorrelationOrAssociationRules(ComprehensionConversationState):
 
 switcher = {
     'reformulation': Reformulation,
-    # 'algorithm_verification': AlgorithmVerfication,
     'algorithm_verification_prediction': AlgorithmVerificationPrediction,
     'algorithm_verification_relationship': AlgorithmVerificationRelationships,
     'algorithm_verification_clustering': AlgorithmVerificationClustering,
+    'algorithm_verification_prediction_if_not_label': AlgorithmVerificationPredictionIfNotLabel,
     'regression_or_classification': RegressionOrClassification,
     'correlation_or_association_rules': CorrelationOrAssociationRules,
     'feature_importance_or_not': FeatureImportanceOrNot
