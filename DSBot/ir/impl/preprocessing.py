@@ -201,11 +201,8 @@ class IRNormalization(IRPreprocessing):
         pass
 
     def run(self, result, session_id):
-        if 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
-            dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+        dataset = get_last_dataset(result)
+        #dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         cat_dataset = dataset[result['original_dataset'].cat_cols]
         values_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
