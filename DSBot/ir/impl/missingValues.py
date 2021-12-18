@@ -23,7 +23,7 @@ class IRMissingValuesHandle(IROp):
         for c in dataset.columns:
             if dataset[c].isna().sum() > 0.5 * len(dataset):
                 col_drop.append(c)
-        dataset.drop(col_drop,axis=1)
+        dataset = dataset.drop(col_drop,axis=1)
         result['new_dataset'] = dataset
         if (dataset.isna().sum(axis=1) > 0).sum() < 0.05 * len(dataset):
             print('meno del 5% di mv')
