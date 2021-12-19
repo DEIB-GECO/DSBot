@@ -91,17 +91,20 @@ class IRLabelRemove(IRLabelOperation):
                 label = label[set(dataset.index.values)]
 
         else:
-
             dataset = result['original_dataset'].ds
             print(dataset.shape)
             dataset = dataset.drop(label, axis=1)
             label = result['original_dataset'].ds[label]
-
-        if len(set(label.values))>2:
-            label = LabelEncoder().fit_transform(label)
-        else:
-            label = label.replace(list(set(label))[0],0).replace(list(set(label))[1],1)
-
+        print(type(label))
+        if result['original_dataset'].hasCategoricalLabel:
+            if len(set(label.values))>2:
+                label = LabelEncoder().fit_transform(label)
+                print('encoded', type(label))
+            else:
+                label = label.replace(list(set(label))[0],0).replace(list(set(label))[1],1)
+                print('replaced', type(label))
+            label = pd.DataFrame(label)
+        print(type(label))
 
         result['labels']=label
         result['new_dataset'] = dataset
@@ -161,7 +164,7 @@ class IROutliersRemove(IRPreprocessing):
                 #print(label)
                 label.index = np.arange(0, len(value_dataset))
                 label = label.drop(set(value_dataset.index) - set(ds.index))
-                result['labels'] = label#.T.values
+                result['labels'] = label.T.values
                 #print(result['labels'] )
             index_new = pd.DataFrame(index_old).drop(set(value_dataset.index) - set(ds.index))
             print('len index', len(index_new))
