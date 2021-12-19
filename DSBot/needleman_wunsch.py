@@ -6,19 +6,7 @@ from string import *
 def Diagonal(n1,n2,pt,voc):
     words = []
 
-    def recursive_items(dictionary, new_dict):
-        for key, value in dictionary.items():
-            if key not in new_dict:
-                new_dict[key] = []
-            if type(value) is dict:
-                yield from recursive_items(value, new_dict)
-            else:
-                if 'key' not in ['description', 'explanation', 'example', 'values']:
-                    new_dict[key].append(value)
-                yield (key, value, new_dict)
 
-    for k, v, _ in recursive_items(voc, {}):
-        print(k, v)
     for i in voc:
         if n1 in voc[i]:
             words = voc[i]
