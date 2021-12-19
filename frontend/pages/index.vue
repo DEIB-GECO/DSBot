@@ -162,6 +162,7 @@ export default {
       'setAvailable',
       'setRequestDescription',
       'receiveChat',
+      'receiveChatOption',
       'setImage',
       'setImageToShow',
     ]),

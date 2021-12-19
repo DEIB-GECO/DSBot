@@ -43,8 +43,15 @@ export const mutations = {
   sendChat(state, msg) {
     state.tuningChat.push({ isBot: false, message: msg })
   },
+  receiveChatOption(state, payload) {
+    state.tuningChat.push({
+      isBot: false,
+      isOption: true,
+      first: payload.option1_text,
+      second: payload.option2_text,
+    })
+  },
   receiveChat(state, msg) {
-    console.log('Sto pushando questo', msg)
     if (msg) state.tuningChat.push({ isBot: true, message: msg })
   },
   setTuningPipeline(state, pipeline) {
