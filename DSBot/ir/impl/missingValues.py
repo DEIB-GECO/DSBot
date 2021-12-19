@@ -18,36 +18,31 @@ class IRMissingValuesHandle(IROp):
     #TDB cosa deve restituire questa funzione?
     def run(self, result, session_id, **kwargs):
         dataset = get_last_dataset(result)
+        sio = kwargs.get('socketio', None)
         cols2drop = list(filter(lambda c: dataset[c].isna().sum() > 0.5 * len(dataset), dataset.columns))
         for c in cols2drop:
-            notify_user(f'Feature {c} has {dataset[c].isna().sum()/len(dataset)*100}% missing values. I will remove it.',
-                        socketio= kwargs.get('socketio', None))
+            notify_user(f'Feature "{c}" has {dataset[c].isna().sum()/len(dataset)*100:.3f}% missing values. I will remove it.',
+                        socketio= sio)
 
         dataset = dataset.drop(cols2drop,axis=1)
         result['new_dataset'] = dataset
-        if (dataset.isna().sum(axis=1) > 0).sum() < 0.05 * len(dataset):
-            print('meno del 5% di mv')
-            result = IRMissingValuesRemove().run(result, session_id)
+        perc_row_mv = (dataset.isna().sum(axis=1) >0).sum()/len(dataset)*100
+        notify_user(f'The {perc_row_mv:.3f}% of the rows have at least a missing value.', socketio=sio)
+        if perc_row_mv < 5.:
+            notify_user(f'I will remove those rows.', socketio=sio)
+            return IRMissingValuesRemove().run(result, session_id)
+        elif perc_row_mv < 10.:
+            notify_user(f'I will infer the missing values.', socketio=sio)
+            return IRMissingValuesFill().run(result, session_id)
         else:
-            if (dataset.isna().sum(axis=1) > 0).sum() < 0.10 * len(dataset):
-                result = IRMissingValuesFill().run(result, session_id)
+            notify_user('Do you want to REMOVE or to FILL the rows with missing values?',socketio=sio)
+            reply = ask_user_binary_option("Remove", "Fill", self.message_queue, socketio=sio)
+            if reply=='Remove':
+                notify_user('Ok, I will remove them.',socketio=sio)
+                return IRMissingValuesRemove().run(result, session_id)
             else:
-                notify_user('Do you want to REMOVE or to FILL the rows with missing values?',
-                            socketio=kwargs.get('socketio', None))
-                reply = ask_user_binary_option("Remove",
-                                               "Fill",
-                                               self.message_queue,
-                                               socketio=kwargs.get('socketio', None))
-                if reply=='Remove':
-                    notify_user('Ok, I will remove them.',
-                        socketio=kwargs.get('socketio', None))
-                    result = IRMissingValuesRemove().run(result, session_id)
-                else:
-                    notify_user('Ok, I will fill them.',
-                                socketio=kwargs.get('socketio', None))
-                    result = IRMissingValuesFill().run(result, session_id)
-
-        return result
+                notify_user('Ok, I will fill them.', socketio=sio)
+                return IRMissingValuesFill().run(result, session_id)
 
 
 class IRMissingValuesRemove(IRMissingValuesHandle):
@@ -59,9 +54,6 @@ class IRMissingValuesRemove(IRMissingValuesHandle):
 
     def run(self, result, session_id):
         result['new_dataset'] = get_last_dataset(result).dropna()
-
-        print('missingvalremove', get_last_dataset(result).shape)
-        print(get_last_dataset(result).head())
         return result
 
 class IRMissingValuesFill(IRMissingValuesHandle):
