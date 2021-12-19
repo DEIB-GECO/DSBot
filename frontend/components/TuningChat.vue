@@ -22,6 +22,14 @@
               >
                 {{ item.message }}
               </v-card>
+              <v-card
+                v-if="item.isOption"
+                :color="item.isBot ? 'white' : 'accent'"
+                class="py-1 px-2"
+              >
+                <v-btn @click="sendBtn(item.first)">{{ item.first }}</v-btn>
+                <v-btn @click="sendBtn(item.second)">{{ item.second }}</v-btn>
+              </v-card>
             </v-col>
           </v-row>
         </v-col>
@@ -113,6 +121,9 @@ export default {
           }
         }
       })
+      socket.on('message_binary_option', (payload) => {
+        this.receiveChatOption(payload)
+      })
       socket.on('comprehension_response', (payload) => {
         console.log('server sent JSON_response', payload)
         if (this.lastMessage !== payload.message) {
@@ -168,10 +179,16 @@ export default {
     }
   },
   methods: {
+    sendBtn(inputData) {
+      this.utterance = inputData
+      this.sendSocketMessage('message_sent')
+      console.log(inputData)
+    },
     ...mapActions(['toFramework', 'sendChatMessage']),
     ...mapMutations([
       'sendChat',
       'receiveChat',
+      'receiveChatOption',
       'setComprehensionChatCompleted',
       'setComprehensionConversationState',
       'setStep',

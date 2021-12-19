@@ -5,6 +5,8 @@ from string import *
 #This function returns to values for cae of match or mismatch
 def Diagonal(n1,n2,pt,voc):
     words = []
+
+
     for i in voc:
         if n1 in voc[i]:
             words = voc[i]

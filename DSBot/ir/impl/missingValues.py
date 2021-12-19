@@ -1,13 +1,12 @@
 import pandas as pd
 from sklearn.impute._iterative import IterativeImputer
 from ir.ir_operations import IROp, IROpOptions
-from utils import ask_user, get_last_dataset
+from utils import *
 
 
 class IRMissingValuesHandle(IROp):
     def __init__(self, name, parameters=None, model = None ):
         super(IRMissingValuesHandle, self).__init__(name, parameters if parameters is not None else [])
-        #self.parameter = parameters['value']  # FIXME: use self.get_param('value'), but it will raise UnknownParameter
         self.labels = None
 
     def parameter_tune(self, dataset):
@@ -19,31 +18,33 @@ class IRMissingValuesHandle(IROp):
     #TDB cosa deve restituire questa funzione?
     def run(self, result, session_id, **kwargs):
         dataset = get_last_dataset(result)
+        cols2drop = list(filter(lambda c: dataset[c].isna().sum() > 0.5 * len(dataset), dataset.columns))
+        for c in cols2drop:
+            notify_user(f'Feature {c} has {dataset[c].isna().sum()/len(dataset)*100}% missing values. I will remove it.',
+                        socketio= kwargs.get('socketio', None))
+
+        dataset = dataset.drop(cols2drop,axis=1)
+        result['new_dataset'] = dataset
         if (dataset.isna().sum(axis=1) > 0).sum() < 0.05 * len(dataset):
             print('meno del 5% di mv')
             result = IRMissingValuesRemove().run(result, session_id)
         else:
-            for c in dataset.columns:
-                if dataset[c].isna().sum()>0.5*len(dataset):
-                    dataset=dataset.drop(c, axis=1)
-            result['new_dataset'] = dataset
             if (dataset.isna().sum(axis=1) > 0).sum() < 0.10 * len(dataset):
                 result = IRMissingValuesFill().run(result, session_id)
             else:
-                reply = ask_user('Do you want to REMOVE the rows with missing values or to FILL them?',
-                                 self.message_queue,
-                                 socketio= kwargs['socketio'] if ('socketio' in kwargs) else None)
-
-                if reply=='remove':
-                    ask_user('I will remove them!',
-                                 self.message_queue,
-                                 socketio= kwargs['socketio'] if ('socketio' in kwargs) else None)
+                notify_user('Do you want to REMOVE or to FILL the rows with missing values?',
+                            socketio=kwargs.get('socketio', None))
+                reply = ask_user_binary_option("Remove",
+                                               "Fill",
+                                               self.message_queue,
+                                               socketio=kwargs.get('socketio', None))
+                if reply=='Remove':
+                    notify_user('Ok, I will remove them.',
+                        socketio=kwargs.get('socketio', None))
                     result = IRMissingValuesRemove().run(result, session_id)
-
                 else:
-                    ask_user('I will fill them!',
-                                 self.message_queue,
-                                 socketio= kwargs['socketio'] if ('socketio' in kwargs) else None)
+                    notify_user('Ok, I will fill them.',
+                                socketio=kwargs.get('socketio', None))
                     result = IRMissingValuesFill().run(result, session_id)
 
         return result
@@ -54,7 +55,6 @@ class IRMissingValuesRemove(IRMissingValuesHandle):
         super(IRMissingValuesRemove, self).__init__("missingValuesRemove")
 
     def parameter_tune(self, dataset):
-        # TODO: implement
         pass
 
     def run(self, result, session_id):
@@ -76,7 +76,9 @@ class IRMissingValuesFill(IRMissingValuesHandle):
 
         imp = IterativeImputer(max_iter=10, random_state=0)
         if len(result['original_dataset'].cat_cols) > 0:
+            print(result['original_dataset'].cat_cols)
             values_col = dataset.columns.difference(result['original_dataset'].cat_cols)
+            print(dataset.columns, values_col)
             if len(values_col)>0:
                 values_dataset = pd.DataFrame(imp.fit_transform(dataset[values_col]))
                 values_dataset.columns = values_col
@@ -87,7 +89,7 @@ class IRMissingValuesFill(IRMissingValuesHandle):
                     lambda col: col.fillna(col.value_counts().index[0]))
                 dataset = cat_dataset
         else:
-            dataset = pd.DataFrame(imp.fit_transform(dataset))
+            dataset = pd.DataFrame(imp.fit_transform(dataset), columns=dataset.columns)
 
         #dataset = dataset.apply(lambda col: col.fillna(self.parameter))
         result['new_dataset'] = dataset

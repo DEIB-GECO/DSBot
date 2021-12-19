@@ -10,7 +10,7 @@ from ir.ir import create_IR, run
 from comprehension.summary_producer import summary_producer
 from comprehension.comprehension_conversation_handler import comprehension_conversation_handler
 from log_helpers import setup_logger
-from main import Dataset
+from dataset import Dataset
 from needleman_wunsch import NW
 from kb import KnowledgeBase
 import os

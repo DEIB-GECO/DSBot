@@ -162,7 +162,7 @@ class IRKNeighborsClassifier(IRClassification):
         random_grid = {p:np.arange(d.min_v, d.max_v, d.step) for p,d in self.parameters.items() if d.v_type!='categorical'}
         # Random search of parameters, using 5 fold cross validation, search across 100 different combinations, and use all available cores
         kn_random = RandomizedSearchCV(estimator=self._model, param_distributions=random_grid, n_iter=100, cv=KFold(5, shuffle=True), n_jobs=-1)
-        kn_random.fit(dataset, labels.values)
+        kn_random.fit(dataset, labels)#.values)
         print(kn_random.best_params_.items)
         for k in kn_random.best_params_:
             self.parameters[k].value = kn_random.best_params_[k]

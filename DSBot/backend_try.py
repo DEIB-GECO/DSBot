@@ -7,7 +7,7 @@ from flask_restful import reqparse
 
 from ir.ir import create_IR, run
 from log_helpers import setup_logger
-from main import Dataset
+from dataset import Dataset
 #from flask_session import Session
 from needleman_wunsch import NW
 from kb import KnowledgeBase
