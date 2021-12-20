@@ -20,7 +20,6 @@ def get_term_path(term):
     """
     def get_term_path_helper(term, knowledge_base):
         for element_key in knowledge_base:
-            print("Sto guardando ", element_key)
             if element_key == term:
                 return [term]
             elif 'values' in knowledge_base[element_key]:
@@ -68,8 +67,3 @@ def get_field_from_path(path, field):
 
     textual_description = get_field_from_path_helper(path, field, knowledge_base)
     return textual_description
-
-list =  get_term_path("varianceThreshold")
-print("la lista è ", list)
-descr = get_field_from_path(list, "description")
-print("La ddescrizione è ", descr)
