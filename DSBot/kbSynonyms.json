@@ -138,6 +138,7 @@
             "description":"AAA",
             "explanation":"AAA",
             "example":"AAA",
+            "values": {
             "laplace":{
                "description":"AAA",
                "explanation":"AAA",
@@ -147,9 +148,13 @@
                "description":"AAA",
                "explanation":"AAA",
                "example":"AAA"
-            }
+            }}
          },
          "supervisedFeatureSelection":{
+            "description":"AAA",
+            "explanation":"AAA",
+            "example":"AAA",
+            "values": {
             "selectKBest":{
                "description":"AAA",
                "explanation":"AAA",
@@ -164,22 +169,15 @@
                "description":"AAA",
                "explanation":"AAA",
                "example":"AAA"
-            }
+            }}
          },
          "userFeatureSelection":{
             "description":"AAA",
             "explanation":"AAA",
-            "example":"AAA",
-            "values":{
-               "userFeatureSelection":{
-                  "description":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               }
+            "example":"AAA"
             }
          }
-      }
-   },
+      },
    "relation":{
       "description":"AAA",
       "explanation":"AAA",
