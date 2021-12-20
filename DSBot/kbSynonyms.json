@@ -233,14 +233,12 @@
    "featureImportance":{
       "description":"AAA",
       "explanation":"AAA",
-      "example":"AAA",
-      "values":{
-         "featureImportance":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         }
-      }
+      "example":"AAA"
+   },
+   "outliersDetection":{
+      "description":"AAA",
+      "explanation":"AAA",
+      "example":"AAA"
    },
    "performance":{
       "description":"AAA",

@@ -164,7 +164,7 @@ class IROutliersRemove(IRPreprocessing):
                 #print(label)
                 label.index = np.arange(0, len(value_dataset))
                 label = label.drop(set(value_dataset.index) - set(ds.index))
-                result['labels'] = label.T.values
+                result['labels'] = pd.DataFrame(label)#label.T.values
                 #print(result['labels'] )
             index_new = pd.DataFrame(index_old).drop(set(value_dataset.index) - set(ds.index))
             print('len index', len(index_new))
