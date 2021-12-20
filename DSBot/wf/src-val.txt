@@ -48,3 +48,291 @@ find the strange data
 after select some features, extract the anomalies
 where are the anomalies?
 find the rules that associate features and show them
+selecting only codon, SpeciesName, Kingdom, DNAtype, Ncodons view rules of association between features
+feature selection and clustering
+i want to inspect groups of examples
+can you consider prediction of patients
+are you able to compute prediction of examples
+after prediction the g3 shall we observe the features that classify better
+could you analyze irregularities among areas
+shall we look at anomalies in data
+might you exhibit sets of similar samples
+i would like to expose classes according to people
+i would spot links between data
+after the prediction of sequences do you manage to extract the most relevant features
+i want to see groups of people
+are you able to find interconnections among people
+prediction
+after considering the classes of y  view the most relevant columns
+after the prediction of g3 may you see the most relevant columns
+after considering the classes of g3 may you extract the features that are more significant
+after having classified shall we show me the most relevant columns
+considering only doors and lug_boot perform uniform samples
+shall we see prediction of students
+might you visualize anomalies in areas
+are you able to show predictions
+if you consider only safety, doors, buying, maint, persons, lug_boot find association rules between features
+taking into account nursery, address, Pstatus, romantic, absences, Fedu, higher, G2, famsize, guardian, Mjob, Fjob, schoolsup analyze connections between columns
+after the prediction of area i want to watch the features that are more significant
+looking at education, maritalStatus, toCoupon_GEQ25min, RestaurantLessThan20, Restaurant20To50, time, gender, age, CarryAway, toCoupon_GEQ15min consider sets of similar samples
+are you able to look at rules of association between columns
+after the classification of area may you view the most relevant features
+keeping into consideration DNAtype, codon, Kingdom, SpeciesID consider relations among features
+let's present relations among information
+could you show me links between examples
+taking into consideration only Ncodons, SpeciesID, Kingdom, DNAtype, SpeciesName, codon exhibit sets
+forecast Diagnosisandextractthe most relevant features
+after having classified the diagnosis shall we display the features that classify better
+taking into consideration only income, education, direction_same, direction_opp, time, has_Children, CarryAway, toCoupon_GEQ15min, passager, maritalStatus find connections between columns
+i want to foresee anomalies in rows
+after prediction the data could you exhibit the columns that classify better
+may you spot classification using data
+let's spot irregularities among patients
+after the prediction of area would you spot the features that are more significant
+keeping into consideration compactness, concavity, smoothness, radius, perimeter, fractal dimension, symmetry predict the data
+could you observe correlations between examples
+i would like to find outliers in information
+after the prediction of area  visualize the columns that identify the groups
+considering only SpeciesID, codon, DNAtype, Kingdom, Ncodons, SpeciesName see groups
+do you manage to inspect classes according to examples
+once you have predicted area do you manage to spot the features that classify better
+selecting only address, reason, famrel compute strange data
+may you search for sets of similar sequences
+are you able to search for correlations between cars
+after forecasting g3 may you observe the most important columns
+once you have classified g3 let's observe the features that are more significant
+looking at SpeciesID find groups
+once you have predicted my data shall we extract the most important features
+might you spot predictions
+may you spot correlations among data
+analyze similar samples of cars
+show me the columns that identify the groups after having classified
+ analyze connections between students
+filtering out RestaurantLessThan20, income, gender, maritalStatus, destination, expiration, coupon, age, CarryAway, toCoupon_GEQ25min, has_Children, toCoupon_GEQ15min, time, Restaurant20To50, direction_opp, passager, education, direction_same, occupation produce classification
+could you investigate sets of similar areas
+after considering the classes of the data shall we display the columns that classify better
+after prediction the area might you show the columns that classify better
+i want to visualize the features that classify better after the classification
+after prediction the y are you able to draw the features that classify better
+would you look at anomalies in examples
+feature selection and clustering
+after forecasting g3 could you retrieve the most important features
+keeping into consideration SpeciesID, Ncodons, SpeciesName, DNAtype, Kingdom, codon analyze outliers among samples
+can you search for anomalies between samples
+after considering the classes of area i would like to extract the columns that identify the groups
+after the classification of area i would show me the features that classify better
+once you have classified y  show the features that classify better
+after the classification may you draw the features that are more significant
+once you have predicted y shall we spot the columns that identify the groups
+let's produce associations among cars
+can i see the most relevant columns after considering the classes of the data
+taking into consideration only famsize, health, goout, Fedu, absences, Medu, guardian, higher, famsup, nursery, schoolsup, Dalc, Fjob, reason, internet, romantic, Mjob, school, G2, Pstatus, sex, failures, freetime, G1, age, paid, studytime, address, Walc perform rules that associates features
+considering only X, month, DMC, Y, day, FFMC, rain, temp, wind, ISI, RH, DC identify similar samples
+after prediction the diagnosis would you draw the most relevant features
+keeping into consideration symmetry, compactness, texture, area inspect similar samples
+according to DC and day analyze association rules
+after classifying the diagnosis do you manage to inspect the most important columns
+after the prediction can you foresee the features that classify better
+after the classification can you display the columns that classify better
+would you show me rules of association between sequences
+shall we analyze outliers among samples
+after considering the classes of the data shall we show me the columns that identify the groups
+extract some columns moreover can you find classification
+if you consider only Ncodons and SpeciesID perform sets of similar samples
+extract some columns later perform classes
+after considering the classes of y would you see the columns that classify better
+after having predicted the area would you draw the most relevant columns
+once you have predicted area shall we draw the columns that identify the groups
+looking at FFMC consider elements that are uniform
+do you manage to show me association rules
+considering only codon, Kingdom, Ncodons, DNAtype, SpeciesName investigate links between features
+considering only SpeciesName and DNAtype identify strange sample among my data
+may you view correlations among data
+are you able to inspect correlations among sequences
+taking into consideration only radius, area, perimeter, texture, concavity, compactness, fractal dimension, concave points, symmetry find anomalies between samples
+may you produce irregularities between samples
+i want to identify irregularities among rows
+according to SpeciesID watch strange samples
+once you have predicted g3 might you show me the columns that classify better
+do you manage to plot groups of cars
+i would like to draw anomalies in samples
+once you have classified my data might you select the most important features
+i would compute associations between columns
+after classifying the diagnosis i would watch the features that are more significant
+i would show strange samples among examples
+i would like to visualize prediction of rows
+once you have classified area would you present the columns that classify better
+are you able to find correlation among columns
+after considering the classes of area let's watch the most relevant columns
+after classifying the y could you observe the features that classify better
+after forecasting y could you show the most important columns
+after having classified do you manage to exhibit the most relevant features
+filtering out concavity, radius, area, symmetry, compactness investigate associations between columns
+do they exist classification using examples
+can you search for irregularities among people
+after classifying the y  plot the columns that classify better
+after having classified the diagnosis  retrieve the most important features
+ produce sets of similar patients
+considering only SpeciesName analyze association rules between features
+after the prediction of y let's present the features that classify better
+do you manage to observe classification
+after having classified the diagnosis let's present the features that are more significant
+do you manage to plot rules of association between patients
+after prediction the y let's present the features that classify better
+do you manage to see irregularities among samples
+taking into consideration only texture, radius, smoothness, area, compactness, fractal dimension produce classes
+once you have predicted area may you plot the most relevant features
+after considering the classes of area might you select the most important columns
+i want to look for irregularities among areas
+considering only SpeciesID, DNAtype, SpeciesName, Kingdom see anomalies in my data
+after prediction the diagnosis might you expose the features that classify better
+shall we exhibit irregularities among people
+shall we exhibit outliers among samples
+selecting only persons, doors, lug_boot look at anomalies in my data
+shall we see rules that associates features
+clustering
+after the prediction of sequences would you retrieve the most important columns
+selecting only buying, maint, persons identify irregularities between samples
+filtering out paid, internet, goout, famrel, Fedu, health, higher, schoolsup, freetime, age, nursery, Medu, Walc, Pstatus, activities, Mjob, school, traveltime, failures, Dalc, famsup, guardian, romantic, absences, G2, address perform rules that associates features
+after prediction the data would you plot the most relevant columns
+after the classification i want to spot the columns that classify better
+ watch interconnections among samples
+can you compute association rules between data
+let's consider similar samples of students
+after prediction the area i would plot the most relevant features
+can you show the most important features once you have classified my data
+i want to inspect uniform areas
+can you look at strange samples among people
+i would like to consider sets of similar information
+might you foresee groups of similar sequences
+ investigate prediction of cars
+once you have predicted y may you show me the features that classify better
+might you analyze division of the data according to patients
+shall we draw strange samples among information
+after forecasting area might you inspect the most relevant features
+might you plot links between features
+after the prediction of diagnosis can you show me the features that classify better
+after the classification of diagnosis i would like to exhibit the features that are more significant
+once you have predicted area do you manage to expose the most important features
+after having classified the g3 do you manage to display the most important features
+once the prediction is computed i would like to show the features that classify better
+would you find associations between areas
+after predicting the data i would expose the most relevant features
+after classifying the g3 might you expose the most relevant columns
+after prediction the data shall we inspect the most relevant columns
+could you visualize sets of similar examples
+might you find similar samples of samples
+shall we search for correlations among data
+after having predicted the g3 i would like to see the features that are more significant
+i want to visualize the most relevant features once you have classified my data
+use only some features , can you find classes according to the label
+could you produce interconnections among students
+once you have classified y would you spot the most important columns
+show me the most relevant features once the classification is computed
+looking at doors, persons, maint compute anomalies in samples
+after having predicted the y i want to expose the most important features
+after having classified may you spot the most relevant features
+after considering the classes of y i want to plot the most relevant features
+shall we exhibit outliers in areas
+after classifying the data shall we observe the most relevant columns
+would you expose sets of students
+let's analyze prediction of people
+selecting only maint and safety search for classes
+after classifying the y can you expose the columns that identify the groups
+would you consider correlation among columns
+after the prediction i would like to exhibit the most important columns
+would you observe rules of association between cars
+are you able to spot associations between samples
+after having predicted the y  show me the most important columns
+taking into consideration only activities, failures, internet, Walc, freetime, Dalc, romantic identify correlation among features
+according to doors, buying, safety, lug_boot, persons, maint look for similar samples
+selecting only maritalStatus, toCoupon_GEQ25min, toCoupon_GEQ15min, Restaurant20To50, expiration, age, CarryAway, gender, temperature, weather, destination, has_Children, passager, education, RestaurantLessThan20, income, direction_opp, time, occupation, CoffeeHouse, coupon identify anomalies in data
+considering only RestaurantLessThan20, toCoupon_GEQ25min, destination, expiration, maritalStatus, direction_same, gender, toCoupon_GEQ15min, has_Children, CoffeeHouse perform classes according to the label
+would you investigate correlations between information
+after classifying the y would you spot the most relevant features
+if you consider only Ncodons, SpeciesName, SpeciesID exposeforesee uniform samples
+once you have predicted area would you show the columns that classify better
+i want to consider associations among students
+after having predicted the area i want to display the most important columns
+once the classification is computed may you extract the most relevant features
+let's look for division of the data according to students
+are you able to display sets of examples
+are you able to exhibit strange samples among data
+might you foresee rules that associates data
+taking into consideration only direction_opp perform links between features
+may you look for links between examples
+classification
+i want to analyze rules that associates sequences
+after considering the classes of the data are you able to foresee the most relevant columns
+regression
+are you able to look for clusters of cars
+after forecasting y i would like to spot the columns that classify better
+if you consider only guardian, studytime, absences, Dalc, romantic, health, Medu, address, higher, reason, Mjob, Fjob, schoolsup, failures, G2 look for interrelations
+i would inspect sets of rows
+if you consider only Walc, studytime, goout, Mjob, Dalc, failures, activities, Pstatus perform connections between features
+once you have classified area do you manage to foresee the features that classify better
+i would like to expose similar samples of cars
+association rules
+after prediction the g3 may you show the features that classify better
+let's present sets of data
+might you show me classes according to people
+do they exist sets of cars
+i would like to draw irregularities among data
+once you have classified g3 might you spot the most relevant features
+if you consider only doors, safety, maint, buying, persons perform elements which are similar
+i would like to identify elements that are uniform
+i want to visualize rules of association between features
+are you able to show me rules that associates samples
+let's detect outliers in data
+after having predicted the y  visualize the features that classify better
+if you select famsize and Mjob look for elements that are uniform
+according to texture predict the label
+can you observe sets of cars
+would you analyze associations between students
+taking into consideration only SpeciesID, codon identify anomalies in samples
+i would like to display sets of similar cars
+might you identify anomalies in data
+i want to view rules that associates rows
+after the classification of diagnosis could you show the most important features
+might you view classes according to rows
+filtering out FFMC, Y, day, X, wind analyze association rules
+filtering out nursery, address, Pstatus, famsup, schoolsup, activities, reason, Dalc, paid, failures, Mjob, Medu, health, higher, romantic, sex, studytime, guardian, freetime, famsize, Walc, G1, Fedu, age, internet, school, absences, famrel, traveltime, G2, goout look for relations
+may you watch inchoerent patients
+after forecasting g3 i want to retrieve the most relevant features
+do you manage to display uniform people
+after forecasting area let's look at the features that are more significant
+after prediction the diagnosis might you expose the most important features
+selecting only SpeciesID, Ncodons, SpeciesName, DNAtype produce elements which are similar
+regression
+feature selection
+once you have predicted y  spot the features that are more significant
+i would like to display correlations among samples
+once the prediction is computed i would select the most relevant columns
+after prediction the diagnosis do you manage to expose the most important columns
+after having classified are you able to spot the features that are more significant
+would you find inchoerent students
+ exhibit interconnections among examples
+after having classified the cars can you retrieve the most relevant columns
+are you able to predict examples
+let's see correlations among data
+i want to see sets of similar cars
+may you identify similar samples of people
+after having predicted are you able to display the most relevant features
+would you produce association rules between features
+can you plot links between columns
+once you have classified g3  look at the most important features
+let's look for relations among sequences
+after the classification of diagnosis let's foresee the features that classify better
+let's compute elements which are similar
+after having predicted the g3  plot the columns that classify better
+might you show association rules between students
+i would like to view rules that associates examples
+ visualize prediction of students
+after having classified the y i would like to draw the most important columns
+if you select DMC, ISI, RH, wind, FFMC, day, month find classification
+are you able to observe groups of similar people
+once the prediction is computed do you manage to select the most relevant features
+ see rules that associates data
+let's inspect correlations between samples
+shall we draw uniform students
+taking into account area, concavity, concave points, compactness, texture, symmetry, radius plot prediction
