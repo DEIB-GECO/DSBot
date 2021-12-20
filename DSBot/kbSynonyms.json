@@ -84,7 +84,7 @@
       "example":"AAA",
       "values":{
          "classification":{
-            "description":"AAA",
+            "description":"BBB",
             "explanation":"AAA",
             "example":"AAA",
             "values":{
@@ -94,7 +94,6 @@
                   "example":"AAA"
                },
                "randomForest":{
-                  "description":"AAA",
                   "explanation":"AAA",
                   "example":"AAA"
                },
