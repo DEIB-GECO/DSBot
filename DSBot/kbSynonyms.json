@@ -4,76 +4,24 @@
       "explanation": "from your request, I understood you want to apply clustering, an analysis that aims at finding groups of data similar each other (clusters). This kind of analysis doesn't require any additional information from you, it works in total autonomy.",
       "example": "suppose you are the owner of a supermarket and you have demographical information about the subscribers to the fidelity program of your store. You can apply this kind of analysis to find groups of similar customers, therefore understanding which are the kind of people that typically buy at the supermarket. You could exploit this information to improve the communication or create more effective offers for your target.",
       "values":{
-         "kmeans":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "dbscan":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "agglomerativeClustering":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         }
+         "kmeans":{},
+         "dbscan":{},
+         "agglomerativeClustering":{}
       }
    },
    "plot":{
       "summary": "you want to visualize the results in a plot.",
       "values":{
-         "scatterplot":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "heatmap":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "clustermap":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "distplot":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "barplot":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "featureImportancePlot":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "scatterAssociationRules":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "tableRegression":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "tableAssociationRules":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "lassoPlot":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         }
+         "scatterplot":{},
+         "heatmap":{},
+         "clustermap":{},
+         "distplot":{},
+         "barplot":{},
+         "featureImportancePlot":{},
+         "scatterAssociationRules":{},
+         "tableRegression":{},
+         "tableAssociationRules":{},
+         "lassoPlot":{}
       }
    },
    "prediction":{
@@ -86,42 +34,16 @@
             "example": "suppose you have gene exp, you want to bla bla bla",
             "explanation" : "from your request I understood you want to apply classification, an analysis that tries to predict the value of a column of your dataset, called label, from the other data in the table. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict the value of that column.",
             "values":{
-               "autoClassification":{
-                  "summary":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               },
-               "randomForest":{
-                  "explanation":"AAA",
-                  "example":"AAA"
-               },
-               "logisticRegression":{
-                  "summary":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               }
+               "autoClassification":{},
+               "randomForest":{},
+               "logisticRegression":{}
             }
          },
          "regression":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA",
             "values":{
-               "autoRegression":{
-                  "summary":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               },
-               "linearRegression":{
-                  "summary":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               },
-               "ridgeRegression":{
-                  "summary":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               }
+               "autoRegression":{},
+               "linearRegression":{},
+               "ridgeRegression":{}
             }
          }
       }
@@ -130,69 +52,30 @@
       "summary": "you want to select the columns of the dataset (features) that are most relevant to your problem.",
       "values":{
          "unsupervisedFeatureSelection":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA",
             "values": {
-            "laplace":{
-               "summary":"AAA",
-               "explanation":"AAA",
-               "example":"AAA"
-            },
-            "varianceThreshold":{
-               "summary":"AAA",
-               "explanation":"AAA",
-               "example":"AAA"
-            }}
+               "laplace":{},
+               "varianceThreshold":{}
+            }
          },
          "supervisedFeatureSelection":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA",
             "values": {
-            "selectKBest":{
-               "summary":"AAA",
-               "explanation":"AAA",
-               "example":"AAA"
-            },
-            "selectPercentile":{
-               "summary":"AAA",
-               "explanation":"AAA",
-               "example":"AAA"
-            },
-            "lasso":{
-               "summary":"AAA",
-               "explanation":"AAA",
-               "example":"AAA"
-            }}
-         },
-         "userFeatureSelection":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
+               "selectKBest":{},
+               "selectPercentile":{},
+               "lasso":{}
             }
+         },
+         "userFeatureSelection":{}
          }
       },
    "relation":{
-      "summary":"AAA",
-      "explanation":"AAA",
-      "example":"AAA",
       "values":{
          "correlation":{
             "summary": "you want to see how the features are statistically related to each other.",
             "explanation": "from your request, I understood you want to apply correlation, a statistical tool that find relations between pairs of columns in the dataset. Finding correlated variables (columns) means that the value of one increases, the other one increases as well, and vice versa. The two variables can be also anti-correlated: when one increases the other decreases and viceversa.",
             "example": "suppose you are the major of a big city, and you have a table with demographical information of the city neighborhoods. With this kind analysis, you can find which factors influence each other in your city. For example, you might discover that neighborhoods with a lower education level have higher crime rate, and viceversa. You could use this information make a reform to encourage education for children.",
             "values":{
-               "pearson":{
-                  "summary":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               },
-               "spearman":{
-                  "summary":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               }
+               "pearson":{},
+               "spearman":{}
             }
          },
          "associationRules":{
@@ -200,30 +83,15 @@
             "explanation": "from your request, I understood you want to apply association rules. It is a machine learning algorithm that scans your table to try to elicit rules that describe the data in your table. That rules are in the form of \"if-then\" clauses, for example \"if the customer buys a shirt and a pair of trousers, then he buy also a pair of socks\".",
             "example" : "suppose you are a ecommerce website owner and you have a table with all the purcase in your shop. If you discover that people who buy an item (e.g., bottle of wine), then buy also a second item (e.g., a cork), you can suggest the purchase of the second object when the first is added to the shopping cart to increase the revenues.",
             "values":{
-               "aPriori":{
-                  "summary":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               }
+               "aPriori":{}
             }
          }
       }
    },
    "trainTestSplit":{
-      "summary":"AAA",
-      "explanation":"AAA",
-      "example":"AAA",
       "values":{
-         "trainTestSplit":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "kFold":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         }
+         "trainTestSplit":{},
+         "kFold":{}
       }
    },
    "featureImportance":{
@@ -236,26 +104,15 @@
          }
       }
    },
-   "outliersDetection":{
-      "description":"AAA",
-      "explanation":"AAA",
-      "example":"AAA"
-   },
+   "outliersDetection":{},
    "performance":{
-      "summary":"AAA",
-      "explanation":"AAA",
-      "example":"AAA",
       "values":{
          "roc":{
             "summary":"AAA",
             "explanation":"AAA",
             "example":"AAA"
          },
-         "regressionPerformance":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         }
+         "regressionPerformance":{}
       }
    }
 }
