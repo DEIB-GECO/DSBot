@@ -5,12 +5,20 @@ from string import *
 #This function returns to values for cae of match or mismatch
 def Diagonal(n1,n2,pt,voc):
     words = []
+    print(n1,n2)
+    def rec_inside(chiave, dizio):
+        if 'values' not in dizio:
+            return False
+        elif chiave in dizio['values']:
+            return True
+        else:
+            for k in dizio['values']:
+                return rec_inside(chiave, dizio['values'][k])
 
-
-    for i in voc:
-        if n1 in voc[i]:
-            words = voc[i]
-    if(n1 == n2) or (n2 in words):
+    #for i in voc:
+    #    if n1 in voc[i]:
+    #        words = voc[i]
+    if(n1 == n2) or (rec_inside(n2,voc[n1])):
         return pt['MATCH']
     else:
         return pt['MISMATCH']
