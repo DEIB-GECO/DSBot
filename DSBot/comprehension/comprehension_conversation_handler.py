@@ -365,7 +365,6 @@ class CorrelationOrAssociationRules(ComprehensionConversationState):
 
 switcher = {
     'reformulation': Reformulation,
-    # 'algorithm_verification': AlgorithmVerfication,
     'algorithm_verification_prediction': AlgorithmVerificationPrediction,
     'algorithm_verification_relationship': AlgorithmVerificationRelationships,
     'algorithm_verification_clustering': AlgorithmVerificationClustering,
