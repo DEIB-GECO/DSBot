@@ -236,6 +236,11 @@
          }
       }
    },
+   "outliersDetection":{
+      "description":"AAA",
+      "explanation":"AAA",
+      "example":"AAA"
+   },
    "performance":{
       "summary":"AAA",
       "explanation":"AAA",

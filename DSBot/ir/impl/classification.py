@@ -65,7 +65,7 @@ class IRAutoClassification(IRClassification):
                                               # TODO: what is the maximum? Which first value give?
                                               IRNumPar("population_size", 50, "int", 10, 100, 10),
                                               IRNumPar('verbosity', 2, "int", 2, 2, 1),
-                                              IRNumPar('n_jobs', -1, "int", -1, -1, 1),
+                                              IRNumPar('n_jobs', 10, "int", -1, 10, 1),
                                               IRCatPar('scoring', 'accuracy', ['accuracy']),
                                               IRCatPar('cv', None, [None])],
                                              # TODO: if I want to pass a list of values?,
@@ -96,9 +96,9 @@ class IRAutoClassification(IRClassification):
         result['feat_imp'] = []
 
         for x_train, x_test, y_train,y_test in zip(result['x_train'],result['x_test'],result['y_train'],result['y_test']):
-
             model = self._model
-            model.fit(x_train, y_train)
+            print(x_train,np.array(y_train).ravel())
+            model.fit(x_train, np.array(y_train).ravel())
             if result['predicted_labels']!=[]:
                 result['predicted_labels'] = np.concatenate((result['predicted_labels'],model.predict(x_test)))
                 #result['y_score'] = np.concatenate((result['y_score'], model.predict_proba(x_test)))
@@ -188,7 +188,7 @@ class IRAdaBoostClassifier(IRClassification):
 
 class IRGenericClassification(IROpOptions):
     def __init__(self):
-        super(IRGenericClassification, self).__init__([IRAutoClassification(), IRRandomForest(), IRLogisticRegression(), IRKNeighborsClassifier(), IRAdaBoostClassifier()], "autoClassification")
+        super(IRGenericClassification, self).__init__([IRAutoClassification(),  IRRandomForest(), IRLogisticRegression(), IRKNeighborsClassifier(), IRAdaBoostClassifier()], "autoClassification")
 
 
 

@@ -97,7 +97,7 @@ class IRKFold(IRCrossValidation):
             dataset = result['original_dataset'].ds
 
         labels = result['labels'].values
-        print(labels)
+        #print(labels)
 
         print('PARAMETERSSSS', self.parameters)
         cv = self._model
