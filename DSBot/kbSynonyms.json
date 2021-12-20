@@ -107,11 +107,7 @@
    "outliersDetection":{},
    "performance":{
       "values":{
-         "roc":{
-            "summary":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
+         "roc":{},
          "regressionPerformance":{}
       }
    }
