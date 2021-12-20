@@ -5,7 +5,7 @@ class KnowledgeBase:
     def __init__(self):
         with open('kb.json') as json_file:
             self.kb = {frozenset(k.strip().split(',')):v for k,v in json.load(json_file).items()}
-        with open('kb_synonyms.json') as json_file:
+        with open('kbSynonyms.json') as json_file:
             self.voc = json.load(json_file)
 
 
