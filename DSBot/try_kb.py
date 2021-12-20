@@ -42,7 +42,7 @@ def rec_inside(chiave, dizio):
         for k in dizio['values']:
             return rec_inside(chiave, dizio['values'][k])
 
-print(rec_inside('kmeans',voc['prediction']))
+print(rec_inside('autoClassification',voc['prediction']))
 
 
 #print(recursive_items(voc, {}))

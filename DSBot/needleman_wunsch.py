@@ -9,10 +9,12 @@ def Diagonal(n1,n2,pt,voc):
     #for i in voc:
     #    if n1 in voc[i]:
     #        words = voc[i]
-    if(n1 == n2) or (rec_inside(n2,voc[n1])):
+    print(n1, n2, rec_inside(n2,voc[n1]))
+    if (n1 == n2) or (rec_inside(n2,voc[n1])):
         return pt['MATCH']
     else:
         return pt['MISMATCH']
+
 
 #------------------------------------------------------------
 #This function gets the optional elements of the aligment matrix and returns the elements for the pointers matrix.
