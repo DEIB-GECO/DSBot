@@ -89,10 +89,10 @@ class Reformulation(ComprehensionConversationState):
             return response
         elif user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerificationPrediction()
-            new_message, new_state, new_pipeline_array = next_state.generate(pipeline_array, dataset)
-            return prepare_standard_response(
-                "I think I misinterpreted your original request. I will ask you some questions to better" \
-                " understand what you want to do. " + new_message, new_state, new_pipeline_array)
+            response = next_state.generate(pipeline_array, dataset)
+            incipit = "I think I misinterpreted your original request. I will ask you some questions to better understand what you want to do. "
+            response["message"] = incipit + response["message"]
+            return response
         elif user_message_parsed['intent']['name'] in ['don_t_know', 'clarification_request']:
             return self.help(pipeline_array)
         elif user_message_parsed['intent']['name'] == 'example':
@@ -124,8 +124,8 @@ class AlgorithmVerificationPrediction(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
         if dataset.hasLabel:
-            return "I see that you indicated the presence of a label in your dataset. Do you want to try to predict " \
-                   "its value from the other data? ", 'algorithm_verification_prediction', pipeline_array
+            return prepare_standard_response("I see that you indicated the presence of a label in your dataset. Do you want to try to predict " \
+                   "its value from the other data? ", 'algorithm_verification_prediction', pipeline_array)
         else:
             next_state = AlgorithmVerificationRelationships()
             return next_state.generate(pipeline_array, dataset)
@@ -383,6 +383,7 @@ def pipeline_array_to_string(pipeline_array):
 
 
 def comprehension_conversation_handler(user_payload, dataset):
+    print("invocata su ", user_payload)
     user_message_parsed = parse(user_payload['message'])
     print("user intent is:" + str(user_message_parsed))
     user_utterance = user_payload['message']

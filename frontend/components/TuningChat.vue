@@ -16,12 +16,14 @@
               />
             </v-col>
             <v-col :cols="9">
-              <v-card
-                :color="item.isBot ? 'white' : 'accent'"
-                class="py-1 px-2"
-              >
-                {{ item.message }}
-              </v-card>
+              <v-scale-transition>
+                <v-card
+                  :color="item.isBot ? 'white' : 'accent'"
+                  class="py-1 px-2"
+                >
+                  {{ item.message }}
+                </v-card>
+              </v-scale-transition>
               <v-card
                 v-if="item.isOption"
                 :color="item.isBot ? 'white' : 'accent'"
