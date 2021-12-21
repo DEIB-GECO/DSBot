@@ -422,7 +422,11 @@ class LabelRequestIfNotInsertedBefore(ComprehensionConversationState):
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
         label_name = user_message_parsed['text']
-
+        is_label_settled = dataset.set_label(label_name)
+        if is_label_settled:
+            return prepare_standard_response("Perfect, we can proceed with your analysis!", "comprehension_end", ['prediction'])
+        else:
+            return prepare_standard_response("Sorry, I was not able to understand the column name, please send me a message containing only the column name.", "label_request", pipeline_array)
 
 
 switcher = {

@@ -84,11 +84,14 @@ def receive_ds():
         dataset.session = session_id
         print(label)
 
+        correct_label= None
+
         if label is not None and label != '':
             correct_label = dataset.set_label(label)
             print('dslabel', dataset.label, dataset.hasLabel)
         if not correct_label:
             # TODO Peter --> reask label
+            pass
         dataset.set_characteristics()
         kb = KnowledgeBase()
         kb.kb = dataset.filter_kb(kb.kb)

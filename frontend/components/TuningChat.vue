@@ -128,21 +128,21 @@ export default {
       })
       socket.on('comprehension_response', (payload) => {
         console.log('server sent JSON_response', payload)
-        if (this.lastMessage !== payload.message) {
-          this.lastMessage = payload.message
-          this.receiveChat(payload.message)
-          this.setComprehensionConversationState(payload.comprehension_state)
-          if (payload.show != null) {
-            console.log('payload non è null!')
-            this.setImageToShow(payload.show)
-          }
-          if (payload.complete) {
-            this.setStep(4)
-            socket.emit('execute', {
-              comprehension_pipeline: this.comprehensionPipeline,
-            })
-          }
+        // if (this.lastMessage !== payload.message) {
+        this.lastMessage = payload.message
+        this.receiveChat(payload.message)
+        this.setComprehensionConversationState(payload.comprehension_state)
+        if (payload.show != null) {
+          console.log('payload non è null!')
+          this.setImageToShow(payload.show)
         }
+        if (payload.complete) {
+          this.setStep(4)
+          socket.emit('execute', {
+            comprehension_pipeline: this.comprehensionPipeline,
+          })
+        }
+        // }
         socket.on('results', (response) => {
           console.log('ho ricevuto questo', response)
           this.setRequestDescription(response.request)
