@@ -311,7 +311,7 @@ once the prediction is computed i would select the most relevant columns
 after prediction the diagnosis do you manage to expose the most important columns
 after having classified are you able to spot the features that are more significant
 would you find inchoerent students
- exhibit interconnections among examples
+exhibit interconnections among examples
 after having classified the cars can you retrieve the most relevant columns
 are you able to predict examples
 let's see correlations among data
@@ -327,12 +327,12 @@ let's compute elements which are similar
 after having predicted the g3  plot the columns that classify better
 might you show association rules between students
 i would like to view rules that associates examples
- visualize prediction of students
+visualize prediction of students
 after having classified the y i would like to draw the most important columns
 if you select DMC, ISI, RH, wind, FFMC, day, month find classification
 are you able to observe groups of similar people
 once the prediction is computed do you manage to select the most relevant features
- see rules that associates data
+see rules that associates data
 let's inspect correlations between samples
 shall we draw uniform students
 taking into account area, concavity, concave points, compactness, texture, symmetry, radius plot prediction

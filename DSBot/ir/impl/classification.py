@@ -65,7 +65,7 @@ class IRAutoClassification(IRClassification):
                                               # TODO: what is the maximum? Which first value give?
                                               IRNumPar("population_size", 50, "int", 10, 100, 10),
                                               IRNumPar('verbosity', 2, "int", 2, 2, 1),
-                                              IRNumPar('n_jobs', 10, "int", -1, 10, 1),
+                                              IRNumPar('n_jobs', -1, "int", -1, -1, 1),
                                               IRCatPar('scoring', 'accuracy', ['accuracy']),
                                               IRCatPar('cv', None, [None])],
                                              # TODO: if I want to pass a list of values?,
@@ -108,8 +108,20 @@ class IRAutoClassification(IRClassification):
                 #result['y_score'] = model.predict_proba(x_test)
             exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
             result['classifier'] = exctracted_best_model.fit(x_train, y_train.ravel())
+            if result['y_score']!=[]:
+                try:
+                    result['y_score'] = np.vstack((result['y_score'],exctracted_best_model.predict_proba(x_test)))
+                except AttributeError:
+                    result['y_score'] = np.concatenate((result['y_score'],exctracted_best_model.decision_function(x_test)))
+            else:
+                try:
+                    result['y_score'] = exctracted_best_model.predict_proba(x_test)
+                except AttributeError:
+                    result['y_score'] = exctracted_best_model.decision_function(x_test)
+
+
         #print(result['y_score'])
-        result['y_score'] = result['predicted_labels']
+        #result['y_score'] = result['predicted_labels']
 
         self._param_setted = False
         return result

@@ -23,14 +23,19 @@ class Dataset:
         return self.ds.shape[1]>2
 
     def set_label(self, label):
+        selected_label = None
         for c in self.ds.columns:
             if SequenceMatcher(None, c.strip().lower(), label.strip().lower()).ratio()>0.75:
                 selected_label = c
-        self.label = selected_label
-        self.hasLabel = True
-        # If the label column is numeric and the values in the column are more than 5 then the label is not considered categorical
-        if not (len(pd.DataFrame(self.ds[label])._get_numeric_data().columns)==1 and len(set(self.ds[label]))>5):
-            self.hasCategoricalLabel = True
+        if not selected_label==None:
+            self.label = selected_label
+            self.hasLabel = True
+            # If the label column is numeric and the values in the column are more than 5 then the label is not considered categorical
+            if not (len(pd.DataFrame(self.ds[label])._get_numeric_data().columns)==1 and len(set(self.ds[label]))>5):
+                self.hasCategoricalLabel = True
+            return True
+        else:
+            return False
 
     def set_characteristics(self):
         if self.ds is not None:

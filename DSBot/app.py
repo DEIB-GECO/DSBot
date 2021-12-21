@@ -85,8 +85,10 @@ def receive_ds():
         print(label)
 
         if label is not None and label != '':
-            dataset.set_label(label)
+            correct_label = dataset.set_label(label)
             print('dslabel', dataset.label, dataset.hasLabel)
+        if not correct_label:
+            # TODO Peter --> reask label
         dataset.set_characteristics()
         kb = KnowledgeBase()
         kb.kb = dataset.filter_kb(kb.kb)
@@ -257,4 +259,4 @@ def on_execute_received(payload):
 app.register_blueprint(simple_page, url_prefix=base_url)
 
 if __name__ == '__main__':
-    sio.run(app, debug=True, port=5000, use_reloader=True)
+    sio.run(app, debug=True, port=5000, use_reloader=False)
