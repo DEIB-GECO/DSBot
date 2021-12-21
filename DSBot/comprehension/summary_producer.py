@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+from utils.kb_helper import get_field_from_path, get_term_path
+
 introductory_sentence = "Let me understand if I interpreted well your request. "
 final_sentence = " Is it right?"
 
@@ -9,17 +11,19 @@ def summary_producer(operations_array, label):
     print("Summary producer, array è: " + str(operations_array))
     with open(Path(__file__).parent / 'text_productions.json', "r") as process_file:
         producible_sentences = json.loads(process_file.read())
-    with open('./kb_synonyms.json', "r") as knowledge_base_file:
-        knowledge_base = json.loads(knowledge_base_file.read())
+    # with open('./kb_synonyms.json', "r") as knowledge_base_file:
+    #   knowledge_base = json.loads(knowledge_base_file.read())
 
     sentences_array = []
     for user_module in operations_array:
-        if user_module in knowledge_base.keys():
-            sentences_array.append(producible_sentences[user_module]['summary'])
-        else:
-            for algorithm_family in knowledge_base.keys():
-                if user_module in knowledge_base[algorithm_family]:
-                    sentences_array.append(producible_sentences[algorithm_family]['summary'])
+        user_module_path = get_term_path(user_module)
+        user_module_sentence = get_field_from_path(user_module_path, "summary")
+        print("User module", user_module_path, "sentence: ", user_module_sentence)
+        if user_module_sentence != "":
+            sentences_array.append(user_module_sentence)
+    #    for algorithm_family in knowledge_base.keys():
+    #        if user_module in knowledge_base[algorithm_family]:
+    #            sentences_array.append(producible_sentences[algorithm_family]['summary'])
 
     # sentences_array = [producible_sentences[sentence]["summary"] for sentence in operations_array]
     sentences_array = list(filter(None, sentences_array))

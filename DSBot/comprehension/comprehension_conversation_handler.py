@@ -90,10 +90,9 @@ class Reformulation(ComprehensionConversationState):
         elif user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerificationPrediction()
             response = next_state.generate(pipeline_array, dataset)
-            return prepare_standard_response(
-                "I think I misinterpreted your original request. I will ask you some questions to better" \
-                " understand what you want to do. " + response['message'], response['comprehension_state'],
-                response['comprehension_pipeline'])
+            incipit = "I think I misinterpreted your original request. I will ask you some questions to better understand what you want to do. "
+            response["message"] = incipit + response["message"]
+            return response
         elif user_message_parsed['intent']['name'] in ['don_t_know', 'clarification_request']:
             return self.help(pipeline_array)
         elif user_message_parsed['intent']['name'] == 'example':
@@ -409,6 +408,18 @@ class CorrelationOrAssociationRules(ComprehensionConversationState):
             'correlation_or_association_rules', pipeline_array)
 
 
+class LabelRequestIfNotInsertedBefore(ComprehensionConversationState):
+
+    def generate(self, pipeline_array, dataset):
+        message = "Perfect! To do that, though, I need to understand which are is column you want to predict. " \
+                  "Please, can write me just the name of that column? "
+        print("le colonne sono: ", dataset.ds.columns())
+        return prepare_standard_response(message, "label_request", pipeline_array)
+
+    def handle(self, user_message_parsed, pipeline_array, dataset):
+        pass
+
+
 switcher = {
     'reformulation': Reformulation,
     'algorithm_verification_prediction': AlgorithmVerificationPrediction,
@@ -417,7 +428,8 @@ switcher = {
     'algorithm_verification_prediction_if_not_label': AlgorithmVerificationPredictionIfNotLabel,
     'regression_or_classification': RegressionOrClassification,
     'correlation_or_association_rules': CorrelationOrAssociationRules,
-    'feature_importance_or_not': FeatureImportanceOrNot
+    'feature_importance_or_not': FeatureImportanceOrNot,
+    'label_request': LabelRequestIfNotInsertedBefore
 }
 
 
@@ -429,6 +441,7 @@ def pipeline_array_to_string(pipeline_array):
 
 
 def comprehension_conversation_handler(user_payload, dataset):
+    print("invocata su ", user_payload)
     user_message_parsed = parse(user_payload['message'])
     print("user intent is:" + str(user_message_parsed))
     user_utterance = user_payload['message']

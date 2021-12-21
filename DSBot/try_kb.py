@@ -32,10 +32,19 @@ def rec(k, v, voc):
                         return rec(v2,v,v2)
                     else:
                         return False
-print(rec({'prediction':''},'randomForest',voc))
-fgjnj
+
+def rec_inside(chiave, dizio):
+    if 'values' not in dizio:
+        return False
+    elif chiave in dizio['values']:
+        return True
+    else:
+        for k in dizio['values']:
+            return rec_inside(chiave, dizio['values'][k])
+
+print(rec_inside('autoClassification',voc['prediction']))
 
 
-print(recursive_items(voc, {}))
+#print(recursive_items(voc, {}))
 #voc = [k for k, v in recursive_items(voc)]# if k not in ['description', 'explanation', 'example', 'values']]
 #print(voc)

@@ -1,19 +1,20 @@
 import numpy as np
 from string import *
+from utils.kb_helper import rec_inside
 
 #-------------------------------------------------------
 #This function returns to values for cae of match or mismatch
 def Diagonal(n1,n2,pt,voc):
-    words = []
 
-
-    for i in voc:
-        if n1 in voc[i]:
-            words = voc[i]
-    if(n1 == n2) or (n2 in words):
+    #for i in voc:
+    #    if n1 in voc[i]:
+    #        words = voc[i]
+    print(n1, n2, rec_inside(n2,voc[n1]))
+    if (n1 == n2) or (rec_inside(n2,voc[n1])):
         return pt['MATCH']
     else:
         return pt['MISMATCH']
+
 
 #------------------------------------------------------------
 #This function gets the optional elements of the aligment matrix and returns the elements for the pointers matrix.

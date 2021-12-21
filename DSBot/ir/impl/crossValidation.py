@@ -63,6 +63,7 @@ class IRTrainTest(IRCrossValidation):
         else:
             dataset = result['original_dataset'].ds
         labels = result['labels'].values
+        print(labels)
         result['x_train'] = []
         result['x_test'] = []
         result['y_train'] = []
@@ -96,6 +97,7 @@ class IRKFold(IRCrossValidation):
             dataset = result['original_dataset'].ds
 
         labels = result['labels'].values
+        #print(labels)
 
         print('PARAMETERSSSS', self.parameters)
         cv = self._model
@@ -104,6 +106,7 @@ class IRKFold(IRCrossValidation):
         result['y_train'] = []
         result['y_test'] = []
         for train_index, test_index in cv.split(dataset):
+            print(train_index)
             result['x_train'].append(dataset.values[train_index])
             result['x_test'].append(dataset.values[test_index])
             result['y_train'].append(labels[train_index])

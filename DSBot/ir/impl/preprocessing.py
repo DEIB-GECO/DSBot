@@ -154,7 +154,7 @@ class IROutliersRemove(IRPreprocessing):
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         index_old = dataset.index.values
         value_dataset.index = np.arange(len(dataset))
-        ds = value_dataset[((np.abs(value_dataset-value_dataset.mean()))<=(3*value_dataset.std())).sum(axis=1)<=0.9*value_dataset.shape[1]]
+        ds = value_dataset[((np.abs(value_dataset-value_dataset.mean()))<=(3*value_dataset.std())).sum(axis=1)>=0.9*value_dataset.shape[1]]
 
         if ds.shape[1]!=0 and ds.shape[0]!=0:
             print('len ds', ds.shape)
@@ -164,7 +164,7 @@ class IROutliersRemove(IRPreprocessing):
                 #print(label)
                 label.index = np.arange(0, len(value_dataset))
                 label = label.drop(set(value_dataset.index) - set(ds.index))
-                result['labels'] = label.T.values
+                result['labels'] = pd.DataFrame(label)#label.T.values
                 #print(result['labels'] )
             index_new = pd.DataFrame(index_old).drop(set(value_dataset.index) - set(ds.index))
             print('len index', len(index_new))

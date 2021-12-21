@@ -1,265 +1,114 @@
 {
    "clustering":{
-      "description":"AAA",
-      "explanation":"AAA",
-      "example":"AAA",
+      "summary": "you want to group your data in such a way that objects in the same group (called a cluster) are more similar (in some sense) to each other than to those in other groups (clusters).",
+      "explanation": "from your request, I understood you want to apply clustering, an analysis that aims at finding groups of data similar each other (clusters). This kind of analysis doesn't require any additional information from you, it works in total autonomy.",
+      "example": "suppose you are the owner of a supermarket and you have demographical information about the subscribers to the fidelity program of your store. You can apply this kind of analysis to find groups of similar customers, therefore understanding which are the kind of people that typically buy at the supermarket. You could exploit this information to improve the communication or create more effective offers for your target.",
       "values":{
-         "kmeans":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "dbscan":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "agglomerativeClustering":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         }
+         "kmeans":{},
+         "dbscan":{},
+         "agglomerativeClustering":{}
       }
    },
    "plot":{
-      "description":"AAA",
-      "explanation":"AAA",
-      "example":"AAA",
+      "summary": "you want to visualize the results in a plot.",
       "values":{
-         "scatterplot":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "heatmap":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "clustermap":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "distplot":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "barplot":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "featureImportancePlot":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "scatterAssociationRules":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "tableRegression":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "tableAssociationRules":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "lassoPlot":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         }
+         "scatterplot":{},
+         "heatmap":{},
+         "clustermap":{},
+         "distplot":{},
+         "barplot":{},
+         "featureImportancePlot":{},
+         "scatterAssociationRules":{},
+         "tableRegression":{},
+         "tableAssociationRules":{},
+         "lassoPlot":{}
       }
    },
    "prediction":{
-      "description":"AAA",
-      "explanation":"AAA",
-      "example":"AAA",
+      "summary": "your objective is to predict the value of ##label## column using the others data in the table.",
+      "explanation": "from your request, I understood you want to apply prediction. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict that column.",
+      "example": "suppose you are the owner of a hotel, and you have a table with the information of all the people who have stayed in your facility and the consumptions for the breakfast. With this kind of analysis, knowing who is going to stay in your hotel tonight, you can foresee how much fresh milk you have to order for tomorrow morning",
       "values":{
          "classification":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA",
+            "summary" : "your objective is to predict the value of the  ##label## column using the other data in your table.",
+            "example": "suppose you have gene exp, you want to bla bla bla",
+            "explanation" : "from your request I understood you want to apply classification, an analysis that tries to predict the value of a column of your dataset, called label, from the other data in the table. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict the value of that column.",
             "values":{
-               "autoClassification":{
-                  "description":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               },
-               "randomForest":{
-                  "description":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               },
-               "logisticRegression":{
-                  "description":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               }
+               "autoClassification":{},
+               "randomForest":{},
+               "logisticRegression":{}
             }
          },
          "regression":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA",
             "values":{
-               "autoRegression":{
-                  "description":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               },
-               "linearRegression":{
-                  "description":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               },
-               "ridgeRegression":{
-                  "description":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               }
+               "autoRegression":{},
+               "linearRegression":{},
+               "ridgeRegression":{}
             }
          }
       }
    },
    "featureSelection":{
-      "description":"AAA",
-      "explanation":"AAA",
-      "example":"AAA",
+      "summary": "you want to select the columns of the dataset (features) that are most relevant to your problem.",
       "values":{
          "unsupervisedFeatureSelection":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA",
-            "laplace":{
-               "description":"AAA",
-               "explanation":"AAA",
-               "example":"AAA"
-            },
-            "varianceThreshold":{
-               "description":"AAA",
-               "explanation":"AAA",
-               "example":"AAA"
+            "values": {
+               "laplace":{},
+               "varianceThreshold":{}
             }
          },
          "supervisedFeatureSelection":{
-            "selectKBest":{
-               "description":"AAA",
-               "explanation":"AAA",
-               "example":"AAA"
-            },
-            "selectPercentile":{
-               "description":"AAA",
-               "explanation":"AAA",
-               "example":"AAA"
-            },
-            "lasso":{
-               "description":"AAA",
-               "explanation":"AAA",
-               "example":"AAA"
+            "values": {
+               "selectKBest":{},
+               "selectPercentile":{},
+               "lasso":{}
             }
          },
-         "userFeatureSelection":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA",
-            "values":{
-               "userFeatureSelection":{
-                  "description":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               }
-            }
+         "userFeatureSelection":{}
          }
-      }
-   },
+      },
    "relation":{
-      "description":"AAA",
-      "explanation":"AAA",
-      "example":"AAA",
       "values":{
          "correlation":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA",
+            "summary": "you want to see how the features are statistically related to each other.",
+            "explanation": "from your request, I understood you want to apply correlation, a statistical tool that find relations between pairs of columns in the dataset. Finding correlated variables (columns) means that the value of one increases, the other one increases as well, and vice versa. The two variables can be also anti-correlated: when one increases the other decreases and viceversa.",
+            "example": "suppose you are the major of a big city, and you have a table with demographical information of the city neighborhoods. With this kind analysis, you can find which factors influence each other in your city. For example, you might discover that neighborhoods with a lower education level have higher crime rate, and viceversa. You could use this information make a reform to encourage education for children.",
             "values":{
-               "pearson":{
-                  "description":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               },
-               "spearman":{
-                  "description":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               }
+               "pearson":{},
+               "spearman":{}
             }
          },
          "associationRules":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA",
+            "summary": "you want to find some \"if-then\" rules that describe the relationship between the features (the columns) in your dataset.",
+            "explanation": "from your request, I understood you want to apply association rules. It is a machine learning algorithm that scans your table to try to elicit rules that describe the data in your table. That rules are in the form of \"if-then\" clauses, for example \"if the customer buys a shirt and a pair of trousers, then he buy also a pair of socks\".",
+            "example" : "suppose you are a ecommerce website owner and you have a table with all the purcase in your shop. If you discover that people who buy an item (e.g., bottle of wine), then buy also a second item (e.g., a cork), you can suggest the purchase of the second object when the first is added to the shopping cart to increase the revenues.",
             "values":{
-               "aPriori":{
-                  "description":"AAA",
-                  "explanation":"AAA",
-                  "example":"AAA"
-               }
+               "aPriori":{}
             }
          }
       }
    },
    "trainTestSplit":{
-      "description":"AAA",
-      "explanation":"AAA",
-      "example":"AAA",
       "values":{
-         "trainTestSplit":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "kFold":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         }
+         "trainTestSplit":{},
+         "kFold":{}
       }
    },
    "featureImportance":{
-      "description":"AAA",
-      "explanation":"AAA",
-      "example":"AAA",
+      "summary": "you want to see which are the most influencing features (columns of the table) in the final prediction.",
       "values":{
          "featureImportance":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
+             "summary": "your objective is to predict the value of ##label## column using the others data in the table.",
+             "explanation": "from your request, I understood you want to apply regression, an analysis that tries to predict a numerical value from your dataset. In this way, you aim at creating an algorithm that can be used on new, unseen, data to predict that column.",
+             "example": "suppose you are the owner of a hotel, and you have a table with the information of all the people who have stayed in your facility and the consumptions for the breakfast. With this kind of analysis, knowing who is going to stay in your hotel tonight, you can foresee how much fresh milk you have to order for tomorrow morning"
          }
       }
    },
+   "outliersDetection":{},
    "performance":{
-      "description":"AAA",
-      "explanation":"AAA",
-      "example":"AAA",
       "values":{
-         "roc":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         },
-         "regressionPerformance":{
-            "description":"AAA",
-            "explanation":"AAA",
-            "example":"AAA"
-         }
+         "roc":{},
+         "regressionPerformance":{}
       }
    }
 }
