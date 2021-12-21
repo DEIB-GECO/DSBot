@@ -124,8 +124,9 @@ class AlgorithmVerificationPrediction(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
         if dataset.hasLabel:
-            return prepare_standard_response("I see that you indicated the presence of a label in your dataset. Do you want to try to predict " \
-                   "its value from the other data? ", 'algorithm_verification_prediction', pipeline_array)
+            return prepare_standard_response(
+                "I see that you indicated the presence of a label in your dataset. Do you want to try to predict " \
+                "its value from the other data? ", 'algorithm_verification_prediction', pipeline_array)
         else:
             next_state = AlgorithmVerificationRelationships()
             return next_state.generate(pipeline_array, dataset)
@@ -363,6 +364,18 @@ class CorrelationOrAssociationRules(ComprehensionConversationState):
             'correlation_or_association_rules', pipeline_array)
 
 
+class LabelRequestIfNotInsertedBefore(ComprehensionConversationState):
+
+    def generate(self, pipeline_array, dataset):
+        message = "Perfect! To do that, though, I need to understand which are is column you want to predict. " \
+                  "Please, can write me just the name of that column? "
+        print("le colonne sono: ", dataset.ds.columns())
+        return prepare_standard_response(message, "label_request", pipeline_array)
+
+    def handle(self, user_message_parsed, pipeline_array, dataset):
+        pass
+
+
 switcher = {
     'reformulation': Reformulation,
     'algorithm_verification_prediction': AlgorithmVerificationPrediction,
@@ -370,7 +383,8 @@ switcher = {
     'algorithm_verification_clustering': AlgorithmVerificationClustering,
     'regression_or_classification': RegressionOrClassification,
     'correlation_or_association_rules': CorrelationOrAssociationRules,
-    'feature_importance_or_not': FeatureImportanceOrNot
+    'feature_importance_or_not': FeatureImportanceOrNot,
+    'label_request': LabelRequestIfNotInsertedBefore
 }
 
 
