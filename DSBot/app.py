@@ -85,8 +85,10 @@ def receive_ds():
         print(label)
 
         if label is not None and label != '':
-            dataset.set_label(label)
+            correct_label = dataset.set_label(label)
             print('dslabel', dataset.label, dataset.hasLabel)
+        if not correct_label:
+            # TODO Peter --> reask label
         dataset.set_characteristics()
         kb = KnowledgeBase()
         kb.kb = dataset.filter_kb(kb.kb)
