@@ -6,6 +6,7 @@
         truncate-length="15"
         :error="fileInputError"
         label="select a CSV"
+        @change="parse"
       ></v-file-input>
       <!-- <v-layout row wrap justify-center> -->
       <!-- <v-flex xs5> -->
@@ -35,6 +36,12 @@
           label="Separator"
         ></v-select>
       </v-flex>
+      <v-data-table
+        v-if="jsonDataset != null"
+        :items="jsonDataset"
+        :headers="columnNames"
+        :item-key="columnNames[0]"
+      ></v-data-table>
       <v-flex xs7>
         <v-text-field
           v-model="label"
@@ -49,6 +56,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import Papa from 'papaparse'
 
 export default {
   components: {},
@@ -63,12 +71,15 @@ export default {
       ],
       separator: '',
       dataset: null,
+      jsonDataset: null,
       fileInputError: false,
       separatorError: false,
       fileInputHint: '',
       label: '',
+      columnNames: [],
     }
   },
+  computed: {},
   methods: {
     sendData() {
       this.fileInputError = !this.dataset
@@ -88,8 +99,29 @@ export default {
         this.sendDataStore(inputData)
       }
     },
+    parse() {
+      const parsed = Papa.parse(this.dataset, {
+        header: this.hasColumnNames,
+        skipEmptyLines: true,
+        complete: function (results) {
+          for (const name in results.meta.fields) {
+            const objectino = {
+              text: results.meta.fields[name],
+              value: results.meta.fields[name],
+            }
+            console.log('objectino', objectino)
+            this.columnNames.push(objectino)
+          }
+          // nthis.columnNames = results.meta.fields
+          this.jsonDataset = results.data
+          // this.parsed = true;
+          console.log('Parsed', results)
+          console.log('column names', this.columnNames)
+        }.bind(this),
+      })
+      return parsed
+    },
     ...mapActions(['setStep', 'sendDataStore']),
   },
-  actions: {},
 }
 </script>
