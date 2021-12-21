@@ -23,15 +23,19 @@ class Dataset:
         return self.ds.shape[1]>2
 
     def set_label(self, label):
-        selected_label = None
-        for c in self.ds.columns:
-            if SequenceMatcher(None, c.strip().lower(), label.strip().lower()).ratio()>0.75:
-                selected_label = c
-        if not selected_label==None:
-            self.label = selected_label
+        selected_label = []
+        for r in [1,0.95,0.9,0.85,0.8,0.75]:
+            for c in self.ds.columns:
+                if SequenceMatcher(None, c.strip().lower(), label.strip().lower()).ratio()>r:
+                    selected_label.append(c)
+            if len(selected_label)>0:
+                break
+        print(selected_label)
+        if len(selected_label)==1:
+            self.label = selected_label[0]
             self.hasLabel = True
             # If the label column is numeric and the values in the column are more than 5 then the label is not considered categorical
-            if not (len(pd.DataFrame(self.ds[label])._get_numeric_data().columns)==1 and len(set(self.ds[label]))>5):
+            if not (len(pd.DataFrame(self.ds[self.label])._get_numeric_data().columns)==1 and len(set(self.ds[self.label]))>5):
                 self.hasCategoricalLabel = True
             return True
         else:
