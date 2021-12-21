@@ -306,9 +306,8 @@ class AlgorithmVerificationPredictionIfNotLabel(ComprehensionConversationState):
             return prepare_standard_response(sentence, "algorithm_verification_prediction_if_not_label", pipeline_array)
         elif user_message_parsed['intent']['name'] == 'affirm':
             pass
-            # TODO: chiedi label e poi dopo chiama classification or regression
-            # next_state = RegressionOrClassification()
-            # return next_state.generate(pipeline_array, dataset)
+            next_state = LabelRequestIfNotInsertedBefore()
+            return next_state.generate(pipeline_array, dataset)
         elif user_message_parsed['intent']['name'] in ['don_t_know', 'clarification_request']:
             return self.help(pipeline_array, dataset)
         elif user_message_parsed['intent']['name'] == 'example':
@@ -413,11 +412,17 @@ class LabelRequestIfNotInsertedBefore(ComprehensionConversationState):
     def generate(self, pipeline_array, dataset):
         message = "Perfect! To do that, though, I need to understand which are is column you want to predict. " \
                   "Please, can write me just the name of that column? "
-        print("le colonne sono: ", dataset.ds.columns())
+        print("le colonne sono: ", dataset.ds.columns)
+        columns = dataset.ds.columns
+        if len(columns) <= 15:
+            message = message + "In your dataset there are the following ones:"
+            for column in columns:
+                message = message + " " + column + ","
         return prepare_standard_response(message, "label_request", pipeline_array)
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
-        pass
+        label_name = user_message_parsed['text']
+
 
 
 switcher = {
