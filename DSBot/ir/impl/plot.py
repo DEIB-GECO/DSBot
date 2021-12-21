@@ -376,23 +376,25 @@ class IRROC(IRPlot):
         pass
 
     def run(self, result, session_id):
-        n_classes = set(result['labels'])
+        n_classes = set(result['labels'].T.values[0])
         print(n_classes)
 
         pred = np.array(result['y_score'])
-        y = np.array(result['y_test']).flatten()
+        y = [x for array in result['y_test'] for elem in array for x in elem]
         print(pred.shape)
-        print(y.shape)
+        #print(y.shape)
         #for i, j in zip(pred,y):
          #   print(i,j)
         if len(n_classes) > 2:
             y = label_binarize(y, classes=list(n_classes))
+            print(y.shape)
+            print(result['y_score'])
             plt.figure()
             fpr = dict()
             tpr = dict()
             roc_auc = dict()
             for i in range(len(n_classes)):
-                fpr[i], tpr[i], _ = roc_curve(y[:, i], pred[:, i])
+                fpr[i], tpr[i], _ = roc_curve(y[:, i], result['y_score'][:, i])
                 roc_auc[i] = auc(fpr[i], tpr[i])
             colors = cycle(['aqua', 'darkorange', 'cornflowerblue'])
             for i, color in zip(range(len(n_classes)), colors):
