@@ -51,7 +51,8 @@ sio = SocketIO(app,
                path=socketio_path,
                logger=False,
                engineio_logger=False,
-               debug=False)
+               debug=False,
+               pingTimeout=360000)
 
 message_queue = utils.MessageContainer()
 dataset = None
@@ -59,6 +60,7 @@ simple_page = Blueprint('root_pages',
                         __name__,
                         static_folder='../frontend/dist/static',
                         template_folder='../frontend/dist')
+
 
 @app.route('/receiveds', methods=['POST'])
 def receive_ds():
@@ -84,7 +86,7 @@ def receive_ds():
         dataset.session = session_id
         print(label)
 
-        correct_label= None
+        correct_label = None
 
         if label is not None and label != '':
             correct_label = dataset.set_label(label)
@@ -113,7 +115,8 @@ def receive_utterance():
         with open(f'./temp/temp_{session_id}/message{session_id}.txt', 'w') as f:
             f.write(args['message'])
 
-        os.system(f'onmt_translate -model {s2s_model} -src temp/temp_{session_id}/message{session_id}.txt -output ./temp/temp_{session_id}/pred{session_id}.txt -gpu -1 -verbose')
+        os.system(
+            f'onmt_translate -model {s2s_model} -src temp/temp_{session_id}/message{session_id}.txt -output ./temp/temp_{session_id}/pred{session_id}.txt -gpu -1 -verbose')
 
         with open(f'./temp/temp_{session_id}/pred{session_id}.txt', 'r') as f:
             wf = f.readlines()[0].strip().split(' ')
@@ -136,7 +139,7 @@ def get_results(received_id):
     if hasattr(data[session_id]['dataset'], 'plotly'):
         base64_string = data[session_id]['dataset'].plolty
     else:
-    # recupero il file
+        # recupero il file
         filename = data[session_id]['dataset'].name_plot
         if filename is None:
             pass
@@ -155,11 +158,16 @@ def get_results(received_id):
     details = data[session_id]['dataset'].measures
     tuning_data = framework.handle_data_input({})
     print("STO PER RESTITUIRE")
+    # emit('results', {"ready": True,
+    #                  "session_id": session_id,
+    #                  'img': str(base64_string),
+    #                  'details': str(details),
+    #                  'tuning': tuning_data}, namespace='/', broadcast=True)
     emit('results', {"ready": True,
-                    "session_id": session_id,
-                    'img': str(base64_string),
-                    'details': str(details),
-                    'tuning': tuning_data}, namespace='/', broadcast=True)
+                     "session_id": session_id,
+                     'img': str(base64_string),
+                     'details': str(details),
+                     'tuning': tuning_data})
 
 
 @app.route('/tuning', methods=['POST'])
@@ -172,22 +180,26 @@ def tuning():
         response = data[session_id]['framework'].handle_data_input(json_data['payload'])
     return jsonify({'tuning': response})
 
+
 @simple_page.route('/')
 def index():
     flask.current_app.logger.info("serve index")
     return render_template('inspire.html', async_mode=sio.async_mode)
+
 
 @app.route('/')
 def index():
     flask.current_app.logger.info("serve index")
     return render_template('inspire.html', async_mode=sio.async_mode)
 
+
 def execute_algorithm(ir, session_id):
     asyncio.run(execute_algorithm_logic(ir, session_id))
 
+
 async def execute_algorithm_logic(ir, session_id):
     app.logger.debug('Entering execute_algorithm function')
-    app.logger.info('Executing pipeline:',  [i for i in ir])
+    app.logger.info('Executing pipeline:', [i for i in ir])
     dataset = data[session_id]['dataset']
     if hasattr(dataset, 'label'):
         results = {'original_dataset': dataset, 'labels': dataset.label}
@@ -198,9 +210,11 @@ async def execute_algorithm_logic(ir, session_id):
     app.logger.info('Exiting execute_algorithm function')
     get_results(session_id)
 
+
 def re_execute_algorithm(ir, session_id):
     data[session_id]['dataset'].name_plot = None
     threading.Thread(target=execute_algorithm, kwargs={'ir': ir, 'session_id': session_id}).start()
+
 
 @app.route('/echo', methods=['POST'])
 def echo():
@@ -218,22 +232,32 @@ def comprehension_chat(results):
     result = comprehension_conversation_handler(results, data[results['session_id']]['dataset'])
     emit('comprehension_response', result)
 
+
 @sio.on('message_sent')
 def handle_message(data):
     global message_queue
     message_queue.push(data['message'].strip())
 
+
 @sio.on('ack')
 def handle_message(data):
     print('received_message', data)
+
 
 @sio.on('connect')
 def test_connect():
     pass
 
+
 @sio.on('receiveds')
 def on_df_received(form_data):
     print("user data received!")
+
+
+@sio.on('disconnect')
+def on_disconnect():
+    print('UFFA disconnected from server')
+
 
 @sio.on('execute')
 def on_execute_received(payload):
@@ -244,7 +268,9 @@ def on_execute_received(payload):
     for i in range(len(kb.kb)):
         sent = kb.kb[i]
         print(sent)
-        sent = [x for x in sent if x not in ['missingValuesHandle', 'labelRemove','oneHotEncode','labelAppend', 'zerVarRemove','outliersRemove','standardization','normalization']]
+        sent = [x for x in sent if
+                x not in ['missingValuesHandle', 'labelRemove', 'oneHotEncode', 'labelAppend', 'zerVarRemove',
+                          'outliersRemove', 'standardization', 'normalization']]
         scores[i] = NW(wf, sent, kb.voc) / len(sent)
         print(scores[i])
 
@@ -258,6 +284,10 @@ def on_execute_received(payload):
 
     data[session_id]['ir_tuning'] = ir_tuning
     execute_algorithm(ir_tuning, session_id)
+
+@sio.on('ask_results_again')
+def send_results_again(payload):
+    print('Qui rimanderemo i results', payload)
 
 app.register_blueprint(simple_page, url_prefix=base_url)
 
