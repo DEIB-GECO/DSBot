@@ -17,7 +17,7 @@ def recursive_items(dictionary, new_dict):
                 return new_dict
             else:
                 pass
-print(type(voc))
+
 def rec(k, v, voc):
     for key in k:
         if type(voc[key]) is voc and v in voc[key]['values']:
@@ -42,9 +42,44 @@ def rec_inside(chiave, dizio):
         for k in dizio['values']:
             return rec_inside(chiave, dizio['values'][k])
 
-print(rec_inside('autoClassification',voc['prediction']))
 
+def sin(k1,k2, d, acc=0):
+    if (k1 in d) and (k2 in d):
+        return False
+    elif acc == 2:
+        return True
+    elif k1 in d:
+        if acc==1:
+            return True
+        nd = d[k1].get("values", {})
+        if k2 in nd:
+            return True
+        else:
+            return any([sin(k1,k2, nd[k].get("values", {}), acc=acc+1) for k in nd.keys()])
+    elif k2 in d:
+        if acc==1:
+             return True
+        nd = d[k2].get("values", {})
+        if k1 in nd:
+            return True
+        else:
+            return any([sin(k1,k2, nd[k].get("values", {}), acc=acc+1) for k in nd.keys()])
+    else:
+        res = False
+        for k in d.keys():
+            #print(k)
+            res = res or sin(k1,k2, d[k].get("values", {}), acc=0)
+        return res
 
+l= ['autoClassification', 'prediction', 'clustering', 'featureSelection', 'unsupervisedFeatureSelection',
+          'logisticRegression', 'kmeans', 'classification', 'regression', 'userFeatureSelection', 'lasso',
+          'plot', 'scatterplot', 'featureImportance', 'outliersDetection', 'selectKBest', 'correlation',
+          'associationRules', 'relation', 'pearson', 'randomForest', 'dbscan']
+
+#print(sin("autoClassification","classification",voc))
+for a in l:
+     for b in l:
+         print(a,b, sin(a,b,voc))
 #print(recursive_items(voc, {}))
 #voc = [k for k, v in recursive_items(voc)]# if k not in ['description', 'explanation', 'example', 'values']]
 #print(voc)

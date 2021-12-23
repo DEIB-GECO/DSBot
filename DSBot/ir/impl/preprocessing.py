@@ -6,8 +6,7 @@ from sklearn.impute._iterative import IterativeImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
 from pandas.api.types import is_numeric_dtype
 from ir.ir_operations import IROp, IROpOptions
-from utils import get_last_dataset
-
+from utils import *
 
 class IRPreprocessing(IROp):
     def __init__(self, name, parameters=None, model = None):
@@ -143,7 +142,8 @@ class IROutliersRemove(IRPreprocessing):
         # TODO: implement
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
+        sio = kwargs.get('socketio', None)
         if 'new_dataset' in result:
             dataset = result['new_dataset']
         else:
@@ -155,7 +155,8 @@ class IROutliersRemove(IRPreprocessing):
         index_old = dataset.index.values
         value_dataset.index = np.arange(len(dataset))
         ds = value_dataset[((np.abs(value_dataset-value_dataset.mean()))<=(3*value_dataset.std())).sum(axis=1)>=0.9*value_dataset.shape[1]]
-
+        perc_outliers = (len(ds)/len(dataset))*100
+        notify_user(f'The {perc_outliers:.3f}% of the rows are outliers. I will remove them.', socketio=sio)
         if ds.shape[1]!=0 and ds.shape[0]!=0:
             print('len ds', ds.shape)
             result['new_dataset'] = ds

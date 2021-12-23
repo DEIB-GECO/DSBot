@@ -190,7 +190,7 @@ class IRSelectPercentile(IRFeatureSelection):
 class IRLaplace(IRFeatureSelection):
     def __init__(self):
         super(IRLaplace, self).__init__("laplace",
-                                        [IRNumPar('percentage', 1, "float", 0, 1, 0.05)],  # TODO: what are minimum and maximum?
+                                        [IRNumPar('percentage', 0.75, "float", 0, 1, 0.05)],  # TODO: what are minimum and maximum?
                                         Laplace)
 
     def parameter_tune(self, dataset):
@@ -216,7 +216,6 @@ class IRLaplace(IRFeatureSelection):
             print('laplace' , result['transformed_ds'].shape)
 
         return result
-
 
 
 class IRGenericFeatureSelection(IROpOptions):

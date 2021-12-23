@@ -1,6 +1,6 @@
 import numpy as np
 from string import *
-from utils.kb_helper import rec_inside
+from utils.kb_helper import sin
 
 #-------------------------------------------------------
 #This function returns to values for cae of match or mismatch
@@ -9,8 +9,8 @@ def Diagonal(n1,n2,pt,voc):
     #for i in voc:
     #    if n1 in voc[i]:
     #        words = voc[i]
-    print(n1, n2, rec_inside(n2,voc[n1]))
-    if (n1 == n2) or (rec_inside(n2,voc[n1])):
+    print(n1, n2, sin(n2,n1,voc))
+    if (n1 == n2) or (sin(n2,n1, voc)):
         return pt['MATCH']
     else:
         return pt['MISMATCH']

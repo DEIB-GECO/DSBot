@@ -1,14 +1,33 @@
 import json
 
-
-def rec_inside(chiave, dizio):
-    if 'values' not in dizio:
+def sin(k1,k2, d, acc=0):
+    if (k1 in d) and (k2 in d):
         return False
-    elif chiave in dizio['values']:
+    elif acc == 2:
         return True
+    elif k1 in d:
+        if acc==1:
+            return True
+        nd = d[k1].get("values", {})
+        if k2 in nd:
+            return True
+        else:
+            return any([sin(k1,k2, nd[k].get("values", {}), acc=acc+1) for k in nd.keys()])
+    elif k2 in d:
+        if acc==1:
+             return True
+        nd = d[k2].get("values", {})
+        if k1 in nd:
+            return True
+        else:
+            return any([sin(k1,k2, nd[k].get("values", {}), acc=acc+1) for k in nd.keys()])
     else:
-        for k in dizio['values']:
-            return rec_inside(chiave, dizio['values'][k])
+        res = False
+        for k in d.keys():
+            #print(k)
+            res = res or sin(k1,k2, d[k].get("values", {}), acc=0)
+        return res
+
 
 
 def get_term_path(term):
