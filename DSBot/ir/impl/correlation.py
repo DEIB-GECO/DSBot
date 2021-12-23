@@ -14,7 +14,7 @@ class IRCorrelation(IROp):
         return self.correlation
 
     #TDB cosa deve restituire questa funzione?
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
         elif 'new_dataset' in result:
@@ -23,6 +23,10 @@ class IRCorrelation(IROp):
             dataset = result['original_dataset'].ds
         self.correlation = dataset.corr(method=self._model)
         result['correlation'] = self.correlation
+        cols2drop = [c for c in result['correlation'].columns if result['correlation'][c].isna().sum()>0.9*len(result['correlation'])]
+        result['correlation'] = result['correlation'].drop(cols2drop,axis=1)
+        result['correlation'] = result['correlation'].dropna()
+        print(result['correlation'])
         return result
 
 class IRPearson(IRCorrelation):

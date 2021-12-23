@@ -34,7 +34,7 @@ class IROneHotEncode(IRPreprocessing):
         # TODO: implement
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         dataset = get_last_dataset(result)
         cols = dataset.columns
         num_cols = dataset._get_numeric_data().columns
@@ -63,7 +63,7 @@ class IRLabelOperation(IROp):
         self._param_setted = True
 
     #TDB cosa deve restituire questa funzione?
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         pass
 
 class IRLabelRemove(IRLabelOperation):
@@ -75,7 +75,7 @@ class IRLabelRemove(IRLabelOperation):
         # TODO: implement
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         label = result['labels']
         #print('labels', label.shape)
         if 'new_dataset' in result:
@@ -119,7 +119,7 @@ class IRLabelAppend(IRLabelOperation):
         # TODO: implement
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         label = result['labels']
         #print('labels', label.shape)
         dataset = result['new_dataset']
@@ -160,7 +160,7 @@ class IROutliersRemove(IRPreprocessing):
         if ds.shape[1]!=0 and ds.shape[0]!=0:
             print('len ds', ds.shape)
             result['new_dataset'] = ds
-            if 'labels' in result:
+            if result['original_dataset'].hasLabel:
                 label = pd.DataFrame(result['labels'])
                 #print(label)
                 label.index = np.arange(0, len(value_dataset))
@@ -188,7 +188,7 @@ class IRStandardization(IRPreprocessing):
         # TODO: implement
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         print('STANDARDIZATION')
         dataset = get_last_dataset(result)
         dataset = pd.DataFrame(StandardScaler().fit_transform(dataset), index=dataset.index, columns=dataset.columns)
@@ -204,7 +204,7 @@ class IRNormalization(IRPreprocessing):
         # TODO: implement
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         dataset = get_last_dataset(result)
         #dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
