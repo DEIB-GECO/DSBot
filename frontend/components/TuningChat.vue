@@ -75,7 +75,11 @@ import io from 'socket.io-client'
 
 // const SOCKET_PATH = '/inspire/socket.io'
 // const SOCKET_ENDPOINT = '/test'
-const socket = io('http://127.0.0.1:5000/')
+const socket = io('http://127.0.0.1:5000/', {
+  timeout: 5000000,
+  pingTimeout: 5000000,
+  pingInterval: 250000,
+})
 
 export default {
   components: {},
@@ -109,7 +113,7 @@ export default {
       // this.destination === 'refinement' ||
       this.destination === 'comprehension'
     ) {
-      console.log('UELLA', socket.connected)
+      console.log('UELLA', socket)
       socket.emit('ack', { message_id: 1, location: 'crated' })
       console.log('UELLA2')
       socket.on('message_response', (payload) => {
@@ -151,6 +155,16 @@ export default {
           this.setImage(response.img)
         })
 
+        socket.on('disconnect', (reason) => {
+          console.log('Disconnesso dal socket perchè', reason)
+          socket.connect()
+        })
+
+        socket.on('connect', () => {
+          console.log('connesso!')
+          socket.emit('ask_results_again', { session_id: this.sessionId })
+        })
+
         /*
         if (payload.type) {
           console.log('server sent JSON_response', payload)
@@ -165,14 +179,15 @@ export default {
       socket.on('unfreeze_chat', () => {
         this.isChatActive = true
       })
-      /*
+
       socket.on('reconnect', () => {
-        socket.emit('ack', {
-          message_id: this.lastMessageId,
-          location: 'reconnect',
-        })
         console.log('RECONNECT! Mando ack')
       })
+
+      socket.on('connection_error', (err) => {
+        console.log("Questo è l'errore", err)
+      })
+      /*
       socket.on('wait_msg', (payload) => {
         console.log('Ehi wait msg', payload)
         this.jsonResponseParsingFunctions.message(payload.payload)
