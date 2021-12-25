@@ -79,12 +79,15 @@ def receive_ds():
         except:
             pass
         uploaded_file.save('./temp/temp_' + str(session_id) + '/' + uploaded_file.filename)
-        dataset = pd.read_csv('./temp/temp_' + str(session_id) + '/' + str(uploaded_file.filename),
-                              header=has_columns_name, index_col=has_index, sep=sep, engine='python')
-        dataset.to_csv('./temp/temp_' + str(session_id) + '/' + uploaded_file.filename)
-        dataset = Dataset(dataset)
-        dataset.session = session_id
-        print(label)
+        try:
+            dataset = pd.read_csv('./temp/temp_' + str(session_id) + '/' + str(uploaded_file.filename),
+                                  header=has_columns_name, index_col=has_index, sep=sep, engine='python')
+            dataset.to_csv('./temp/temp_' + str(session_id) + '/' + uploaded_file.filename)
+            dataset = Dataset(dataset)
+            dataset.session = session_id
+        except:
+            #TODO insert an alert that says that the dataset is not uploaded correctly
+            pass
 
         correct_label = None
 
