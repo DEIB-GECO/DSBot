@@ -108,11 +108,13 @@ class IRAutoClassification(IRClassification):
                 #result['y_score'] = model.predict_proba(x_test)
             exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
             result['classifier'] = exctracted_best_model.fit(x_train, y_train.ravel())
+
             if result['y_score']!=[]:
                 try:
                     result['y_score'] = np.vstack((result['y_score'],exctracted_best_model.predict_proba(x_test)))
                 except AttributeError:
-                    result['y_score'] = np.concatenate((result['y_score'],exctracted_best_model.decision_function(x_test)))
+                    result['y_score'] = np.vstack((result['y_score'],exctracted_best_model.decision_function(x_test)))
+
             else:
                 try:
                     result['y_score'] = exctracted_best_model.predict_proba(x_test)

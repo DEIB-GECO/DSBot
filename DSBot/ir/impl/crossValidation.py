@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 from ir.ir_exceptions import LabelsNotAvailable
 from ir.ir_operations import IROp, IROpOptions
-from ir.ir_parameters import IRNumPar
+from ir.ir_parameters import IRNumPar, IRCatPar
 
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier
@@ -78,7 +78,8 @@ class IRTrainTest(IRCrossValidation):
 
 class IRKFold(IRCrossValidation):
     def __init__(self):
-        super(IRKFold, self).__init__("kFold",[IRNumPar("n_splits", 3, "int", 2, 10, 1)],  # TODO: if I want to pass a list of values?
+        super(IRKFold, self).__init__("kFold",[IRNumPar("n_splits", 3, "int", 2, 10, 1),
+                                               IRCatPar('shuffle', True, [True,False])],  # TODO: if I want to pass a list of values?
                                       KFold)
         self._param_setted = False
 

@@ -119,7 +119,7 @@ def receive_utterance():
             f.write(args['message'])
 
         os.system(
-            f'onmt_translate -model {s2s_model} -src temp/temp_{session_id}/message{session_id}.txt -output ./temp/temp_{session_id}/pred{session_id}.txt -gpu -1 -verbose')
+            f'onmt_translate -model {s2s_model} -src temp/temp_{session_id}/message{session_id}.txt -output ./temp/temp_{session_id}/pred{session_id}.txt -gpu -1 -verbose -replace_unk')
 
         with open(f'./temp/temp_{session_id}/pred{session_id}.txt', 'r') as f:
             wf = f.readlines()[0].strip().split(' ')
@@ -140,7 +140,7 @@ def get_results(received_id):
     app.logger.info('Polling results for session: %s', session_id)
 
     if hasattr(data[session_id]['dataset'], 'plotly'):
-        base64_string = data[session_id]['dataset'].plolty
+        base64_string = data[session_id]['dataset'].plotly
     else:
         # recupero il file
         filename = data[session_id]['dataset'].name_plot
@@ -259,7 +259,7 @@ def on_df_received(form_data):
 
 @sio.on('disconnect')
 def on_disconnect():
-    print('UFFA disconnected from server')
+    print('### Disconnected from server')
 
 
 @sio.on('execute')
@@ -291,6 +291,7 @@ def on_execute_received(payload):
 @sio.on('ask_results_again')
 def send_results_again(payload):
     print('Qui rimanderemo i results', payload)
+    get_results(session_id)
 
 app.register_blueprint(simple_page, url_prefix=base_url)
 
