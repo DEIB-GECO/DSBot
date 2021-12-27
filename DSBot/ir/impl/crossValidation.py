@@ -78,13 +78,14 @@ class IRTrainTest(IRCrossValidation):
 
 class IRKFold(IRCrossValidation):
     def __init__(self):
-        super(IRKFold, self).__init__("kFold",[IRNumPar("n_splits", 3, "int", 2, 10, 1),
+        super(IRKFold, self).__init__("kFold",[IRNumPar("n_splits", 3, "int", 2, 20, 1),
                                                IRCatPar('shuffle', True, [True,False])],  # TODO: if I want to pass a list of values?
                                       KFold)
         self._param_setted = False
 
     def parameter_tune(self, dataset):
-        pass
+        if len(dataset)/self.parameters['n_splits'].value > 500:
+            self.parameters['n_splits'].value = int(len(dataset)/500)
 
     def run(self, result, session_id):
         if not self._param_setted:

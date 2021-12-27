@@ -52,7 +52,8 @@ sio = SocketIO(app,
                logger=False,
                engineio_logger=False,
                debug=False,
-               pingTimeout=360000)
+               ping_timeout=360000,
+               ping_interval=10)
 
 message_queue = utils.MessageContainer()
 dataset = None
@@ -144,14 +145,12 @@ def get_results(received_id):
     else:
         # recupero il file
         filename = data[session_id]['dataset'].name_plot
-        if filename is None:
-            pass
-
-        # codifico il file in bytecode
-        with open(filename, "rb") as img_file:
-            my_string = base64.b64encode(img_file.read())
-            # trasformo il bytecode in stringa
-            base64_string = my_string.decode('utf-8')
+        if filename is not None:
+            # codifico il file in bytecode
+            with open(filename, "rb") as img_file:
+                my_string = base64.b64encode(img_file.read())
+                # trasformo il bytecode in stringa
+                base64_string = my_string.decode('utf-8')
 
     framework = get_framework(pipeline=data[session_id]['ir_tuning'],
                               result=base64_string,
