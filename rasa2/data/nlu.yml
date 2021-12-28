@@ -234,9 +234,23 @@ nlu:
       - I want to [classify]{"entity": "algorithm", "value":"classification"}
       - I want the [model]{"entity": "algorithm", "value":"prediction"}
       - I want the [classification model]{"entity": "algorithm", "value":"classification"}
-      - I am more interested in {"entity": "algorithm", "value":"prediction"} the value
-      - I am more interested in {"entity": "algorithm", "value":"prediction"} the values
+      - I am more interested in [classifying]{"entity": "algorithm", "value":"prediction"} the value
+      - I am more interested in [predicting]{"entity": "algorithm", "value":"prediction"} the values
       - What are they?
+      - Finding [direct relationships{"entity": "algorithm", "value":"correlation"}  between numerical columns
+      - Finding [relationships]{"entity": "algorithm", "value":"correlation"}
+      - I want [rules]{"entity": "algorithm", "value":"association_rules"} in the "if -> then" form that describe behaviours of more columns
+      - I am more interested in [direct relationships{"entity": "algorithm", "value":"correlation"}  between numerical columns
+      - I'm interested in [relationships]{"entity": "algorithm", "value":"correlation"}
+      - I have interest in [rules]{"entity": "algorithm", "value":"association_rules"} in the "if -> then" form that describe behaviours of more columns
+      - I am more interested in the [prediction]{"entity": "algorithm", "value":"prediction"} itself
+      - I am interested in understanding the most [influencing factors]{"entity": "algorithm", "value":"features_importance"} in determining the prediction
+      - I want to discover the most [relevant factors]{"entity": "algorithm", "value":"features_importance"} of the prediction
+      - [rules]{"entity": "algorithm", "value":"association_rules"}
+      - [association rules]{"entity": "algorithm", "value":"association_rules"}
+      - [correlation]{"entity": "algorithm", "value":"correlation"}
+      - [linear dependence]{"entity": "algorithm", "value":"correlation"} between variables in your table.
+      - I want [linear dependence]{"entity": "algorithm", "value":"correlation"} between variables in your table.
 
   - intent: mood_unhappy
     examples: |
