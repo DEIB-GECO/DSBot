@@ -54,7 +54,7 @@ class Dataset:
         return (self.ds.isnull().sum().sum())>0
 
     def zero_variance(self):
-        var = self.ds.std(axis=1)
+        var = self.ds.std(axis=0)
         return (var==0).sum()>0
 
     def categorical_columns(self):

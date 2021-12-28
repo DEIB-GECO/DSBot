@@ -11,6 +11,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import KFold
 from collections import Counter
 import numpy as np
+from tpot import decorators
 
 
 class IRClassification(IROp):
@@ -61,13 +62,13 @@ class IRClassification(IROp):
 class IRAutoClassification(IRClassification):
     def __init__(self):
         super(IRAutoClassification, self).__init__("autoClassification",
-                                             [IRNumPar("generations", 5, "int", 2, 10, 1),
+                                             [IRNumPar("generations", 3, "int", 2, 10, 1),
                                               # TODO: what is the maximum? Which first value give?
                                               IRNumPar("population_size", 50, "int", 10, 100, 10),
                                               IRNumPar('verbosity', 2, "int", 2, 2, 1),
                                               IRNumPar('n_jobs', -1, "int", -1, -1, 1),
                                               IRCatPar('scoring', 'accuracy', ['accuracy']),
-                                              IRCatPar('cv', None, [None])],
+                                              IRCatPar('config_dict', 'TPOT light', ['Default TPOT','TPOT light', 'TPOT MDR'])],
                                              # TODO: if I want to pass a list of values?,
 
                                              TPOTClassifier)
@@ -82,6 +83,7 @@ class IRAutoClassification(IRClassification):
         pass
 
     def run(self, result, session_id):
+        decorators.MAX_EVAL_SECS = 100
         if not self._param_setted:
             self.set_model(result)
         if 'transformed_ds' in result:
@@ -94,20 +96,23 @@ class IRAutoClassification(IRClassification):
         result['predicted_labels'] = []
         result['y_score'] = []
         result['feat_imp'] = []
-
+        model = self._model
+        model.fit(dataset, np.array(labels).ravel())
+        model.export('tpot_exported_pipeline.py')
+        exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
+        print(exctracted_best_model)
+        result['classifier'] = exctracted_best_model#.fit(dataset, labels)
         for x_train, x_test, y_train,y_test in zip(result['x_train'],result['x_test'],result['y_train'],result['y_test']):
-            model = self._model
-            print(x_train,np.array(y_train).ravel())
-            model.fit(x_train, np.array(y_train).ravel())
+            #model.fit(x_train, np.array(y_train).ravel())
+            exctracted_best_model.fit(x_train, np.array(y_train).ravel())
             if result['predicted_labels']!=[]:
-                result['predicted_labels'] = np.concatenate((result['predicted_labels'],model.predict(x_test)))
+                result['predicted_labels'] = np.concatenate((result['predicted_labels'],exctracted_best_model.predict(x_test)))
                 #result['y_score'] = np.concatenate((result['y_score'], model.predict_proba(x_test)))
             else:
-                result['predicted_labels'] = model.predict(x_test)
+                result['predicted_labels'] = exctracted_best_model.predict(x_test)
 
                 #result['y_score'] = model.predict_proba(x_test)
-            exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
-            result['classifier'] = exctracted_best_model.fit(x_train, y_train.ravel())
+            #exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
 
             if result['y_score']!=[]:
                 try:
@@ -120,6 +125,7 @@ class IRAutoClassification(IRClassification):
                     result['y_score'] = exctracted_best_model.predict_proba(x_test)
                 except AttributeError:
                     result['y_score'] = exctracted_best_model.decision_function(x_test)
+            print(result['y_score'])
 
 
         #print(result['y_score'])
@@ -127,6 +133,9 @@ class IRAutoClassification(IRClassification):
 
         self._param_setted = False
         return result
+
+    def write(self,session_id):
+        pass
 
 class IRRandomForest(IRClassification):
     def __init__(self):
