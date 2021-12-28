@@ -17,6 +17,7 @@ import os
 import pandas as pd
 import base64
 from flask.sessions import SecureCookieSessionInterface
+from utils.kb_helper import clean_pipeline
 
 from tuning import get_framework
 import flask
@@ -124,6 +125,8 @@ def receive_utterance():
 
         with open(f'./temp/temp_{session_id}/pred{session_id}.txt', 'r') as f:
             wf = f.readlines()[0].strip().split(' ')
+
+        wf = clean_pipeline(wf)
 
         comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
 
