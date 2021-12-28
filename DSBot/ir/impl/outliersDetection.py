@@ -31,7 +31,6 @@ class IROutliersDetection(IROp):
         labels = result['labels']
         self.parameter_tune(dataset)
         for p,v in self.parameters.items():
-            print(p,v)
             self._model.__setattr__(p,self.parameters[p].value)
         self._param_setted = True
 
@@ -52,7 +51,7 @@ class IROutliersDetection(IROp):
         else:
             dataset = result['original_dataset'].ds
         if self.__class__.__name__!="IROutliersDetection":
-            print('PARAMETERSSSS', self.parameters)
+            print('PARAMETERS', self.parameters)
             result['predicted_outliers'] = self._model.fit_predict(dataset)
             mask_outliers = result['predicted_outliers'] == -1
             result['outliers_dataset'] = pd.DataFrame(dataset.values[mask_outliers, :])

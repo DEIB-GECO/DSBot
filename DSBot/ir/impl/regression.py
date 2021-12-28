@@ -30,7 +30,6 @@ class IRRegression(IROp):
         labels = result['labels']
         self.parameter_tune(dataset, labels)
         for p,v in self.parameters.items():
-            print(p,v)
             self._model.__setattr__(p,self.parameters[p].value)
         self._param_setted = True
 
@@ -41,7 +40,6 @@ class IRRegression(IROp):
 
     #TDB cosa deve restituire questa funzione?
     def run(self, result, session_id):
-        print(self._param_setted)
         if not self._param_setted:
             self.set_model(result)
 
@@ -52,7 +50,7 @@ class IRRegression(IROp):
         else:
             dataset = result['original_dataset'].ds
 
-        print('PARAMETERSSSS', self.parameters)
+        print('PARAMETERS', self.parameters)
         result['predicted_labels'] = []
         result['y_score'] = []
         result['feat_imp'] = []
@@ -100,7 +98,6 @@ class IRAutoRegression(IRRegression):
             model = self._model
             model.fit(x_train, y_train.ravel())
 
-            #print(type(model.predict_proba(x_test)))
             if result['predicted_labels']!=[]:
                 result['predicted_labels'] = np.concatenate((result['predicted_labels'],model.predict(x_test)))
                 #result['y_score'] = np.concatenate((result['y_score'], model.predict_proba(x_test)))
@@ -108,9 +105,7 @@ class IRAutoRegression(IRRegression):
                 result['predicted_labels'] = model.predict(x_test)
             exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
             result['regressor'] = exctracted_best_model.fit(x_train, y_train.ravel())
-                #result['y_score'] = model.predict_proba(x_test)
-        print(result['predicted_labels'] )
-        #print(result['y_score'])
+
         result['y_score'] = result['predicted_labels']
 
         self._param_setted = False

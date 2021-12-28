@@ -225,9 +225,6 @@ def re_execute_algorithm(ir, session_id):
 def echo():
     json_data = request.get_json(force=True)
 
-    # Do stuff with the data received
-    print(json_data)
-
     # Return a response
     return f"echo -> {json_data['payload']}"
 
@@ -269,23 +266,24 @@ def on_execute_received(payload):
     scores = {}
     wf = payload['comprehension_pipeline']
     kb = data[session_id]['kb']
-    print(kb.kb)
+    print('Translated workflow', wf)
+    #print(kb.kb)
     for i in range(len(kb.kb)):
         sent = kb.kb[i]
-        print(sent)
+        #print(sent)
         sent = [x for x in sent if
                 x not in ['missingValuesHandle', 'labelRemove', 'oneHotEncode', 'labelAppend', 'zerVarRemove',
                           'outliersRemove', 'standardization', 'normalization']]
         scores[i] = NW(wf, sent, kb.voc) / len(sent)
-        print(scores[i])
+        #print(scores[i])
 
-    print(scores)
+    #print(scores)
     max_key = max(scores, key=scores.get)
     max_key = kb.kb[max_key]
     print('MAX', max_key)
 
     ir_tuning = create_IR(max_key, message_queue)
-    print(ir_tuning)
+    #print(ir_tuning)
 
     data[session_id]['ir_tuning'] = ir_tuning
     execute_algorithm(ir_tuning, session_id)

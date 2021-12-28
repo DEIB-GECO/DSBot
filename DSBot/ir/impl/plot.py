@@ -164,7 +164,6 @@ class IRTableAssociationRules(IRPlot):
             raise RulesNotAvailable
         else:
             rules = result['associationRules']
-        print('tableAssRules')
 
         df = rules[['antecedents','consequents','support','confidence']]
         df_styled = df.style.background_gradient() #adding a gradient based on values in cell
@@ -377,18 +376,11 @@ class IRROC(IRPlot):
 
     def run(self, result, session_id):
         n_classes = set(result['labels'].T.values[0])
-        print(n_classes)
-
         pred = np.array(result['y_score'])
         y = [x for array in result['y_test'] for elem in array for x in elem]
-        print(pred.shape)
-        #print(y.shape)
-        #for i, j in zip(pred,y):
-         #   print(i,j)
+
         if len(n_classes) > 2:
             y = label_binarize(y, classes=list(n_classes))
-            print(y.shape)
-            print(result['y_score'])
             plt.figure()
             fpr = dict()
             tpr = dict()
@@ -403,8 +395,6 @@ class IRROC(IRPlot):
                                ''.format(i, roc_auc[i]))
         else:
             plt.figure()
-            print(y)
-            print(pred)
             try:
                 fpr, tpr, _ = roc_curve(y, pred[:,1])
             except:
@@ -438,8 +428,6 @@ class IRFeatureImportancePlot(IRPlot):
         pass
 
     def run(self, result, session_id):
-        print('FEAT IMP PLOT')
-        print(result['feature_importance'])
         fig=px.bar_polar(result['feature_importance'], r="FI", theta="Cols",
                            color="Cols", template="plotly_dark",
                            color_discrete_sequence=px.colors.sequential.Plasma_r)
@@ -464,8 +452,6 @@ class IRFeatureImportanceBarPlot(IRPlot):
         pass
 
     def run(self, result, session_id):
-        print('FEAT IMP PLOT')
-        print(result['feature_importance'])
         df = result['feature_importance'].sort_values(by='FI', ascending=1)
         plt.figure(figsize=(12, 8))
         plt.title('Feature Importances')

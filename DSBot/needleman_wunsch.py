@@ -9,7 +9,7 @@ def Diagonal(n1,n2,pt,voc):
     #for i in voc:
     #    if n1 in voc[i]:
     #        words = voc[i]
-    print(n1, n2, sin(n2,n1,voc))
+    #print(n1, n2, sin(n2,n1,voc))
     if (n1 == n2) or (sin(n2,n1, voc)):
         return pt['MATCH']
     else:

@@ -31,7 +31,7 @@ class IRCrossValidation(IROp):
         labels = result['labels']
         self.parameter_tune(dataset)
         for p,v in self.parameters.items():
-            print(p,v)
+            #print(p,v)
             self._model.__setattr__(p,self.parameters[p].value)
         self._param_setted = True
 
@@ -64,7 +64,6 @@ class IRTrainTest(IRCrossValidation):
         else:
             dataset = result['original_dataset'].ds
         labels = result['labels'].values
-        print(labels)
         result['x_train'] = []
         result['x_test'] = []
         result['y_train'] = []
@@ -85,10 +84,9 @@ class IRKFold(IRCrossValidation):
         self._param_setted = False
 
     def parameter_tune(self, dataset):
-        print('parameter tune')
         if len(dataset)/self.parameters["n_splits"].value > 10000:
             self.parameters["n_splits"].value = int(len(dataset)/10000)
-        print(self.parameters)
+        #print(self.parameters)
 
 
     def run(self, result, session_id):
@@ -105,18 +103,15 @@ class IRKFold(IRCrossValidation):
         labels = result['labels'].values
         #print(labels)
 
-        print('PARAMETERSSSS', self.parameters)
+        print('PARAMETERS', self.parameters)
         cv = self._model
         result['x_train'] = []
         result['x_test'] = []
         result['y_train'] = []
         result['y_test'] = []
         for train_index, test_index in cv.split(dataset):
-            print(dataset.shape)
             result['x_train'].append(dataset.values[train_index])
-            print(dataset.values[train_index].shape)
             result['x_test'].append(dataset.values[test_index])
-            print(dataset.values[test_index].shape)
             result['y_train'].append(labels[train_index])
             result['y_test'].append(labels[test_index])
         return result

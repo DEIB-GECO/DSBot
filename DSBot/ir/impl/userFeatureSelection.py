@@ -45,7 +45,6 @@ class IRUserFeatureSelection(IROp):
 
         ask_user('List the features you want to remove using a comma to separate them: '+ ','.join(dataset.columns))
 
-        print(self.message_queue)
         self.message_queue.clean()
         while True:
             asyncio.sleep(100)

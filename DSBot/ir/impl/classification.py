@@ -125,7 +125,7 @@ class IRAutoClassification(IRClassification):
                     result['y_score'] = exctracted_best_model.predict_proba(x_test)
                 except AttributeError:
                     result['y_score'] = exctracted_best_model.decision_function(x_test)
-            print(result['y_score'])
+            #print(result['y_score'])
 
 
         #print(result['y_score'])

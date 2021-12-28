@@ -76,9 +76,7 @@ class IRMissingValuesFill(IRMissingValuesHandle):
 
         imp = IterativeImputer(max_iter=10, random_state=0)
         if len(result['original_dataset'].cat_cols) > 0:
-            print(result['original_dataset'].cat_cols)
             values_col = dataset.columns.difference(result['original_dataset'].cat_cols)
-            print(dataset.columns, values_col)
             if len(values_col)>0:
                 values_dataset = pd.DataFrame(imp.fit_transform(dataset[values_col]))
                 values_dataset.columns = values_col

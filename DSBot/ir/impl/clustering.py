@@ -49,7 +49,7 @@ class IRClustering(IROp):
             y= self._model.fit_predict(dataset.values)
         self.labels = self._model.labels_
         result['labels'] = self.labels
-        print('labels', result['labels'])
+        #print('labels', result['labels'])
         clusters = self._model.fit_predict(dataset)
         try:
             result['silhouette'] = metrics.silhouette_score(dataset, clusters)
@@ -58,7 +58,7 @@ class IRClustering(IROp):
         except:
             LabelsNotAvailable
         self._param_setted = False
-        print(self._model.get_params())
+        #print(self._model.get_params())
         return result
 
 class IRKMeans(IRClustering):

@@ -277,28 +277,28 @@ class IRFeatureImportance(IRFeatureImportanceOp):
             if 'classifier' in result:
                 try:
                     fi = result['classifier'].feature_importances_
-                    print(fi)
+                    #print(fi)
                 except:
                     # result['regressor'].fit(dataset,labels.ravel())
                     fi = result['classifier'].coef_[0]
-                    print(fi)
+                    #print(fi)
             else:
                 raise ClassifierNotAvailable
         except ClassifierNotAvailable:
             try:
                 fi = result['regressor'].coef_[0]
-                print(fi)
+                #print(fi)
             except:
                 #result['regressor'].fit(dataset,labels.ravel())
                 fi = result['regressor'].feature_importances_
-                print(fi)
+                #print(fi)
         except:
             fi = np.array(len(dataset.columns))
         d = {'Cols': dataset.columns, 'FI': fi}
         df = pd.DataFrame(d)
         df = df.sort_values(by='FI', ascending=0)
         result['feature_importance'] = df
-        print('featIMp')
+        #print('featIMp')
         return result
 
 class IRGenericFeatureImportance(IROpOptions):

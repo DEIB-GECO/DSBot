@@ -89,29 +89,29 @@ class IRLabelRemove(IRLabelOperation):
         if 'new_dataset' in result:
             dataset = result['new_dataset']
             dataset = dataset.drop(label, axis=1)
-            print(dataset.shape)
+            #print(dataset.shape)
             label = result['new_dataset'][label]
-            print(len(dataset))
-            print(len(label))
+            #print(len(dataset))
+            #print(len(label))
 
             if len(dataset)<len(label):
                 label = label[set(dataset.index.values)]
 
         else:
             dataset = result['original_dataset'].ds
-            print(dataset.shape)
+            #print(dataset.shape)
             dataset = dataset.drop(label, axis=1)
             label = result['original_dataset'].ds[label]
-        print(type(label))
+        #print(type(label))
         if result['original_dataset'].hasCategoricalLabel:
             if len(set(label.values))>2:
                 label = LabelEncoder().fit_transform(label)
-                print('encoded', type(label))
+                #print('encoded', type(label))
             else:
                 label = label.replace(list(set(label))[0],0).replace(list(set(label))[1],1)
-                print('replaced', type(label))
+                #print('replaced', type(label))
             #label = pd.DataFrame(label)
-        print(type(label))
+        #print(type(label))
 
         result['labels']=label
         result['new_dataset'] = dataset
@@ -145,7 +145,7 @@ class IRLabelAppend(IRLabelOperation):
         dataset = result['new_dataset']
         dataset[result['original_dataset'].label] = label
         result['new_dataset'] = dataset
-        print(dataset)
+        #print(dataset)
         return result
 
     def write(self, session_id):
@@ -174,7 +174,7 @@ class IROutliersRemove(IRPreprocessing):
             dataset = result['original_dataset'].ds
 
         value_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
-        print('len dataset', len(dataset))
+        #print('len dataset', len(dataset))
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         index_old = dataset.index.values
         value_dataset.index = np.arange(len(dataset))
@@ -182,7 +182,7 @@ class IROutliersRemove(IRPreprocessing):
         perc_outliers = ((len(dataset)-len(ds))/len(dataset))*100
         notify_user(f'The {perc_outliers:.3f}% of the rows are outliers. I will remove them.', socketio=sio)
         if ds.shape[1]!=0 and ds.shape[0]!=0:
-            print('len ds', ds.shape)
+            #print('len ds', ds.shape)
             result['new_dataset'] = ds
             if result['original_dataset'].hasLabel:
                 label = pd.DataFrame(result['labels'])
@@ -192,7 +192,7 @@ class IROutliersRemove(IRPreprocessing):
                 result['labels'] = pd.DataFrame(label)#label.T.values
                 #print(result['labels'] )
             index_new = pd.DataFrame(index_old).drop(set(value_dataset.index) - set(ds.index))
-            print('len index', len(index_new))
+            #print('len index', len(index_new))
             ds.index = index_new.iloc[:,0].values
 
             if len(result['original_dataset'].cat_cols)!=0:
@@ -239,7 +239,11 @@ class IRStandardization(IRPreprocessing):
     def run(self, result, session_id, **kwargs):
         print('STANDARDIZATION')
         dataset = get_last_dataset(result)
-        dataset = pd.DataFrame(StandardScaler().fit_transform(dataset), index=dataset.index, columns=dataset.columns)
+        cols = dataset.columns
+        num_cols = dataset._get_numeric_data().columns
+        cat_cols = list(set(cols) - set(num_cols))
+        values_dataset = pd.DataFrame(StandardScaler().fit_transform(dataset.drop(cat_cols,axis=1)), index=dataset.index, columns=num_cols)
+        dataset = pd.concat([values_dataset, dataset.drop(num_cols,axis=1)], axis=1)
         result['new_dataset'] = dataset
         print(dataset)
         return result
