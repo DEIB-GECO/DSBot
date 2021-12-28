@@ -44,6 +44,10 @@ class IRMissingValuesHandle(IROp):
                 notify_user('Ok, I will fill them.', socketio=sio)
                 return IRMissingValuesFill().run(result, session_id)
 
+    def write(self, session_id):
+        with open(f'temp/temp_{session_id}/code.py', 'a') as f:
+            f.write('cols2drop = list(filter(lambda c: dataset[c].isna().sum() > 0.5 * len(dataset), dataset.columns))\n')
+            f.write('dataset = dataset.drop(cols2drop,axis=1)\n')
 
 class IRMissingValuesRemove(IRMissingValuesHandle):
     def __init__(self):
@@ -55,6 +59,10 @@ class IRMissingValuesRemove(IRMissingValuesHandle):
     def run(self, result, session_id):
         result['new_dataset'] = get_last_dataset(result).dropna()
         return result
+
+    def write(self, session_id):
+        with open(f'temp/temp_{session_id}/code.py', 'a') as f:
+            f.write('dataset = dataset.dropna()\n')
 
 class IRMissingValuesFill(IRMissingValuesHandle):
     def __init__(self):
@@ -88,6 +96,23 @@ class IRMissingValuesFill(IRMissingValuesHandle):
         print('missingvalfill', dataset.shape)
 
         return result
+
+    def write(self, session_id):
+        with open(f'temp/temp_{session_id}/code.py', 'a') as f:
+            f.write('from sklearn.impute._iterative import IterativeImputer')
+            f.write('imp = IterativeImputer(max_iter=10, random_state=0)\n')
+            f.write('if len(original_dataset.cat_cols) > 0:\n')
+            f.write('\tvalues_col = dataset.columns.difference(original_dataset.cat_cols)\n')
+            f.write('\tif len(values_col)>0:\n')
+            f.write('\t\tvalues_dataset = pd.DataFrame(imp.fit_transform(dataset[values_col]))\n')
+            f.write('\t\tvalues_dataset.columns = values_col\n')
+            f.write('\t\tcat_dataset = dataset[original_dataset.cat_cols].apply(lambda col: col.fillna(col.value_counts().index[0]))\n')
+            f.write('\t\tdataset = pd.concat([cat_dataset, values_dataset],axis=1)\n')
+            f.write('\telse:\n')
+            f.write('\t\tcat_dataset = dataset[original_dataset.cat_cols].apply(lambda col: col.fillna(col.value_counts().index[0]))\n')
+            f.write('\t\tdataset = cat_dataset\n')
+            f.write('else:\n')
+            f.write('dataset = pd.DataFrame(imp.fit_transform(dataset), columns=dataset.columns))\n')
 
 class IRGenericMissingValues(IROpOptions):
     def __init__(self):

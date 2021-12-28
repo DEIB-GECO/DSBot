@@ -29,6 +29,7 @@ class IRCrossValidation(IROp):
         else:
             dataset = result['original_dataset'].ds
         labels = result['labels']
+        self.parameter_tune(dataset)
         for p,v in self.parameters.items():
             print(p,v)
             self._model.__setattr__(p,self.parameters[p].value)
@@ -78,14 +79,17 @@ class IRTrainTest(IRCrossValidation):
 
 class IRKFold(IRCrossValidation):
     def __init__(self):
-        super(IRKFold, self).__init__("kFold",[IRNumPar("n_splits", 3, "int", 2, 20, 1),
+        super(IRKFold, self).__init__("kFold",[IRNumPar("n_splits", 3, "int", 2, 1000, 1),
                                                IRCatPar('shuffle', True, [True,False])],  # TODO: if I want to pass a list of values?
                                       KFold)
         self._param_setted = False
 
     def parameter_tune(self, dataset):
-        if len(dataset)/self.parameters['n_splits'].value > 500:
-            self.parameters['n_splits'].value = int(len(dataset)/500)
+        print('parameter tune')
+        if len(dataset)/self.parameters["n_splits"].value > 10000:
+            self.parameters["n_splits"].value = int(len(dataset)/10000)
+        print(self.parameters)
+
 
     def run(self, result, session_id):
         if not self._param_setted:
@@ -108,9 +112,11 @@ class IRKFold(IRCrossValidation):
         result['y_train'] = []
         result['y_test'] = []
         for train_index, test_index in cv.split(dataset):
-            print(train_index)
+            print(dataset.shape)
             result['x_train'].append(dataset.values[train_index])
+            print(dataset.values[train_index].shape)
             result['x_test'].append(dataset.values[test_index])
+            print(dataset.values[test_index].shape)
             result['y_train'].append(labels[train_index])
             result['y_test'].append(labels[test_index])
         return result

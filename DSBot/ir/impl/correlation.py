@@ -22,14 +22,17 @@ class IRCorrelation(IROp):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-        self.correlation = dataset.corr(method=self._model)
-        result['correlation'] = self.correlation
+        print(dataset)
+        correlation = dataset.corr(method=self._model)
+        result['correlation'] = correlation
+        print([result['correlation'][c].isna().sum() for c in result['correlation'].columns])
         cols2drop = [c for c in result['correlation'].columns if result['correlation'][c].isna().sum()>0.9*len(result['correlation'])]
         if len(cols2drop)>0:
             result['correlation'] = result['correlation'].drop(cols2drop,axis=1)
             result['correlation'] = result['correlation'].dropna()
             notify_user('I had to remove some columns after computing the correlation, probably because some features do not vary.', socketio=sio)
         print(result['correlation'])
+
         return result
 
 class IRPearson(IRCorrelation):

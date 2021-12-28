@@ -38,11 +38,19 @@ class IROneHotEncode(IRPreprocessing):
         dataset = get_last_dataset(result)
         cols = dataset.columns
         num_cols = dataset._get_numeric_data().columns
-        cat_dataset = pd.get_dummies(dataset, columns=list(set(cols) - set(num_cols)))
-        dataset = pd.concat([cat_dataset, dataset[num_cols]], axis=1)
+        dataset = pd.get_dummies(dataset, columns=list(set(cols) - set(num_cols)))
+        #dataset = pd.concat([cat_dataset, dataset[num_cols]], axis=1)
+
         result['new_dataset'] = dataset
         print('onehotencode', dataset.shape)
         return result
+
+    def write(self, session_id):
+        with open(f'temp/temp_{session_id}/code.py', 'a') as f:
+            f.write('cols = dataset.columns\n')
+            f.write('num_cols = dataset._get_numeric_data().columns\n')
+            f.write('dataset = pd.get_dummies(dataset, columns=list(set(cols) - set(num_cols)))\n')
+            #f.write('dataset = pd.concat([cat_dataset, dataset[num_cols]], axis=1)\n')
 
 class IRLabelOperation(IROp):
     def __init__(self, name, parameters=None, model = None):
@@ -102,13 +110,25 @@ class IRLabelRemove(IRLabelOperation):
             else:
                 label = label.replace(list(set(label))[0],0).replace(list(set(label))[1],1)
                 print('replaced', type(label))
-            label = pd.DataFrame(label)
+            #label = pd.DataFrame(label)
         print(type(label))
 
         result['labels']=label
         result['new_dataset'] = dataset
 
         return result
+
+    def write(self, session_id):
+        with open(f'temp/temp_{session_id}/code.py', 'a') as f:
+            f.write('from sklearn.preprocessing import LabelEncoder\n')
+            f.write('label = dataset[label]\n')
+            f.write('dataset = dataset.drop(label, axis=1)\n')
+            f.write('if original_dataset.hasCategoricalLabel:\n')
+            f.write('\tif len(set(label.values))>2:\n')
+            f.write('\t\tlabel = LabelEncoder().fit_transform(label)\n')
+            f.write('\telse:\n')
+            f.write('\t\tlabel = label.replace(list(set(label))[0],0).replace(list(set(label))[1],1)\n')
+            #f.write('\t\tlabel = pd.DataFrame(label)\n')
 
 class IRLabelAppend(IRLabelOperation):
 
@@ -127,6 +147,10 @@ class IRLabelAppend(IRLabelOperation):
         result['new_dataset'] = dataset
         print(dataset)
         return result
+
+    def write(self, session_id):
+        with open(f'temp/temp_{session_id}/code.py', 'a') as f:
+            f.write('dataset[original_dataset.label] = label\n')
 
 class IRGenericLabelOperations(IROpOptions):
     def __init__(self):
@@ -155,7 +179,7 @@ class IROutliersRemove(IRPreprocessing):
         index_old = dataset.index.values
         value_dataset.index = np.arange(len(dataset))
         ds = value_dataset[((np.abs(value_dataset-value_dataset.mean()))<=(3*value_dataset.std())).sum(axis=1)>=0.9*value_dataset.shape[1]]
-        perc_outliers = (len(ds)/len(dataset))*100
+        perc_outliers = ((len(dataset)-len(ds))/len(dataset))*100
         notify_user(f'The {perc_outliers:.3f}% of the rows are outliers. I will remove them.', socketio=sio)
         if ds.shape[1]!=0 and ds.shape[0]!=0:
             print('len ds', ds.shape)
@@ -180,6 +204,30 @@ class IROutliersRemove(IRPreprocessing):
             result['new_dataset'] = ds
         return result
 
+    def write(self, session_id):
+        with open(f'temp/temp_{session_id}/code.py', 'a') as f:
+            f.write('value_dataset = dataset.drop(list(original_dataset.cat_cols), axis=1)\n')
+            f.write('index_old = dataset.index.values\n')
+            f.write('value_dataset.index = np.arange(len(dataset))\n')
+            f.write('ds = value_dataset[((np.abs(value_dataset-value_dataset.mean()))<=(3*value_dataset.std())).sum(axis=1)>=0.9*value_dataset.shape[1]]\n')
+            f.write('if ds.shape[1]!=0 and ds.shape[0]!=0:\n')
+            f.write('\tif original_dataset.hasLabel:\n')
+            f.write('\t\tlabel = pd.DataFrame(label)\n')
+            f.write('\t\tlabel.index = np.arange(0, len(value_dataset))\n')
+            f.write('\t\tlabel = label.drop(set(value_dataset.index) - set(ds.index))\n')
+            f.write('\t\tlabel=pd.DataFrame(label)\n')
+            f.write('\tindex_new = pd.DataFrame(index_old).drop(set(value_dataset.index) - set(ds.index))\n')
+            f.write('\tds.index = index_new.iloc[:,0].values\n')
+            f.write('\tif len(original_dataset.cat_cols)!=0:\n')
+            f.write('\t\tcat_dataset = dataset[list(original_dataset.cat_cols)]\n')
+            f.write('\t\tcat_dataset.index = value_dataset.index\n')
+            f.write('\t\tcat_dataset = cat_dataset.T[index_new.index].T\n')
+            f.write('\t\tcat_dataset.index = index_new.iloc[:, 0].values\n')
+            f.write('\t\tds = pd.concat([cat_dataset, ds], axis=1)\n')
+            f.write('dataset=ds\n')
+
+
+
 class IRStandardization(IRPreprocessing):
     def __init__(self):
         super(IRStandardization, self).__init__("standardization")
@@ -195,6 +243,11 @@ class IRStandardization(IRPreprocessing):
         result['new_dataset'] = dataset
         print(dataset)
         return result
+
+    def write(self, session_id):
+        with open(f'temp/temp_{session_id}/code.py', 'a') as f:
+            f.write('from sklearn.preprocessing import StandardScaler\n')
+            f.write('dataset = pd.DataFrame(StandardScaler().fit_transform(dataset), index=dataset.index, columns=dataset.columns)\n')
 
 class IRNormalization(IRPreprocessing):
     def __init__(self):
@@ -217,9 +270,25 @@ class IRNormalization(IRPreprocessing):
         result['new_dataset'] = dataset
         return result
 
+class IRZeroVarianceRemove(IRPreprocessing):
+    def __init__(self):
+        super(IRZeroVarianceRemove, self).__init__("zeroVarianceRemove")
+
+    def parameter_tune(self, dataset):
+        # TODO: implement
+        pass
+
+    def run(self, result, session_id, **kwargs):
+        dataset = get_last_dataset(result)
+        var = dataset.std(axis=0)
+        col2drop = dataset[var[var==0].index].columns
+        result['new_dataset'] = dataset.drop(col2drop, axis=1)
+        return result
+
+
 class IRGenericPreprocessing(IROpOptions):
     def __init__(self):
-        super(IRGenericPreprocessing, self).__init__([IRLabelRemove(), IROneHotEncode(), IROutliersRemove(), IRStandardization(), IRNormalization()],
+        super(IRGenericPreprocessing, self).__init__([IRLabelRemove(), IROneHotEncode(), IROutliersRemove(), IRStandardization(), IRNormalization(),IRZeroVarianceRemove()],
                                                      "labelRemove")
 
 
