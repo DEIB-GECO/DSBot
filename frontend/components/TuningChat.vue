@@ -136,12 +136,21 @@ export default {
         this.lastMessage = payload.message
         this.receiveChat(payload.message)
         this.setComprehensionConversationState(payload.comprehension_state)
+        this.setComprehensionPipeline(payload.comprehension_pipeline)
+        console.log(
+          'adesso comprehensionPipeline vale ',
+          this.comprehensionPipeline
+        )
         if (payload.show != null) {
           console.log('payload non è null!')
           this.setImageToShow(payload.show)
         }
         if (payload.complete) {
           this.setStep(4)
+          console.log(
+            'la pipeline che mando in esecuzione è: ',
+            this.comprehensionPipeline
+          )
           socket.emit('execute', {
             comprehension_pipeline: this.comprehensionPipeline,
           })
@@ -212,6 +221,7 @@ export default {
       'setRequestDescription',
       'setImage',
       'setImageToShow',
+      'setComprehensionPipeline',
     ]),
     sendText() {
       if (this.isChatActive) {

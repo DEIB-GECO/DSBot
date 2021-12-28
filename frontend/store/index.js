@@ -72,6 +72,11 @@ export const mutations = {
 
   setComprehensionPipeline(state, newPipeline) {
     state.comprehensionPipeline = newPipeline
+    console.log(
+      'new comprehension pipeline:',
+      newPipeline,
+      state.comprehensionPipeline
+    )
   },
 
   setComprehensionChatCompleted(state, newValue) {

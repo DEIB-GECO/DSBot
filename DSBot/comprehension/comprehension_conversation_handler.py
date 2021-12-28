@@ -37,13 +37,13 @@ def parse(utterance: str):
     connection = HTTPConnection(host='localhost', port=5005)
     connection.request("POST", "/model/parse", json.dumps({"text": utterance}))
     response = json.loads(connection.getresponse().read())
-    print("RESPONSE:" + str(response))
+    # print("RESPONSE:" + str(response))
     return response
 
 
 def prepare_standard_response(message, state, pipeline):
-    new_pipeline_string = pipeline_array_to_string(pipeline)
-    response = {'message': message, 'comprehension_state': state, 'comprehension_pipeline': new_pipeline_string}
+    #new_pipeline_string = pipeline_array_to_string(pipeline)
+    response = {'message': message, 'comprehension_state': state, 'comprehension_pipeline': pipeline}
     print("prepared response is", str(response))
     return response
 
@@ -443,7 +443,7 @@ switcher = {
 
 
 def pipeline_array_to_string(pipeline_array):
-    pipeline_string = ''
+    pipeline_string = '['
     for item in pipeline_array:
         pipeline_string = pipeline_string + ' ' + item
     return pipeline_string
@@ -452,7 +452,7 @@ def pipeline_array_to_string(pipeline_array):
 def comprehension_conversation_handler(user_payload, dataset):
     print("invocata su ", user_payload)
     user_message_parsed = parse(user_payload['message'])
-    print("user intent is:" + str(user_message_parsed))
+    # print("user intent is:" + str(user_message_parsed))
     user_utterance = user_payload['message']
     conversation_state = user_payload['comprehension_state']
     pipeline_array = user_payload['comprehension_pipeline']
