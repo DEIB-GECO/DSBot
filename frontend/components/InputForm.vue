@@ -37,7 +37,12 @@
         ></v-select>
       </v-flex>
       -->
-      <v-btn v-if="!showSecondPart" color="primary" @click="parse">
+      <v-btn
+        v-if="!showSecondPart"
+        color="primary"
+        @click="parse"
+        :disabled="dataset == null"
+      >
         Upload Dataset
       </v-btn>
 

@@ -1,33 +1,33 @@
 import json
 
-def sin(k1,k2, d, acc=0):
+
+def sin(k1, k2, d, acc=0):
     if (k1 in d) and (k2 in d):
         return False
     elif acc == 2:
         return True
     elif k1 in d:
-        if acc==1:
+        if acc == 1:
             return True
         nd = d[k1].get("values", {})
         if k2 in nd:
             return True
         else:
-            return any([sin(k1,k2, nd[k].get("values", {}), acc=acc+1) for k in nd.keys()])
+            return any([sin(k1, k2, nd[k].get("values", {}), acc=acc + 1) for k in nd.keys()])
     elif k2 in d:
-        if acc==1:
-             return True
+        if acc == 1:
+            return True
         nd = d[k2].get("values", {})
         if k1 in nd:
             return True
         else:
-            return any([sin(k1,k2, nd[k].get("values", {}), acc=acc+1) for k in nd.keys()])
+            return any([sin(k1, k2, nd[k].get("values", {}), acc=acc + 1) for k in nd.keys()])
     else:
         res = False
         for k in d.keys():
-            #print(k)
-            res = res or sin(k1,k2, d[k].get("values", {}), acc=0)
+            # print(k)
+            res = res or sin(k1, k2, d[k].get("values", {}), acc=0)
         return res
-
 
 
 def get_term_path(term):
@@ -37,6 +37,7 @@ def get_term_path(term):
         :return: a list of terms that represents the path inside the
         knowledge base to get to the element, if a path exist. The list is empty otherwise.
     """
+
     def get_term_path_helper(term, knowledge_base):
         for element_key in knowledge_base:
             if element_key == term:
@@ -65,19 +66,20 @@ def get_field_from_path(path, field):
     :param field: the field of whom to retrieve the string in the knowledge base
     :return: the string in the contained in field of the lowest element of the path in the tree that has that field
     """
+
     def get_field_from_path_helper(path, field, knowledge_base):
         if len(path) > 1:
-            #print("A")
+            # print("A")
             element = path.pop(0)
             retrieved_string = get_field_from_path_helper(path, field, knowledge_base[element]["values"])
-            #print("fatto, la sringa è ", retrieved_string, "l'elemento ", element, knowledge_base)
+            # print("fatto, la sringa è ", retrieved_string, "l'elemento ", element, knowledge_base)
             if retrieved_string == "" and field in knowledge_base[element]:
                 retrieved_string = knowledge_base[element][field]
         elif field in knowledge_base[path[0]]:
-            #print("B", knowledge_base)
+            # print("B", knowledge_base)
             retrieved_string = knowledge_base[path[0]][field]
         else:
-            #print("C", knowledge_base)
+            # print("C", knowledge_base)
             retrieved_string = ""
         return retrieved_string
 
@@ -86,3 +88,22 @@ def get_field_from_path(path, field):
 
     textual_description = get_field_from_path_helper(path, field, knowledge_base)
     return textual_description
+
+
+def clean_pipeline(pipeline):
+    element_nature = []
+    for element in pipeline:
+        element_path = get_term_path(element)
+        if len(element_path) == 0:
+            element_nature.append('wrong')
+        elif 'prediction' in element_path:
+            element_nature.append('prediction')
+        else:
+            element_nature.append('ok')
+    for i in range(0, len(pipeline) - 1, 1):
+        if element_nature[i] == 'wrong':
+            if 'prediction' in element_nature[i:]:
+                pipeline[i] = 'userFeatureSelection'
+            else:
+                pipeline.remove(pipeline[i])
+    return pipeline
