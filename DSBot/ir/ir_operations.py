@@ -55,6 +55,7 @@ class IROpOptions(TuningOpOptionsMixin, object):
         self.models = {m.name: m for m in models}
         self.default = default
         self.actual_model = self.models[default]
+        self.all_models = models
 
     def get_models(self):
         return self.models.keys()

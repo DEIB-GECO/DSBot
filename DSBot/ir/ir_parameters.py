@@ -109,7 +109,7 @@ class IRNumPar(IRPar):
     :ivar step: the granularity of the value
     """
 
-    def __init__(self, name: str, value: float, v_type: str, min_v: float = 1, max_v: float = 10, step: float = 1):
+    def __init__(self, name: str, value: float, v_type: str, min_v: float = 1, max_v: float = 10, step: float = 1, arr: list = []):
         """Represents a numeric parameter of an operation.
 
         :param name: the name of this parameter
@@ -124,13 +124,17 @@ class IRNumPar(IRPar):
         self.min_v = min_v
         self.max_v = max_v
         self.step = step
+        self.arr = arr
 
     @IRPar.value.setter
     def value(self, new_value):
         IRPar.value.fset(self, self.uniform_type(new_value))
 
     def is_valid(self, new_value):
-        return self.max_v >= new_value >= self.min_v
+        if (self.max_v >= new_value >= self.min_v) or (new_value in self.arr):
+            return True
+        else:
+            return False
 
     def uniform_type(self, new_value):
         if self.v_type == 'int':

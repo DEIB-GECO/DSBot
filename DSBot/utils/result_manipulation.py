@@ -1,5 +1,8 @@
 def get_last_dataset(result):
-    if 'new_dataset' in result:
-        return result['new_dataset']
+    if 'transformed_ds' in result:
+        dataset = result['transformed_ds']
+    elif 'new_dataset' in result:
+        dataset = result['new_dataset']
     else:
-        return result['original_dataset'].ds
+        dataset = result['original_dataset'].ds
+    return dataset

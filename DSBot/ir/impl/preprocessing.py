@@ -110,7 +110,7 @@ class IRLabelRemove(IRLabelOperation):
             else:
                 label = label.replace(list(set(label))[0],0).replace(list(set(label))[1],1)
                 #print('replaced', type(label))
-            #label = pd.DataFrame(label)
+        label = pd.DataFrame(label)
         #print(type(label))
 
         result['labels']=label
