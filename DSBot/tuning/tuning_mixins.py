@@ -213,6 +213,7 @@ class TuningParMixin:
         elif self.v_type in ['int', 'float']:
             j['min'] = self.min_v
             j['max'] = self.max_v
+            j['possible_val'] = self.possible_val
 
         return j
 

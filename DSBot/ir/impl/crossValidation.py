@@ -7,7 +7,7 @@ from ir.ir_parameters import IRNumPar, IRCatPar
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split, KFold
+from sklearn.model_selection import train_test_split, StratifiedKFold
 import numpy as np
 
 
@@ -80,7 +80,7 @@ class IRKFold(IRCrossValidation):
     def __init__(self):
         super(IRKFold, self).__init__("kFold",[IRNumPar("n_splits", 3, "int", 2, 1000, 1),
                                                IRCatPar('shuffle', True, [True,False])],  # TODO: if I want to pass a list of values?
-                                      KFold)
+                                      StratifiedKFold)
         self._param_setted = False
 
     def parameter_tune(self, dataset):
@@ -109,7 +109,7 @@ class IRKFold(IRCrossValidation):
         result['x_test'] = []
         result['y_train'] = []
         result['y_test'] = []
-        for train_index, test_index in cv.split(dataset):
+        for train_index, test_index in cv.split(dataset, labels):
             result['x_train'].append(dataset.values[train_index])
             result['x_test'].append(dataset.values[test_index])
             result['y_train'].append(labels[train_index])
