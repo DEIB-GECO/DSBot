@@ -116,7 +116,7 @@
             <v-btn
               v-if="resultsReady"
               :color="pipelineEdited ? 'primary' : 'secondary'"
-              @click="toFramework({ intent: 'run' })"
+              @click="resetEverything"
             >
               Run again
             </v-btn>
@@ -171,6 +171,7 @@ export default {
       'receiveChatOption',
       'setImage',
       'setImageToShow',
+      'restart',
     ]),
     ...mapActions(['toFramework', 'waitForResults', 'setComputationResults']),
     restart() {
@@ -187,6 +188,10 @@ export default {
     },
     launchExecution() {
       console.log('AAAAAA')
+    },
+    resetEverything() {
+      this.toFramework({ intent: 'run' })
+      this.commit('reset')
     },
   },
 }
