@@ -76,9 +76,9 @@ class IRTrainTest(IRCrossValidation):
         result['y_test'].append(y_test)
         return result
 
-class IRKFold(IRCrossValidation):
+class IRStratifiedKFold(IRCrossValidation):
     def __init__(self):
-        super(IRKFold, self).__init__("kFold",[IRNumPar("n_splits", 3, "int", 2, 1000, 1),
+        super(IRStratifiedKFold, self).__init__("stratifiedKFold",[IRNumPar("n_splits", 3, "int", 2, 1000, 1),
                                                IRCatPar('shuffle', True, [True,False])],  # TODO: if I want to pass a list of values?
                                       StratifiedKFold)
         self._param_setted = False
@@ -114,8 +114,9 @@ class IRKFold(IRCrossValidation):
             result['x_test'].append(dataset.values[test_index])
             result['y_train'].append(labels[train_index])
             result['y_test'].append(labels[test_index])
+
         return result
 
 class IRGenericCrossValidation(IROpOptions):
     def __init__(self):
-        super(IRGenericCrossValidation, self).__init__([IRKFold()], "kFold")
+        super(IRGenericCrossValidation, self).__init__([IRStratifiedKFold()], "stratifiedKFold")

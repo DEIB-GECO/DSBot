@@ -3,10 +3,14 @@ from abc import abstractmethod
 from ir.ir_exceptions import LabelsNotAvailable
 from ir.ir_operations import IROp, IROpOptions
 from ir.ir_parameters import IRNumPar, IRCatPar
-from sklearn.model_selection import GridSearchCV
+from sklearn.experimental import enable_halving_search_cv
+from sklearn.model_selection import GridSearchCV, HalvingGridSearchCV
 from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.model_selection import train_test_split, KFold
 from tpot import TPOTRegressor
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import StratifiedKFold
+from utils import *
 import numpy as np
 
 
@@ -43,21 +47,17 @@ class IRRegression(IROp):
         if not self._param_setted:
             self.set_model(result)
 
-        if 'transformed_ds' in result:
-            dataset = result['transformed_ds']
-        elif 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
+        dataset = get_last_dataset(result)
+        labels = result['labels'].values
 
         print('PARAMETERS', self.parameters)
         result['predicted_labels'] = []
-        result['y_score'] = []
+        result['y_test'] = []
         result['feat_imp'] = []
 
-        for x_train, x_test, y_train, y_test in zip(result['x_train'], result['x_test'], result['y_train'],
-                                                    result['y_test']):
-            result['predicted_labels'] += list(self._model.fit(x_train, y_train).predict(x_test))
+        for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset,labels):
+            result['predicted_labels'] += list(self._model.fit(dataset[train_index], np.array(labels[test_index]).ravel()).predict(dataset[test_index]))
+            result['y_test'] += labels[test_index]
 
         result['regressor'] = self._model
         result['original_dataset'].measures.update({p:self.parameters[p].value for p,v in self.parameters.items()})
@@ -82,32 +82,74 @@ class IRAutoRegression(IRRegression):
     def run(self, result, session_id):
         if not self._param_setted:
             self.set_model(result)
-        if 'transformed_ds' in result:
-            dataset = result['transformed_ds']
-        elif 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
+        dataset = get_last_dataset(result)
         labels = result['labels'].values
+        scores = {}
+        for i in IRGenericRegression().all_models:
+            if i.name != 'autoRegression':
+                print('MODEL', i.name)
+                model = i
+                result_tuning = model.parameter_tune(result, dataset, labels)
+                scores[model.name] = {'model': model, 'parameters': result_tuning.best_params_,
+                                      'score': result_tuning.best_score_}
+        # print(scores)
+        max_v = 0
+        print(scores)
+        for k, v in scores.items():
+            print(v['score'])
+            if max_v < v['score']:
+                max_v = v['score']
+                extracted_best_model = type(v['model']._model)(
+                    **{name: value for name, value in v['parameters'].items()})
+                print('CHOSEN MODEL', extracted_best_model)
+                print(v['parameters'])
+
+        # decorators.MAX_EVAL_SECS = 100
         result['predicted_labels'] = []
+        result['y_test'] = []
         result['y_score'] = []
         result['feat_imp'] = []
+        # model = self._model
+        # model.fit(dataset, np.array(labels).ravel())
+        # model.export('tpot_exported_pipeline.py')
+        # exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
+        print(extracted_best_model)
+        result['regressor'] = extracted_best_model  # .fit(dataset, labels)
+        acc = []
 
-        for x_train, x_test, y_train,y_test in zip(result['x_train'],result['x_test'],result['y_train'],result['y_test']):
+        for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset,labels):
 
-            model = self._model
-            model.fit(x_train, y_train.ravel())
+            extracted_best_model.fit(dataset[train_index], np.array(labels[test_index]).ravel())
+            pred = extracted_best_model.predict(labels[test_index])
 
-            if result['predicted_labels']!=[]:
-                result['predicted_labels'] = np.concatenate((result['predicted_labels'],model.predict(x_test)))
-                #result['y_score'] = np.concatenate((result['y_score'], model.predict_proba(x_test)))
+            if result['predicted_labels'] != []:
+                result['predicted_labels'] = np.concatenate((result['predicted_labels'], pred))
+                # result['y_score'] = np.concatenate((result['y_score'], model.predict_proba(x_test)))
             else:
-                result['predicted_labels'] = model.predict(x_test)
-            exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
-            result['regressor'] = exctracted_best_model.fit(x_train, y_train.ravel())
+                result['predicted_labels'] = pred
+                # result['y_score'] = model.predict_proba(x_test)
 
-        result['y_score'] = result['predicted_labels']
+            # exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
 
+            if result['y_score'] != []:
+                result['y_test'] = np.vstack((result['y_test'], labels[test_index]))
+                try:
+                    result['y_score'] = np.vstack(
+                        (result['y_score'], extracted_best_model.predict_proba(dataset[test_index])))
+                except AttributeError:
+                    result['y_score'] = np.vstack(
+                        (result['y_score'], extracted_best_model.decision_function(dataset[test_index])))
+            else:
+                result['y_test'] = labels[test_index]
+                try:
+                    result['y_score'] = extracted_best_model.predict_proba(dataset[test_index])
+                except AttributeError:
+                    result['y_score'] = extracted_best_model.decision_function(dataset[test_index])
+
+            acc.append(accuracy_score(labels[test_index], pred))
+
+        mean_acc = np.array(acc).mean()
+        print('ACCURACY', mean_acc)
         self._param_setted = False
         return result
 
@@ -129,10 +171,9 @@ class IRRidgeRegression(IRRegression):
         self._param_setted = False
 
     def parameter_tune(self, dataset, labels):
-        grid = dict()
-        grid['alpha'] = np.arange(self.parameters['alpha'].min_v, self.parameters['alpha'].max_v, self.parameters['alpha'].step)
-        # define search
-        search = GridSearchCV(self._model, grid, scoring='neg_mean_absolute_error', cv=KFold(5, shuffle=True), n_jobs=-1)
+        random_grid = {p:(np.arange(d.min_v, d.max_v, d.step) if (d.v_type!='categorical' and d.possible_val==[]) else d.possible_val) for p,d in self.parameters.items()}
+        # Random search of parameters, using 5 fold cross validation, search across 100 different combinations, and use all available cores
+        search = HalvingGridSearchCV(estimator=self._model, param_grid=random_grid,scoring='neg_mean_absolute_error', cv=StratifiedKFold(3), n_jobs=-1)
         # perform the search
         search.fit(dataset, labels)
         for k,v in search.best_params_.items():

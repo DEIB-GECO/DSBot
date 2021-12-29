@@ -14,6 +14,8 @@ from collections import Counter
 import numpy as np
 from tpot import decorators
 from utils import *
+from sklearn.metrics import accuracy_score
+import pandas as pd
 
 class IRClassification(IROp):
     def __init__(self, name, parameters, model = None):
@@ -26,12 +28,7 @@ class IRClassification(IROp):
         pass
 
     def set_model(self, result):
-        if 'transformed_ds' in result:
-            dataset = result['transformed_ds']
-        elif 'new_dataset' in result:
-            dataset = result['new_dataset']
-        else:
-            dataset = result['original_dataset'].ds
+        dataset = get_last_dataset(result)
         labels = result['labels']
 
         result_tuning = self.parameter_tune(result, dataset, labels)
@@ -46,17 +43,21 @@ class IRClassification(IROp):
         return self.labels
 
     def run(self, result, session_id):
+        dataset = get_last_dataset(result)
+        labels = result['labels'].values
 
         if not self._param_setted:
             self.set_model(result)
 
         result['predicted_labels'] = []
+        result['y_test'] = []
         result['y_score'] = []
         result['feat_imp'] = []
 
-        for x_train, x_test, y_train,y_test in zip(result['x_train'],result['x_test'],result['y_train'],result['y_test']):
-            result['predicted_labels'] += list(self._model.fit(x_train, y_train).predict(x_test))
-            result['y_score'] += list(self._model.predict_proba(x_test))
+        for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset,labels):
+            result['predicted_labels'] += list(self._model.fit(dataset[train_index], np.array(labels[test_index]).ravel()).predict(dataset[test_index]))
+            result['y_score'] += list(self._model.predict_proba(dataset[test_index]))
+            result['y_test'] += labels[test_index]
         result['classifier'] = self._model
         self._param_setted = False
         return result
@@ -71,8 +72,7 @@ class IRAutoClassification(IRClassification):
                                               IRNumPar('n_jobs', -1, "int", -1, -1, 1),
                                               IRCatPar('scoring', 'accuracy', ['accuracy']),
                                               IRCatPar('config_dict', 'TPOT light', ['Default TPOT','TPOT light', 'TPOT MDR'])],
-                                             # TODO: if I want to pass a list of values?,
-
+                                             # TODO: if I want to pass a list of values?
                                              TPOTClassifier)
         self._param_setted = False
 
@@ -89,17 +89,15 @@ class IRAutoClassification(IRClassification):
             self.set_model(result)
 
         dataset = get_last_dataset(result)
+        #dataset.to_csv('../../DSBot/example_datasets/breast_preprocessed.csv', sep=',')
         labels = result['labels'].values
+        #pd.DataFrame(labels).to_csv('../../DSBot/example_datasets/labels_breast_preprocessed.csv')
         scores = {}
-        count = 0
         for i in IRGenericClassification().all_models:
             if i.name!='autoClassification':
                 print('MODEL', i.name)
                 model = i
-                if count==len(result['x_train']):
-                    count = 0
-                result_tuning = model.parameter_tune(result,result['x_train'][count],result['y_train'][count])
-                count += 1
+                result_tuning = model.parameter_tune(result,dataset,labels)
                 scores[model.name]= {'model': model, 'parameters':result_tuning.best_params_, 'score':result_tuning.best_score_}
         #print(scores)
         max_v = 0
@@ -108,13 +106,13 @@ class IRAutoClassification(IRClassification):
             print(v['score'])
             if max_v<v['score']:
                 max_v = v['score']
-                extracted_best_model = v['model']._model
-                for name,val in v['parameters'].items():
-                    extracted_best_model.name = val
+                extracted_best_model = type(v['model']._model)(**{name: value for name,value in v['parameters'].items()})
                 print('CHOSEN MODEL', extracted_best_model)
+                print(v['parameters'])
 
         #decorators.MAX_EVAL_SECS = 100
         result['predicted_labels'] = []
+        result['y_test'] = []
         result['y_score'] = []
         result['feat_imp'] = []
         #model = self._model
@@ -123,32 +121,39 @@ class IRAutoClassification(IRClassification):
         #exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
         print(extracted_best_model)
         result['classifier'] = extracted_best_model#.fit(dataset, labels)
-        for x_train, x_test, y_train,y_test in zip(result['x_train'],result['x_test'],result['y_train'],result['y_test']):
+        acc = []
+        for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset,labels):
             #model.fit(x_train, np.array(y_train).ravel())
-            extracted_best_model.fit(x_train, np.array(y_train).ravel())
+            extracted_best_model.fit(dataset[train_index], np.array(labels[test_index]).ravel())
+            pred = extracted_best_model.predict(labels[test_index])
+
             if result['predicted_labels']!=[]:
-                result['predicted_labels'] = np.concatenate((result['predicted_labels'],extracted_best_model.predict(x_test)))
+                result['predicted_labels'] = np.concatenate((result['predicted_labels'],pred))
                 #result['y_score'] = np.concatenate((result['y_score'], model.predict_proba(x_test)))
             else:
-                result['predicted_labels'] = extracted_best_model.predict(x_test)
-
+                result['predicted_labels'] = pred
                 #result['y_score'] = model.predict_proba(x_test)
+
             #exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
 
             if result['y_score']!=[]:
+                result['y_test'] = np.vstack((result['y_test'], labels[test_index]))
                 try:
-                    result['y_score'] = np.vstack((result['y_score'],extracted_best_model.predict_proba(x_test)))
+                    result['y_score'] = np.vstack((result['y_score'],extracted_best_model.predict_proba(dataset[test_index])))
                 except AttributeError:
-                    result['y_score'] = np.vstack((result['y_score'],extracted_best_model.decision_function(x_test)))
-
+                    result['y_score'] = np.vstack((result['y_score'],extracted_best_model.decision_function(dataset[test_index])))
             else:
+                result['y_test'] = labels[test_index]
                 try:
-                    result['y_score'] = extracted_best_model.predict_proba(x_test)
+                    result['y_score'] = extracted_best_model.predict_proba(dataset[test_index])
                 except AttributeError:
-                    result['y_score'] = extracted_best_model.decision_function(x_test)
+                    result['y_score'] = extracted_best_model.decision_function(dataset[test_index])
+
+            acc.append(accuracy_score(labels[test_index], pred))
             #print(result['y_score'])
 
-
+        mean_acc = np.array(acc).mean()
+        print('ACCURACY', mean_acc)
         #print(result['y_score'])
         #result['y_score'] = result['predicted_labels']
 
