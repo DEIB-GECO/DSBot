@@ -162,6 +162,7 @@ export default {
           this.setStep(5)
           this.receiveChat(response.comprehension_sentence)
           this.setImage(response.img)
+          this.setResultsReady(true)
         })
 
         socket.on('disconnect', (reason) => {
@@ -222,6 +223,7 @@ export default {
       'setImage',
       'setImageToShow',
       'setComprehensionPipeline',
+      'setResultsReady',
     ]),
     sendText() {
       if (this.isChatActive) {

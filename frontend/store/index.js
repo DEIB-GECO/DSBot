@@ -94,6 +94,18 @@ export const mutations = {
     state.imageToShow = newImage
     console.log('ora lo metto a', state.imageToShow)
   },
+
+  restart(state) {
+    state.e1 = 1
+    state.sessionId = 1
+    state.imageBase64 = null
+    state.resultsDetails = ''
+    state.tuningChat = []
+    state.comprehensionConversationState = ''
+    state.comprehensionChatCompleted = false
+    state.imageToShow = ''
+    state.resultsReady = true
+  },
 }
 
 export const actions = {
