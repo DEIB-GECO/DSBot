@@ -56,7 +56,7 @@ class IRRegression(IROp):
         result['feat_imp'] = []
 
         for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset,labels):
-            result['predicted_labels'] += list(self._model.fit(dataset[train_index], np.array(labels[test_index]).ravel()).predict(dataset[test_index]))
+            result['predicted_labels'] += list(self._model.fit(dataset.values[train_index], np.array(labels[test_index]).ravel()).predict(dataset.values[test_index]))
             result['y_test'] += labels[test_index]
 
         result['regressor'] = self._model
@@ -119,7 +119,7 @@ class IRAutoRegression(IRRegression):
 
         for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset,labels):
 
-            extracted_best_model.fit(dataset[train_index], np.array(labels[test_index]).ravel())
+            extracted_best_model.fit(dataset.values[train_index], np.array(labels[test_index]).ravel())
             pred = extracted_best_model.predict(labels[test_index])
 
             if result['predicted_labels'] != []:
@@ -135,16 +135,16 @@ class IRAutoRegression(IRRegression):
                 result['y_test'] = np.vstack((result['y_test'], labels[test_index]))
                 try:
                     result['y_score'] = np.vstack(
-                        (result['y_score'], extracted_best_model.predict_proba(dataset[test_index])))
+                        (result['y_score'], extracted_best_model.predict_proba(dataset.values[test_index])))
                 except AttributeError:
                     result['y_score'] = np.vstack(
-                        (result['y_score'], extracted_best_model.decision_function(dataset[test_index])))
+                        (result['y_score'], extracted_best_model.decision_function(dataset.values[test_index])))
             else:
                 result['y_test'] = labels[test_index]
                 try:
-                    result['y_score'] = extracted_best_model.predict_proba(dataset[test_index])
+                    result['y_score'] = extracted_best_model.predict_proba(dataset.values[test_index])
                 except AttributeError:
-                    result['y_score'] = extracted_best_model.decision_function(dataset[test_index])
+                    result['y_score'] = extracted_best_model.decision_function(dataset.values[test_index])
 
             acc.append(accuracy_score(labels[test_index], pred))
 
