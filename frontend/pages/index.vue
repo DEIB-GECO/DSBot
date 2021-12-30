@@ -99,7 +99,7 @@
           <v-stepper-content step="5" class="px-10 pb-8">
             <results></results>
 
-            <v-btn color="secondary" @click="restart()"> Restart </v-btn>
+            <v-btn color="secondary" @click="restartMethod"> Restart </v-btn>
             <v-btn
               v-if="resultsReady"
               color="secondary"
@@ -112,7 +112,7 @@
           <v-stepper-content step="6" class="px-10 pb-8">
             <tuning></tuning>
 
-            <v-btn color="secondary" @click="restart()"> Restart </v-btn>
+            <v-btn color="secondary" @click="restartMethod"> Restart </v-btn>
             <v-btn
               v-if="resultsReady"
               :color="pipelineEdited ? 'primary' : 'secondary'"
@@ -174,10 +174,11 @@ export default {
       'restart',
     ]),
     ...mapActions(['toFramework', 'waitForResults', 'setComputationResults']),
-    restart() {
+    restartMethod() {
       this.setAvailable(true)
-      this.setResultsReady(false)
-      this.setStep(1)
+      // this.setResultsReady(false)
+      // this.setStep(1)
+      this.restart()
     },
     sendOnSocket(eventType, payolad) {
       console.log('SOCKET', typeof payolad)
