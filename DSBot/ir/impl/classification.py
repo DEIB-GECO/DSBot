@@ -5,9 +5,11 @@ from ir.ir_operations import IROp, IROpOptions
 from ir.ir_parameters import IRNumPar, IRCatPar
 from tpot import TPOTClassifier
 from sklearn.experimental import enable_halving_search_cv
-from sklearn.model_selection import HalvingGridSearchCV
+from sklearn.model_selection import HalvingRandomSearchCV
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
+from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import StratifiedKFold
 from collections import Counter
@@ -16,6 +18,7 @@ from tpot import decorators
 from utils import *
 from sklearn.metrics import accuracy_score
 import pandas as pd
+from functools import reduce
 
 class IRClassification(IROp):
     def __init__(self, name, parameters, model = None):
@@ -55,7 +58,7 @@ class IRClassification(IROp):
         result['feat_imp'] = []
 
         for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset,labels):
-            result['predicted_labels'] += list(self._model.fit(dataset.values[train_index], np.array(labels[test_index]).ravel()).predict(dataset.values[test_index]))
+            result['predicted_labels'] += list(self._model.fit(dataset.values[train_index], np.array(labels[train_index]).ravel()).predict(dataset.values[test_index]))
             result['y_score'] += list(self._model.predict_proba(dataset.values[test_index]))
             result['y_test'] += labels[test_index]
         result['classifier'] = self._model
@@ -89,9 +92,10 @@ class IRAutoClassification(IRClassification):
             self.set_model(result)
 
         dataset = get_last_dataset(result)
-        #dataset.to_csv('../../DSBot/example_datasets/breast_preprocessed.csv', sep=',')
+        dataset.to_csv('../../DSBot/example_datasets/agaricus_preprocessed.csv', sep=',')
         labels = result['labels'].values
-        #pd.DataFrame(labels).to_csv('../../DSBot/example_datasets/labels_breast_preprocessed.csv')
+        pd.DataFrame(labels).to_csv('../../DSBot/example_datasets/labels_agaricus_preprocessed.csv')
+
         scores = {}
         for i in IRGenericClassification().all_models:
             if i.name!='autoClassification':
@@ -121,11 +125,11 @@ class IRAutoClassification(IRClassification):
         #exctracted_best_model = model.fitted_pipeline_.steps[-1][1]
         print(extracted_best_model)
         result['classifier'] = extracted_best_model#.fit(dataset, labels)
-        acc = []
+        acc = 0
         for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset,labels):
             #model.fit(x_train, np.array(y_train).ravel())
-            extracted_best_model.fit(dataset.values[train_index], np.array(labels[test_index]).ravel())
-            pred = extracted_best_model.predict(labels[test_index])
+            extracted_best_model.fit(dataset.values[train_index], np.array(labels[train_index]).ravel())
+            pred = extracted_best_model.predict(dataset.values[test_index])
 
             if result['predicted_labels']!=[]:
                 result['predicted_labels'] = np.concatenate((result['predicted_labels'],pred))
@@ -149,11 +153,11 @@ class IRAutoClassification(IRClassification):
                 except AttributeError:
                     result['y_score'] = extracted_best_model.decision_function(dataset.values[test_index])
 
-            acc.append(accuracy_score(labels[test_index], pred))
+            acc += accuracy_score(labels[test_index], pred)
             #print(result['y_score'])
 
-        mean_acc = np.array(acc).mean()
-        print('ACCURACY', mean_acc)
+        acc = acc/5
+        print('ACCURACY', acc)
         #print(result['y_score'])
         #result['y_score'] = result['predicted_labels']
 
@@ -167,36 +171,72 @@ class IRRandomForest(IRClassification):
     def __init__(self):
         super(IRRandomForest, self).__init__("randomForest",
                                              [IRCatPar('criterion', 'gini',  ["gini", "entropy"]),
-                                              IRCatPar('bootstrap', True,  [True, False]),
-                                              IRNumPar("n_estimators", 100, "int", 100, 110, 10),
-                                              #IRNumPar("max_features", 0.05, "float", 0.05, 1.01, 0.05),
-                                              IRNumPar("min_samples_split", 2, "int", 2, 21, 1),
-                                              IRNumPar("min_samples_leaf", 1, "int", 1, 21, 1)],
+                                              IRNumPar("n_estimators", 100, "int", 10, 110, 10),
+                                              IRNumPar("min_samples_split", 2, "int", 2, 21, 5),
+                                              IRNumPar("max_depth", 2, "int")],
                                               RandomForestClassifier)
         self._param_setted = False
 
+    def set_parameters(self, dataset, labels = None):
+        n_row = dataset.shape[0]
+        n_col = dataset.shape[1]
+        self.parameters['n_estimators'].max_v = int((n_row*n_col)**.5)
+        self.parameters['min_samples_split'].max_v = int((n_row*3/2)**.5)
+        self.parameters['max_depth'].possible_val = [2, int(n_col**.5), int(n_col/2), None]
+
+
     def parameter_tune(self, result, dataset, labels):
-        random_grid = {p:(np.arange(d.min_v, d.max_v, d.step) if (d.v_type!='categorical' and d.possible_val==[]) else d.possible_val) for p,d in self.parameters.items()}
-        rf_random = HalvingGridSearchCV(estimator=self._model, param_grid=random_grid, verbose=2, n_jobs=-1, cv=StratifiedKFold(3))
+        print(dataset.shape)
+        # cambio parametri a seconda della dimensione del dataset
+        self.set_parameters(dataset)
+
+        random_grid = {p:(np.arange(d.min_v, d.max_v, d.step)
+                          if (d.v_type!='categorical' and d.possible_val==[])
+                          else d.possible_val)
+                       for p,d in self.parameters.items()}
+        prod = reduce(lambda sub1, sub2: sub1 * sub2, map(len, random_grid.values()))
+
+        rf_random = HalvingRandomSearchCV(estimator=self._model,
+                                          param_distributions=random_grid,
+                                          verbose=1,
+                                          n_jobs=-1,
+                                          cv=3,
+                                          factor=5,
+                                          min_resources=int(dataset.shape[0]/10),
+                                          max_resources=int(dataset.shape[0]/2),
+                                          n_candidates=int(prod/50))
+
         rf_random.fit(dataset, np.array(labels).ravel())
+
         for k,v in rf_random.best_params_.items():
             self.parameters[k].value = v
+
         return rf_random
 
 
 class IRLogisticRegression(IRClassification):
     def __init__(self):
         super(IRLogisticRegression, self).__init__("logisticRegression",
-                                                   [IRNumPar('C', 1e-4, 'float', possible_val = [1e-4, 1e-3, 1e-2, 1e-1, 0.5, 1., 5., 10., 15., 20., 25.]),
-                                                    IRCatPar("penalty", "l2", ["l1","l2"]),
-                                                    IRCatPar('solver', 'liblinear', ['liblinear'])],  # TODO: if I want to pass a list of values?
+                                                   [IRNumPar('C', 1e-4, 'float', possible_val = [1e-4, 1e-3, 1e-2, 1e-1, 0.5, 1., 5., 10., 25.])],
                                                    LogisticRegression)
         self._param_setted = False
 
     def parameter_tune(self, result, dataset, labels):
-        random_grid = {p:(np.arange(d.min_v, d.max_v, d.step) if (d.v_type!='categorical' and d.possible_val==[]) else d.possible_val) for p,d in self.parameters.items()}
-        # Random search of parameters, using 5 fold cross validation, search across 100 different combinations, and use all available cores
-        lr_random = HalvingGridSearchCV(estimator=self._model, param_grid=random_grid, cv=StratifiedKFold(3), n_jobs=-1)
+        random_grid = {p: (np.arange(d.min_v, d.max_v, d.step)
+                           if (d.v_type != 'categorical' and d.possible_val == [])
+                           else d.possible_val)
+                       for p, d in self.parameters.items()}
+        prod = reduce(lambda sub1, sub2: sub1 * sub2, map(len, random_grid.values()))
+        print(prod)
+        lr_random = HalvingRandomSearchCV(estimator=self._model,
+                                          param_distributions=random_grid,
+                                          verbose=1,
+                                          n_jobs=-1,
+                                          cv=3,
+                                          factor=5,
+                                          min_resources=int(dataset.shape[0] / 10),
+                                          max_resources=int(dataset.shape[0] / 2),
+                                          n_candidates=int(prod))
         lr_random.fit(dataset,np.array(labels).ravel())
         for k in lr_random.best_params_:
             self.parameters[k].value = lr_random.best_params_[k]
@@ -206,21 +246,37 @@ class IRLogisticRegression(IRClassification):
 class IRKNeighborsClassifier(IRClassification):
     def __init__(self):
         super(IRKNeighborsClassifier, self).__init__("kNeighborsClassifier",
-                                                   [IRNumPar("n_neighbors", 1, "int", 1, 101, 1),
+                                                   [IRNumPar("n_neighbors", 1, "int", 1, 50, 1),
                                                     IRCatPar('weights', 'uniform',["uniform", "distance"]),
                                                     IRNumPar('p', 1, 'int', possible_val=[1,2])],  # TODO: if I want to pass a list of values?
                                                    KNeighborsClassifier)
         self._param_setted = False
 
-    def parameter_tune(self, result, dataset, labels):
-        max_neigh = self.parameters['n_neighbors'].max_v if self.parameters['n_neighbors'].max_v<(len(dataset)/3) else int(len(dataset)/3)
-        print('MAX NEIGH', max_neigh, 'len ds', (len(dataset)/3))
-        print(self.parameters)
+    def set_parameters(self, dataset, labels=None):
+        n_row = dataset.shape[0]
+        n_col = dataset.shape[1]
+        self.parameters['n_neighbors'].max_v = min(int(n_row / 10)-1, 50)
 
-        random_grid = {p:(np.arange(d.min_v, max_neigh, d.step) if (d.v_type!='categorical' and d.possible_val==[]) else d.possible_val) for p,d in self.parameters.items()}
-        # Random search of parameters, using 5 fold cross validation, search across 100 different combinations, and use all available cores
-        kn_random = HalvingGridSearchCV(estimator=self._model, param_grid=random_grid, cv=StratifiedKFold(3), n_jobs=-1)
+    def parameter_tune(self, result, dataset, labels):
+        self.set_parameters(dataset)
+
+        random_grid = {p: (np.arange(d.min_v, d.max_v, d.step)
+                           if (d.v_type != 'categorical' and d.possible_val == [])
+                           else d.possible_val)
+                       for p, d in self.parameters.items()}
+        prod = reduce(lambda sub1, sub2: sub1 * sub2, map(len, random_grid.values()))
+        kn_random = HalvingRandomSearchCV(estimator=self._model,
+                                          param_distributions=random_grid,
+                                          verbose=1,
+                                          n_jobs=-1,
+                                          cv=3,
+                                          factor=5,
+                                          min_resources=int(dataset.shape[0] / 10),
+                                          max_resources=int(dataset.shape[0] / 2),
+                                          n_candidates=int(prod))
         kn_random.fit(dataset,np.array(labels).ravel())#.values)
+
+
         print(kn_random.best_params_.items)
         for k in kn_random.best_params_:
             self.parameters[k].value = kn_random.best_params_[k]
@@ -230,16 +286,40 @@ class IRKNeighborsClassifier(IRClassification):
 class IRAdaBoostClassifier(IRClassification):
     def __init__(self):
         super(IRAdaBoostClassifier, self).__init__("adaBoostClassifier",
-                                                   [IRNumPar("n_estimators", 100, "int", 50, 150, 10)],  # TODO: if I want to pass a list of values?
+                                                   [IRNumPar("n_estimators", 100, "int", 10, 110, 10),
+                                                    IRCatPar('base_estimator', DecisionTreeClassifier(), [DecisionTreeClassifier(),
+                                                                                                          LogisticRegression(),
+                                                                                                          ExtraTreeClassifier(),
+                                                                                                          SVC(probability=True , kernel='linear')])],  # TODO: if I want to pass a list of values?
                                                    AdaBoostClassifier)
         self._param_setted = False
 
+    def set_parameters(self, dataset, labels = None):
+        n_row = dataset.shape[0]
+        n_col = dataset.shape[1]
+        self.parameters['n_estimators'].max_v = int((n_row*n_col)**.5)
+
     def parameter_tune(self, result, dataset, labels):
-        random_grid = {p:np.arange(d.min_v, d.max_v, d.step) for p,d in self.parameters.items() if d.v_type!='categorical'}
-        # Random search of parameters, using 5 fold cross validation, search across 100 different combinations, and use all available cores
-        ab_random = HalvingGridSearchCV(estimator=self._model, param_grid=random_grid,  cv=StratifiedKFold(3), n_jobs=-1)
+        self.set_parameters(dataset)
+
+        random_grid = {p: (np.arange(d.min_v, d.max_v, d.step)
+                           if (d.v_type != 'categorical' and d.possible_val == [])
+                           else d.possible_val)
+                       for p, d in self.parameters.items()}
+
+        prod = reduce(lambda sub1, sub2: sub1 * sub2, map(len, random_grid.values()))
+        ab_random = HalvingRandomSearchCV(estimator=self._model,
+                                          param_distributions=random_grid,
+                                          verbose=1,
+                                          n_jobs=-1,
+                                          cv=3,
+                                          factor=5,
+                                          min_resources=int(dataset.shape[0] / 10),
+                                          max_resources=int(dataset.shape[0] / 2),
+                                          n_candidates=int(prod / 10))
+
         ab_random.fit(dataset, np.array(labels).ravel())
-        print(ab_random.best_params_.items)
+
         for k in ab_random.best_params_:
             self.parameters[k].value = ab_random.best_params_[k]
         return ab_random

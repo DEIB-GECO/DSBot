@@ -4,7 +4,7 @@ from ir.ir_exceptions import LabelsNotAvailable
 from ir.ir_operations import IROp, IROpOptions
 from ir.ir_parameters import IRNumPar, IRCatPar
 from sklearn.experimental import enable_halving_search_cv
-from sklearn.model_selection import GridSearchCV, HalvingGridSearchCV
+from sklearn.model_selection import GridSearchCV, HalvingRandomSearchCV
 from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.model_selection import train_test_split, KFold
 from tpot import TPOTRegressor
@@ -56,7 +56,7 @@ class IRRegression(IROp):
         result['feat_imp'] = []
 
         for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset,labels):
-            result['predicted_labels'] += list(self._model.fit(dataset.values[train_index], np.array(labels[test_index]).ravel()).predict(dataset.values[test_index]))
+            result['predicted_labels'] += list(self._model.fit(dataset.values[train_index], np.array(labels[train_index]).ravel()).predict(dataset.values[test_index]))
             result['y_test'] += labels[test_index]
 
         result['regressor'] = self._model
@@ -119,8 +119,8 @@ class IRAutoRegression(IRRegression):
 
         for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset,labels):
 
-            extracted_best_model.fit(dataset.values[train_index], np.array(labels[test_index]).ravel())
-            pred = extracted_best_model.predict(labels[test_index])
+            extracted_best_model.fit(dataset.values[train_index], np.array(labels[train_index]).ravel())
+            pred = extracted_best_model.predict(dataset.values[test_index])
 
             if result['predicted_labels'] != []:
                 result['predicted_labels'] = np.concatenate((result['predicted_labels'], pred))
@@ -173,7 +173,7 @@ class IRRidgeRegression(IRRegression):
     def parameter_tune(self, dataset, labels):
         random_grid = {p:(np.arange(d.min_v, d.max_v, d.step) if (d.v_type!='categorical' and d.possible_val==[]) else d.possible_val) for p,d in self.parameters.items()}
         # Random search of parameters, using 5 fold cross validation, search across 100 different combinations, and use all available cores
-        search = HalvingGridSearchCV(estimator=self._model, param_grid=random_grid,scoring='neg_mean_absolute_error', cv=StratifiedKFold(3), n_jobs=-1)
+        search = HalvingRandomSearchCV(estimator=self._model, param_distributions=random_grid,scoring='neg_mean_absolute_error', cv=StratifiedKFold(3), n_jobs=-1)
         # perform the search
         search.fit(dataset, labels)
         for k,v in search.best_params_.items():

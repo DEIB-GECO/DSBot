@@ -17,10 +17,11 @@ class Dataset:
         self.label = ''
         self.hasCategoricalLabel = False
         self.measures = {}
-
+        self.correlated_features()
 
     def more_features(self):
         return self.ds.shape[1]>2
+
 
     def set_label(self, label):
         selected_label = []
@@ -40,6 +41,16 @@ class Dataset:
             return True
         else:
             return False
+
+    def correlated_features(self):
+        corr = self.ds.corr().abs()
+        s = corr.unstack()
+        so = s.sort_values(kind="quicksort")
+        correlated = []
+        for i in so[so>0.9].index:
+            if i[0]!=i[1]:
+                i[1].append(correlated)
+       # return correlated>0, correlated
 
     def set_characteristics(self):
         if self.ds is not None:

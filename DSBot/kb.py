@@ -170,8 +170,6 @@ def kb_values():
             p__1 = copy.deepcopy(p)
             p.append('lasso')
             p__1.append('userFeatureSelection')
-            p.append('kFold')
-            p__1.append('kFold')
             p1 = copy.deepcopy(p)
             p2 = copy.deepcopy(p)
             p1__1 = copy.deepcopy(p__1)
@@ -213,7 +211,6 @@ def kb_values():
                 p.append('outliersRemove')
             if 'categorical' in i:
                 p.append('oneHotEncode')
-            p.append('kFold')
             p1 = copy.deepcopy(p)
             p2 = copy.deepcopy(p)
             p.append('autoRegression')

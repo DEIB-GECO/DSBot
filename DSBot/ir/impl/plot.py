@@ -377,7 +377,8 @@ class IRROC(IRPlot):
     def run(self, result, session_id):
         n_classes = set(result['labels'].T.values[0])
         pred = np.array(result['y_score'])
-        y = [x for array in result['y_test'] for elem in array for x in elem]
+        print(result['y_test'])
+        y = result['y_test']#[x for array in result['y_test'] for elem in array for x in elem]
 
         if len(n_classes) > 2:
             y = label_binarize(y, classes=list(n_classes))
