@@ -227,6 +227,20 @@ class IROutliersRemove(IRPreprocessing):
             f.write('dataset=ds\n')
 
 
+class IRCorrelatedFeaturesRemove(IRPreprocessing):
+    def __init__(self):
+        super(IRCorrelatedFeaturesRemove, self).__init__("correlatedFeaturesRemove")
+
+    def parameter_tune(self, dataset):
+        # TODO: implement
+        pass
+
+    def run(self, result, session_id, **kwargs):
+        dataset = get_last_dataset(result)
+        correlated_feat = result['original_dataset'].corr_feat
+        result['new_dataset'] = dataset.drop(correlated_feat, axis=1)
+        return result
+
 
 class IRStandardization(IRPreprocessing):
     def __init__(self):

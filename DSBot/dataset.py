@@ -42,15 +42,16 @@ class Dataset:
         else:
             return False
 
-    def correlated_features(self):
+    def strong_correlated_features(self):
         corr = self.ds.corr().abs()
         s = corr.unstack()
         so = s.sort_values(kind="quicksort")
         correlated = []
         for i in so[so>0.9].index:
             if i[0]!=i[1]:
-                i[1].append(correlated)
-       # return correlated>0, correlated
+                if i[0] not in correlated and i[1] not in correlated:
+                    correlated.append(i[1])
+        return len(correlated)>0, list(set(correlated))
 
     def set_characteristics(self):
         if self.ds is not None:
@@ -59,7 +60,13 @@ class Dataset:
             self.zeroVariance = self.zero_variance()
             self.outliers = self.has_outliers()
             self.moreFeatures = self.more_features()
-        print('mv',self.missingValues, 'cat',self.categorical,'zv', self.zeroVariance, 'mf',self.moreFeatures, 'outliers', self.outliers)
+            self.strongCorrelatedFeatures, self.corr_feat = self.strong_correlated_features()
+        print('mv',self.missingValues,
+              'cat',self.categorical,
+              'zv', self.zeroVariance,
+              'mf',self.moreFeatures,
+              'outliers', self.outliers,
+              'scf', self.strongCorrelatedFeatures)
 
     def missing_values(self):
         return (self.ds.isnull().sum().sum())>0

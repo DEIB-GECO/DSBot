@@ -60,7 +60,6 @@ def kb_values():
         if 'onlyCategorical' in i and 'categorical' not in i and i in comb:
             comb.remove(i)
     for i in comb:
-
         if 'hasLabel' in i:
             if 'hasCategoricalLabel' in i:
                 if 'moreFeatures' in i:
@@ -114,8 +113,8 @@ def kb_values():
                 p.append('outliersRemove')
             if 'categorical' in i:
                 p.append('oneHotEncode')
-            p.append('kFold')
             p1 = copy.deepcopy(p)
+            p.append('standardization')
             p2 = copy.deepcopy(p)
             p.append('autoClassification')
             p1.append('randomForest')
@@ -141,8 +140,8 @@ def kb_values():
                 p.append('outliersRemove')
             if 'categorical' in i:
                 p.append('oneHotEncode')
-            p.append('kFold')
             p1 = copy.deepcopy(p)
+            p.append('standardization')
             p2 = copy.deepcopy(p)
             p.append('autoClassification')
             p1.append('randomForest')
@@ -168,6 +167,7 @@ def kb_values():
             if 'categorical' in i:
                 p.append('oneHotEncode')
             p__1 = copy.deepcopy(p)
+            p.append('standardization')
             p.append('lasso')
             p__1.append('userFeatureSelection')
             p1 = copy.deepcopy(p)
@@ -176,9 +176,11 @@ def kb_values():
             p2__1 = copy.deepcopy(p__1)
             p.append('autoClassification')
             p1.append('randomForest')
+            p1.remove('standardization')
             p2.append('logisticRegression')
             p__1.append('autoClassification')
             p1__1.append('randomForest')
+            p1__1.remove('standardization')
             p2__1.append('logisticRegression')
             p_1 = copy.deepcopy(p)
             p1_1 = copy.deepcopy(p1)
@@ -211,6 +213,7 @@ def kb_values():
                 p.append('outliersRemove')
             if 'categorical' in i:
                 p.append('oneHotEncode')
+            p.append('standardization')
             p1 = copy.deepcopy(p)
             p2 = copy.deepcopy(p)
             p.append('autoRegression')
@@ -237,7 +240,7 @@ def kb_values():
                 p.append('outliersRemove')
             if 'categorical' in i:
                 p.append('oneHotEncode')
-            p.append('kFold')
+            p.append('standardization')
             p1 = copy.deepcopy(p)
             p2 = copy.deepcopy(p)
             p.append('autoRegression')
@@ -263,11 +266,10 @@ def kb_values():
                 p.append('outliersRemove')
             if 'categorical' in i:
                 p.append('oneHotEncode')
+            p.append('standardization')
             p__1 = copy.deepcopy(p)
             p.append('lasso')
             p__1.append('userFeatureSelection')
-            p.append('kFold')
-            p__1.append('kFold')
             p1 = copy.deepcopy(p)
             p2 = copy.deepcopy(p)
             p1__1 = copy.deepcopy(p__1)
@@ -464,3 +466,41 @@ def kb_values():
     kb_df = pd.concat([pd.DataFrame(kb_df[0]),pd.DataFrame(kb_df[1].to_list())],axis=1)
     print(kb_df.head())
     kb_df.to_excel('kb2.xlsx', header=None, index=None)
+
+def update_kb(new_feat, new_op):
+    with open('kb.json') as json_file:
+        kb_sets = {frozenset(k.strip().split(',')): v for k, v in json.load(json_file).items()}
+
+    new_keys = {}
+    for k in kb_sets.keys():
+        if 'moreFeatures' in k:
+            new_k = set(k)
+            new_k.add(new_feat)
+            #new_keys[k] = kb_sets[k]
+            for i in kb_sets[k]:
+                new_val = []
+                count = 0
+                for j in i:
+                    if j=='zeroVarianceRemove' or j=='missingValuesHandle':
+                        new_val.append(j)
+                    elif j!='zeroVarianceRemove' and j!='missingValuesHandle' and count==0:
+                        new_val.append(new_op)
+                        count +=1
+                    else:
+                        new_val.append(j)
+                new_keys[frozenset(new_k)] = new_val
+
+    kb_sets.update(new_keys)
+    kb = {}
+    for k in kb_sets:
+        kb[','.join(set(k))] = kb_sets[k]
+
+    with open('kb.json', 'w') as f:
+        json.dump(kb, f)
+    try_list = [(x, y) for x, v in kb.items() for y in v]
+    kb_df = pd.DataFrame.from_records(try_list)
+    kb_df = pd.concat([pd.DataFrame(kb_df[0]), pd.DataFrame(kb_df[1].to_list())], axis=1)
+    print(kb_df.head())
+    kb_df.to_excel('kb.xlsx', header=None, index=None)
+
+update_kb('strongCorrelatedFeatures','correlatedFeaturesRemove')
