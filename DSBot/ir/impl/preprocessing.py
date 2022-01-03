@@ -306,7 +306,13 @@ class IRZeroVarianceRemove(IRPreprocessing):
 
 class IRGenericPreprocessing(IROpOptions):
     def __init__(self):
-        super(IRGenericPreprocessing, self).__init__([IRLabelRemove(), IROneHotEncode(), IROutliersRemove(), IRStandardization(), IRNormalization(),IRZeroVarianceRemove()],
+        super(IRGenericPreprocessing, self).__init__([IRLabelRemove(),
+                                                      IROneHotEncode(),
+                                                      IROutliersRemove(),
+                                                      IRStandardization(),
+                                                      IRNormalization(),
+                                                      IRZeroVarianceRemove(),
+                                                      IRCorrelatedFeaturesRemove()],
                                                      "labelRemove")
 
 

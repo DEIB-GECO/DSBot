@@ -503,4 +503,4 @@ def update_kb(new_feat, new_op):
     print(kb_df.head())
     kb_df.to_excel('kb.xlsx', header=None, index=None)
 
-update_kb('strongCorrelatedFeatures','correlatedFeaturesRemove')
+#update_kb('strongCorrelatedFeatures','correlatedFeaturesRemove')
