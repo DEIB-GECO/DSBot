@@ -268,21 +268,24 @@ def on_execute_received(payload):
     kb = data[session_id]['kb']
     print('Translated workflow', wf)
     #print(kb.kb)
-    for i in range(len(kb.kb)):
-        sent = kb.kb[i]
-        #print(sent)
-        sent = [x for x in sent if
-                x not in ['missingValuesHandle', 'labelRemove', 'oneHotEncode', 'labelAppend', 'zerVarRemove',
-                          'outliersRemove', 'standardization', 'normalization']]
-        scores[i] = NW(wf, sent, kb.voc) / len(sent)
-        #print(scores[i])
-
-    #print(scores)
+    if len(kb.kb)>1:
+        for i in range(len(kb.kb)):
+            sent = kb.kb[i]
+            #print(sent)
+            sent = [x for x in sent if
+                    x not in ['missingValuesHandle', 'labelRemove', 'oneHotEncode', 'labelAppend', 'zerVarRemove',
+                              'outliersRemove', 'standardization', 'normalization']]
+            scores[i] = NW(wf, sent, kb.voc) / len(sent)
+            print(sent, scores[i])
+    else:
+        scores[kb.kb] = NW(wf, kb.kb, kb.voc) / len(kb.kb)
     max_key = max(scores, key=scores.get)
     max_key = kb.kb[max_key]
     print('MAX', max_key)
-
-    ir_tuning = create_IR(max_key, message_queue)
+    if type(max_key) is list:
+        ir_tuning = create_IR(max_key, message_queue)
+    elif type(max_key) is str:
+        ir_tuning = create_IR([max_key], message_queue)
     #print(ir_tuning)
 
     data[session_id]['ir_tuning'] = ir_tuning

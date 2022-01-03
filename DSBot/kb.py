@@ -459,7 +459,7 @@ def kb_values():
         p1 += ['spearman', 'clustermap']
         dict_pipelines[','.join(i)] += [p, p1]
     print(len([x for k,v in dict_pipelines.items() for x in v]))
-    with open('kb2.json','w') as f:
+    with open('DSBot/kb.json', 'w') as f:
         json.dump(dict_pipelines, f)
     try_list = [(x,y) for x,v in dict_pipelines.items() for y in v]
     kb_df = pd.DataFrame.from_records(try_list)
@@ -473,11 +473,14 @@ def update_kb(new_feat, new_op):
 
     new_keys = {}
     for k in kb_sets.keys():
+        new_k = set(k)
         if 'moreFeatures' in k:
-            new_k = set(k)
+            #new_k = set(k)
             new_k.add(new_feat)
             #new_keys[k] = kb_sets[k]
+            new_keys[frozenset(new_k)] = []
             for i in kb_sets[k]:
+                print(i)
                 new_val = []
                 count = 0
                 for j in i:
@@ -488,14 +491,16 @@ def update_kb(new_feat, new_op):
                         count +=1
                     else:
                         new_val.append(j)
-                new_keys[frozenset(new_k)] = new_val
+                count = 0
+                new_keys[frozenset(new_k)].append(new_val)
+
 
     kb_sets.update(new_keys)
     kb = {}
     for k in kb_sets:
         kb[','.join(set(k))] = kb_sets[k]
 
-    with open('kb.json', 'w') as f:
+    with open('DSBot/kb.json', 'w') as f:
         json.dump(kb, f)
     try_list = [(x, y) for x, v in kb.items() for y in v]
     kb_df = pd.DataFrame.from_records(try_list)
@@ -503,4 +508,4 @@ def update_kb(new_feat, new_op):
     print(kb_df.head())
     kb_df.to_excel('kb.xlsx', header=None, index=None)
 
-#update_kb('strongCorrelatedFeatures','correlatedFeaturesRemove')
+update_kb('strongCorrelatedFeatures','correlatedFeaturesRemove')

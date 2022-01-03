@@ -17,10 +17,9 @@ class Dataset:
         self.label = ''
         self.hasCategoricalLabel = False
         self.measures = {}
-        self.correlated_features()
 
     def more_features(self):
-        return self.ds.shape[1]>2
+        return self.ds.shape[1]>3
 
 
     def set_label(self, label):
@@ -53,6 +52,13 @@ class Dataset:
                     correlated.append(i[1])
         return len(correlated)>0, list(set(correlated))
 
+    def too_many_features(self):
+        new_ds = self.ds.drop(self.corr_feat, axis=1)
+        if new_ds.shape[1] > 0.4 * new_ds.shape[0]:
+            return True
+        else:
+            return False
+
     def set_characteristics(self):
         if self.ds is not None:
             self.missingValues = self.missing_values()
@@ -61,12 +67,14 @@ class Dataset:
             self.outliers = self.has_outliers()
             self.moreFeatures = self.more_features()
             self.strongCorrelatedFeatures, self.corr_feat = self.strong_correlated_features()
+            self.tooManyFeatures = self.too_many_features()
         print('mv',self.missingValues,
               'cat',self.categorical,
               'zv', self.zeroVariance,
               'mf',self.moreFeatures,
               'outliers', self.outliers,
-              'scf', self.strongCorrelatedFeatures)
+              'scf', self.strongCorrelatedFeatures,
+              'tmf', self.tooManyFeatures)
 
     def missing_values(self):
         return (self.ds.isnull().sum().sum())>0
@@ -112,8 +120,12 @@ class Dataset:
                       'hasLabel',
                       'moreFeatures',
                       'outliers',
-                      'hasCategoricalLabel']
+                      'hasCategoricalLabel',
+                      'strongCorrelatedFeatures']
         key = frozenset(filter(lambda x : getattr(self, x), properties))
         if len(key)==0:
             key=frozenset(['ds'])
+        print('FILTERED KB')
+        print(kb[key])
+        print('------------')
         return kb[key]

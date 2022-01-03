@@ -12,7 +12,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import StratifiedKFold
 from utils import *
 import numpy as np
-
+import time
 
 class IRRegression(IROp):
     def __init__(self, name, parameters, model = None):
@@ -21,7 +21,7 @@ class IRRegression(IROp):
         self.labels = None
 
     @abstractmethod
-    def parameter_tune(self, dataset):
+    def parameter_tune(self, result, dataset, labels):
         pass
 
     def set_model(self, result):
@@ -32,7 +32,7 @@ class IRRegression(IROp):
         else:
             dataset = result['original_dataset'].ds
         labels = result['labels']
-        self.parameter_tune(dataset, labels)
+        self.parameter_tune(result, dataset, labels)
         for p,v in self.parameters.items():
             self._model.__setattr__(p,self.parameters[p].value)
         self._param_setted = True
@@ -76,10 +76,11 @@ class IRAutoRegression(IRRegression):
                                              TPOTRegressor)
         self._param_setted = False
 
-    def parameter_tune(self, dataset, labels):
+    def parameter_tune(self, result, dataset, labels):
         pass
 
     def run(self, result, session_id):
+        start_time = time.time()
         if not self._param_setted:
             self.set_model(result)
         dataset = get_last_dataset(result)
@@ -150,6 +151,7 @@ class IRAutoRegression(IRRegression):
 
         mean_acc = np.array(acc).mean()
         print('ACCURACY', mean_acc)
+        print('TIME: ', time.time() - start_time)
         self._param_setted = False
         return result
 
@@ -160,7 +162,7 @@ class IRLinearRegression(IRRegression):
                                              LinearRegression)
         self._param_setted = False
 
-    def parameter_tune(self, dataset, labels):
+    def parameter_tune(self, result, dataset, labels):
         pass
 
 class IRRidgeRegression(IRRegression):
@@ -170,7 +172,7 @@ class IRRidgeRegression(IRRegression):
                                              Ridge)
         self._param_setted = False
 
-    def parameter_tune(self, dataset, labels):
+    def parameter_tune(self, result, dataset, labels):
         random_grid = {p:(np.arange(d.min_v, d.max_v, d.step) if (d.v_type!='categorical' and d.possible_val==[]) else d.possible_val) for p,d in self.parameters.items()}
         # Random search of parameters, using 5 fold cross validation, search across 100 different combinations, and use all available cores
         search = HalvingRandomSearchCV(estimator=self._model, param_distributions=random_grid,scoring='neg_mean_absolute_error', cv=StratifiedKFold(3), n_jobs=-1)
@@ -178,6 +180,7 @@ class IRRidgeRegression(IRRegression):
         search.fit(dataset, labels)
         for k,v in search.best_params_.items():
             self.parameters[k].value = v
+        return search
 
 
 class IRGenericRegression(IROpOptions):
