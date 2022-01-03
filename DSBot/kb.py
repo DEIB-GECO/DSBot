@@ -488,6 +488,7 @@ def update_kb(new_feat, new_op):
                         new_val.append(j)
                     elif j!='zeroVarianceRemove' and j!='missingValuesHandle' and count==0:
                         new_val.append(new_op)
+                        new_val.append(j)
                         count +=1
                     else:
                         new_val.append(j)
@@ -500,8 +501,8 @@ def update_kb(new_feat, new_op):
     for k in kb_sets:
         kb[','.join(set(k))] = kb_sets[k]
 
-    with open('DSBot/kb.json', 'w') as f:
-        json.dump(kb, f)
+    #with open('kb.json', 'w') as f:
+    #    json.dump(kb, f)
     try_list = [(x, y) for x, v in kb.items() for y in v]
     kb_df = pd.DataFrame.from_records(try_list)
     kb_df = pd.concat([pd.DataFrame(kb_df[0]), pd.DataFrame(kb_df[1].to_list())], axis=1)

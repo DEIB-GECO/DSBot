@@ -274,7 +274,7 @@ def on_execute_received(payload):
             #print(sent)
             sent = [x for x in sent if
                     x not in ['missingValuesHandle', 'labelRemove', 'oneHotEncode', 'labelAppend', 'zerVarRemove',
-                              'outliersRemove', 'standardization', 'normalization']]
+                              'outliersRemove', 'standardization', 'normalization', 'correlatedFeaturesRemove']]
             scores[i] = NW(wf, sent, kb.voc) / len(sent)
             print(sent, scores[i])
     else:

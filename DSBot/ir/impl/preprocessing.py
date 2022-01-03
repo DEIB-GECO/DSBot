@@ -112,7 +112,8 @@ class IRLabelRemove(IRLabelOperation):
                 #print('replaced', type(label))
         label = pd.DataFrame(label)
         #print(type(label))
-
+        print(label)
+        aaaa
         result['labels']=label
         result['new_dataset'] = dataset
 
@@ -185,7 +186,7 @@ class IROutliersRemove(IRPreprocessing):
             #print('len ds', ds.shape)
             result['new_dataset'] = ds
             if result['original_dataset'].hasLabel:
-                label = pd.DataFrame(result['labels'])
+                label = pd.DataFrame(dataset[result['labels']])
                 #print(label)
                 label.index = np.arange(0, len(value_dataset))
                 label = label.drop(set(value_dataset.index) - set(ds.index))
