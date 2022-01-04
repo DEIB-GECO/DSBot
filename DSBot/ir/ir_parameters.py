@@ -131,19 +131,19 @@ class IRNumPar(IRPar):
         IRPar.value.fset(self, self.uniform_type(new_value))
 
     def is_valid(self, new_value):
-        if (self.max_v >= new_value >= self.min_v) or (new_value in self.possible_val):
+        if (new_value in self.possible_val) or (self.max_v >= new_value >= self.min_v):
             return True
         else:
             return False
 
     def uniform_type(self, new_value):
         if self.v_type == 'int':
-            if type(new_value) != int:
+            if type(new_value) != int and new_value!=None:
                 logging.getLogger(__name__).warning('Explicit int cast of param: %s; module: %s',
                                                     self.name, self.module)
                 new_value = int(new_value)
         elif self.v_type == 'float':
-            if type(new_value) != float:
+            if type(new_value) != float  and new_value!=None:
                 logging.getLogger(__name__).warning('Explicit float cast of param: %s; module: %s',
                                                     self.name, self.module)
                 new_value = float(new_value)

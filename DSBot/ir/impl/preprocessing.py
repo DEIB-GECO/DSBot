@@ -112,8 +112,6 @@ class IRLabelRemove(IRLabelOperation):
                 #print('replaced', type(label))
         label = pd.DataFrame(label)
         #print(type(label))
-        print(label)
-        aaaa
         result['labels']=label
         result['new_dataset'] = dataset
 
@@ -180,14 +178,13 @@ class IROutliersRemove(IRPreprocessing):
         index_old = dataset.index.values
         value_dataset.index = np.arange(len(dataset))
         ds = value_dataset[((np.abs(value_dataset-value_dataset.mean()))<=(3*value_dataset.std())).sum(axis=1)>=0.9*value_dataset.shape[1]]
-        perc_outliers = ((len(dataset)-len(ds))/len(dataset))*100
-        notify_user(f'The {perc_outliers:.3f}% of the rows are outliers. I will remove them.', socketio=sio)
-        if ds.shape[1]!=0 and ds.shape[0]!=0:
+        if ds.shape[1]!=0 and ds.shape[0]!=0 and ds.shape[0]!=dataset.shape[0]:
+            perc_outliers = ((len(dataset) - len(ds)) / len(dataset)) * 100
+            notify_user(f'The {perc_outliers:.3f}% of the rows are outliers. I will remove them.', socketio=sio)
             #print('len ds', ds.shape)
             result['new_dataset'] = ds
             if result['original_dataset'].hasLabel:
-                label = pd.DataFrame(dataset[result['labels']])
-                #print(label)
+                label = pd.DataFrame(result['labels'])
                 label.index = np.arange(0, len(value_dataset))
                 label = label.drop(set(value_dataset.index) - set(ds.index))
                 result['labels'] = pd.DataFrame(label)#label.T.values

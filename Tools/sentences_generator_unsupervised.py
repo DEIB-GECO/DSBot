@@ -41,6 +41,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_nolabel:
                 sentences_fS_aR.append(f + ' ' + ', '.join(random.sample(h[0],random.randint(1,len(h[0]))))+ ' ' + v + ' ' + s)
                 list_target.append('userFeatureSelection associationRules')
+                break
 
 # for f in synonyms_userFeatureSel:
 #     for v in verbs:
@@ -55,6 +56,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_nolabel:
                 sentences_fS_aR.append(f + ' ' + ', '.join(random.sample(h[0],random.randint(1,len(h[0]))))+ ' ' + v + ' ' + s)
                 list_target.append('userFeatureSelection associationRules plot')
+                break
 
 # for f in synonyms_userFeatureSel:
 #     for v in plot_verbs:
@@ -63,13 +65,13 @@ for f in synonyms_userFeatureSel:
 #                 sentences_fS_aR.append(f + ' ' + ', '.join(random.sample(h[0],random.randint(1,len(h[0]))))+ ' ' + v + ' ' + s + ' ' + h[1])
 #                 list_target.append('userFeatureSelection associationRules plot')
 
-with open('../DSBot/wf/src-train2.txt','a') as f:
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_fS_aR:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -82,6 +84,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_nolabel:
                 sentences_fS_oD.append(f + ' ' + ', '.join(random.sample(h[0],random.randint(1,len(h[0]))))+ ' ' + v + ' ' + s)
                 list_target.append('userFeatureSelection outliersDetection')
+                break
 
 # for f in synonyms_userFeatureSel:
 #     for v in verbs:
@@ -96,6 +99,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_nolabel:
                 sentences_fS_oD.append(f + ' ' + ', '.join(random.sample(h[0],random.randint(1,len(h[0]))))+ ' ' + v + ' ' + s)
                 list_target.append('userFeatureSelection outliersDetection plot')
+                break
 
 # for f in synonyms_userFeatureSel:
 #     for v in plot_verbs:
@@ -104,13 +108,13 @@ for f in synonyms_userFeatureSel:
 #                 sentences_fS_oD.append(f + ' ' + ', '.join(random.sample(h[0],random.randint(1,len(h[0]))))+ ' ' + v + ' ' + s + ' ' + h[1])
 #                 list_target.append('userFeatureSelection outliersDetection plot')
 
-with open('../DSBot/wf/src-train2.txt','a') as f:
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_fS_oD:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -123,6 +127,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_nolabel:
                 sentences_fS_clustering.append(f + ' ' + ', '.join(random.sample(h[0],random.randint(1,len(h[0]))))+ ' ' + v + ' ' + s)
                 list_target.append('userFeatureSelection clustering')
+                break
 
 # for f in synonyms_userFeatureSel:
 #     for v in verbs:
@@ -137,6 +142,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_nolabel:
                 sentences_fS_clustering.append(f + ' ' + ', '.join(random.sample(h[0],random.randint(1,len(h[0]))))+ ' ' + v + ' ' + s)
                 list_target.append('userFeatureSelection clustering plot')
+                break
 
 # for f in synonyms_userFeatureSel:
 #     for v in plot_verbs:
@@ -145,18 +151,18 @@ for f in synonyms_userFeatureSel:
 #                 sentences_fS_clustering.append(f + ' ' + ', '.join(random.sample(h[0],random.randint(1,len(h[0]))))+ ' ' + v + ' ' + s + ' ' + h[1])
 #                 list_target.append('userFeatureSelection clustering plot')
 
-with open('../DSBot/wf/src-train2.txt','a') as f:
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_fS_clustering:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
 
-'''
+
 
 sentences_correlation = []
 list_target = []
@@ -164,6 +170,7 @@ for v in verbs:
     for s in synonyms_correlation:
         sentences_correlation.append(v+' '+s)
         list_target.append('correlation')
+        break
 
 # for v in verbs:
 #     for s in synonyms_correlation_with_data:
@@ -175,6 +182,7 @@ for v in plot_verbs:
     for s in synonyms_correlation:
         sentences_correlation.append(v+' '+s)
         list_target.append('correlation plot')
+        break
 # for v in plot_verbs:
 #     for s in synonyms_correlation_with_data:
 #         for h in headers_nolabel:
@@ -182,13 +190,13 @@ for v in plot_verbs:
 #             list_target.append('correlation plot')
 
 
-with open('../DSBot/wf/src-train2.txt','a') as f:
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_correlation:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -199,6 +207,7 @@ for v in verbs:
     for s in synonyms_relation:
         sentences_relation.append(v+' '+s)
         list_target.append('relation')
+        break
 
 # for v in verbs:
 #     for s in synonyms_relation_with_data:
@@ -210,19 +219,20 @@ for v in plot_verbs:
     for s in synonyms_relation:
         sentences_relation.append(v+' '+s)
         list_target.append('relation plot')
+        break
 # for v in plot_verbs:
 #     for s in synonyms_relation_with_data:
 #         for h in headers_nolabel:
 #             sentences_relation.append(v + ' ' + s + ' ' + h[1])
 #             list_target.append('relation plot')
 
-with open('../DSBot/wf/src-train2.txt','a') as f:
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_relation:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -233,6 +243,7 @@ for v in verbs:
     for s in synonyms_associationRules:
         sentences_associationRules.append(v+' '+s)
         list_target.append('associationRules')
+        break
 
 # for v in verbs:
 #     for s in synonyms_associationRules_with_data:
@@ -244,6 +255,7 @@ for v in plot_verbs:
     for s in synonyms_associationRules:
         sentences_associationRules.append(v+' '+s)
         list_target.append('associationRules plot')
+        break
 # for v in plot_verbs:
 #     for s in synonyms_associationRules_with_data:
 #         for h in headers_nolabel:
@@ -251,13 +263,13 @@ for v in plot_verbs:
 #             list_target.append('associationRules plot')
 
 
-with open('../DSBot/wf/src-train2.txt','a') as f:
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_associationRules:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -268,6 +280,7 @@ for v in verbs:
     for s in synonyms_outliersDetection:
         sentences_outliersDetection.append(v+' '+s)
         list_target.append('outliersDetection')
+        break
 
 # for v in verbs:
 #     for s in synonyms_outliersDetection_with_data:
@@ -279,19 +292,20 @@ for v in plot_verbs:
     for s in synonyms_outliersDetection:
         sentences_outliersDetection.append(v+' '+s)
         list_target.append('outliersDetection plot')
+        break
 # for v in plot_verbs:
 #     for s in synonyms_outliersDetection_with_data:
 #         for h in headers_nolabel:
 #             sentences_outliersDetection.append(v + ' ' + s + ' ' + h[1])
 #             list_target.append('outliersDetection plot')
 
-with open('../DSBot/wf/src-train2.txt','a') as f:
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_outliersDetection:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -302,6 +316,7 @@ for v in verbs:
     for s in synonyms_clustering:
         sentences_clustering.append(v+' '+s)
         list_target.append('clustering')
+        break
 
 # for v in verbs:
 #     for s in synonyms_clustering_with_data:
@@ -313,6 +328,7 @@ for v in plot_verbs:
     for s in synonyms_clustering:
         sentences_clustering.append(v+' '+s)
         list_target.append('clustering plot')
+        break
 # for v in plot_verbs:
 #     for s in synonyms_clustering_with_data:
 #         for h in headers_nolabel:
@@ -320,13 +336,12 @@ for v in plot_verbs:
 #             list_target.append('clustering plot')
 
 
-with open('../DSBot/wf/src-train2.txt','a') as f:
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_clustering:
         f.write('\n')
         f.write(s)
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
-        '''

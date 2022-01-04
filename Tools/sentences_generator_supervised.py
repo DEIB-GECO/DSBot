@@ -49,20 +49,20 @@ synonyms_afterpred = ['after the prediction', 'after having predicted', 'after p
 synonyms_afterpred_with_data = ['after the prediciton of', 'after having predicted the', 'after prediction the', 'after forecasting',
                        'once you have predicted']
 
-synonyms_featureSel = ['select the relevant features','extract the features','use only some features','use only some columns','select only some columns'
+synonyms_featureSel = ['select the relevant features','extract the features','use only some features','use only some columns','select only some columns',
                        'extract only some columns','extract some columns','select the relevant columns','consider only some features','consider some columns']
 synonym_then = ['then', ',', 'after that', ';', 'subsequently', 'later','next', 'on top of that', 'moreover']
 
-with open('../DSBot/wf/src-train2.txt','a') as f:
-    for s in ['correlation']*1000:
-        f.write('\n')
-        f.write(s)
+#with open('../DSBot/wf/src-val2.txt','a') as f:
+#    for s in ['correlation']*1000:
+#        f.write('\n')
+#        f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
-    for s in ['correlation']*1000:
-        f.write('\n')
-        f.write(s)
+#with open('../DSBot/wf/tgt-val2.txt','a') as f:
+#    for s in ['correlation']*1000:
+#        f.write('\n')
+#        f.write(s)
 
 sentences_fS_aR = []
 list_target = []
@@ -75,6 +75,7 @@ for f in synonyms_featureSel:
                     if len(sentences_fS_aR) <= 12396:
                         sentences_fS_aR.append(f + ' ' +  t + ' ' + v + ' ' + s)
                         list_target.append('featureSelection classification')
+                        break
 
 for f in synonyms_featureSel:
     for t in synonym_then:
@@ -84,6 +85,7 @@ for f in synonyms_featureSel:
                     if len(sentences_fS_aR) <= 12396:
                         sentences_fS_aR.append(f + ' ' + t + ' ' + v + ' ' + s + ' ' + h[1])
                         list_target.append('featureSelection classification')
+                        break
 
 for f in synonyms_featureSel:
     for t in synonym_then:
@@ -93,6 +95,7 @@ for f in synonyms_featureSel:
                     if len(sentences_fS_aR) <= 12396:
                         sentences_fS_aR.append(v + ' ' + f + ' ' +a)
                         list_target.append('featureSelection classification featureImportance plot')
+                        break
 
 for f in synonyms_featureSel:
     for t in synonym_then:
@@ -102,14 +105,15 @@ for f in synonyms_featureSel:
                     if len(sentences_fS_aR) <= 12396:
                         sentences_fS_aR.append(v + ' ' + f + ' ' + a)
                         list_target.append('featureSelection classification featureImportance plot')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+                        break
+print(len(sentences_fS_aR), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_fS_aR:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -121,6 +125,7 @@ for s in synonyms_prediction_verbs:
         for f in synonyms_importantFeatures:
             sentences_prediction.append(s + 'and' + v + f)
             list_target.append('prediction featureImportance')
+            break
 
 for s in synonyms_prediction_verbs_with_data:
     for v in synonyms_extraction:
@@ -128,14 +133,15 @@ for s in synonyms_prediction_verbs_with_data:
             for h in headers_label:
                 sentences_prediction.append(s + ' ' + h[0] + 'and' + v + f)
                 list_target.append('prediction featureImportance')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+                break
+print(len(sentences_prediction), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_prediction:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -148,7 +154,7 @@ for v in plot_verbs:
         for a in synonyms_afterpred:
             sentences_prediction.append(v + f + a)
             list_target.append('prediction featureImportance plot')
-
+            break
 
 for v in synonyms_extraction:
     for f in synonyms_importantFeatures:
@@ -156,14 +162,15 @@ for v in synonyms_extraction:
             for h in headers_label:
                 sentences_prediction.append(v + f + a + ' ' + h[0])
                 list_target.append('prediction featureImportance plot')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+                break
+print(len(sentences_prediction), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_prediction:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -176,6 +183,7 @@ for v in plot_verbs:
         for a in synonyms_afterclass:
             sentences_classification.append(v + f + a)
             list_target.append('classification featureImportance plot')
+            break
 
 
 for v in synonyms_extraction:
@@ -184,14 +192,15 @@ for v in synonyms_extraction:
             for h in headers_label:
                 sentences_classification.append(v + f + a + ' ' + h[0])
                 list_target.append('classification featureImportance plot')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+                break
+print(len(sentences_classification), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_classification:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -205,6 +214,7 @@ for s in synonyms_classification_verbs:
         for f in synonyms_importantFeatures:
             sentences_classification.append(s + 'and' + v + f)
             list_target.append('classification featureImportance')
+            break
 
 for s in synonyms_classification_verbs_with_data:
     for v in synonyms_extraction:
@@ -212,14 +222,15 @@ for s in synonyms_classification_verbs_with_data:
             for h in headers_label:
                 sentences_classification.append(s + ' ' + h[0] + 'and' + v + f)
                 list_target.append('classification featureImportance')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+                break
+print(len(sentences_classification), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_classification:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -232,6 +243,7 @@ for f in synonyms_userFeatureSel:
                 if random.randint(1,len(h[1]))==2:
                     sentences_fS_class.append(f + ' ' + ' and '.join(random.sample(h[1],2)) + ' ' + v + ' ' + s)
                     list_target.append('userFeatureSelection classification')
+                    break
 
 for f in synonyms_userFeatureSel:
     for v in verbs:
@@ -241,6 +253,7 @@ for f in synonyms_userFeatureSel:
                     #sentences_fS_class.append(f + ' ' + ' and '.join(random.sample(h[1],2)) + ' ' + v + ' ' + s)
                     sentences_fS_class.append(f + ' ' + ' and '.join(random.sample(h[1],2))+ ' ' + v + ' ' + s + ' ' + h[0])
                     list_target.append('userFeatureSelection classification')
+                    break
 
 for f in synonyms_userFeatureSel:
     for v in plot_verbs:
@@ -249,6 +262,7 @@ for f in synonyms_userFeatureSel:
                 if random.randint(1, len(h[1])) == 2:
                     sentences_fS_class.append(f + ' ' + ' and '.join(random.sample(h[1],2)) + ' ' + v + ' ' + s)
                     list_target.append('userFeatureSelection classification plot')
+                    break
 
 for f in synonyms_userFeatureSel:
     for v in plot_verbs:
@@ -257,15 +271,16 @@ for f in synonyms_userFeatureSel:
                 if random.randint(1, len(h[1])) == 2:
                     sentences_fS_class.append(f + ' ' + ' and '.join(random.sample(h[1],2)) + ' ' + v + ' ' + s + ' ' + h[0])
                     list_target.append('userFeatureSelection classification plot')
+                    break
 
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+print(len(sentences_fS_class), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_fS_class:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -279,6 +294,7 @@ for f in synonyms_userFeatureSel:
                 if random.randint(1, len(h[1])) == 2:
                     sentences_fS_pred.append(f + ' ' + ' and '.join(random.sample(h[1],2)) + ' ' + v + ' ' + s)
                     list_target.append('userFeatureSelection prediction')
+                    break
 
 for f in synonyms_userFeatureSel:
     for v in verbs:
@@ -287,6 +303,7 @@ for f in synonyms_userFeatureSel:
                 if random.randint(1, len(h[1])) == 2:
                     sentences_fS_pred.append(f + ' ' + ' and '.join(random.sample(h[1],2)) + ' ' + v + ' ' + s + ' ' + h[0])
                     list_target.append('userFeatureSelection prediction')
+                    break
 
 for f in synonyms_userFeatureSel:
     for v in plot_verbs:
@@ -295,6 +312,7 @@ for f in synonyms_userFeatureSel:
                 if random.randint(1, len(h[1])) == 2:
                     sentences_fS_pred.append(f + ' ' + ' and '.join(random.sample(h[1],2))+ ' ' + v + ' ' + s)
                     list_target.append('userFeatureSelection prediction plot')
+                    break
 
 for f in synonyms_userFeatureSel:
     for v in plot_verbs:
@@ -303,14 +321,15 @@ for f in synonyms_userFeatureSel:
                 if random.randint(1, len(h[1])) == 2:
                     sentences_fS_pred.append(f + ' ' + ' and '.join(random.sample(h[1],2)) + ' ' + v + ' ' + s + ' ' + h[0])
                     list_target.append('userFeatureSelection prediction plot')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+                    break
+print(len(sentences_fS_pred), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_fS_pred:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -324,6 +343,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_label:
                 sentences_fS_class.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + v + ' ' + s)
                 list_target.append('userFeatureSelection classification')
+                break
 
 for f in synonyms_userFeatureSel:
     for v in verbs:
@@ -331,6 +351,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_label:
                 sentences_fS_class.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + v + ' ' + s + ' ' + h[0])
                 list_target.append('userFeatureSelection classification')
+                break
 
 for f in synonyms_userFeatureSel:
     for v in plot_verbs:
@@ -338,6 +359,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_label:
                 sentences_fS_class.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + v + ' ' + s)
                 list_target.append('userFeatureSelection classification plot')
+                break
 
 for f in synonyms_userFeatureSel:
     for v in plot_verbs:
@@ -345,15 +367,16 @@ for f in synonyms_userFeatureSel:
             for h in headers_label:
                 sentences_fS_class.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + v + ' ' + s + ' ' + h[0])
                 list_target.append('userFeatureSelection classification plot')
+                break
 
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+print(len(sentences_fS_class), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_fS_class:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -366,6 +389,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_label:
                 sentences_fS_pred.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + v + ' ' + s)
                 list_target.append('userFeatureSelection prediction')
+                break
 
 for f in synonyms_userFeatureSel:
     for v in verbs:
@@ -373,6 +397,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_label:
                 sentences_fS_pred.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + v + ' ' + s + ' ' + h[0])
                 list_target.append('userFeatureSelection prediction')
+                break
 
 for f in synonyms_userFeatureSel:
     for v in plot_verbs:
@@ -380,6 +405,7 @@ for f in synonyms_userFeatureSel:
             for h in headers_label:
                 sentences_fS_pred.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + v + ' ' + s)
                 list_target.append('userFeatureSelection prediction plot')
+                break
 
 for f in synonyms_userFeatureSel:
     for v in plot_verbs:
@@ -387,14 +413,15 @@ for f in synonyms_userFeatureSel:
             for h in headers_label:
                 sentences_fS_pred.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + v + ' ' + s + ' ' + h[0])
                 list_target.append('userFeatureSelection prediction plot')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+                break
+print(len(sentences_fS_pred), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_fS_pred:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -406,32 +433,36 @@ for f in synonyms_userFeatureSel:
         for h in headers_label:
             sentences_fS_class.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + ' ' + s)
             list_target.append('userFeatureSelection classification')
+            break
 
 for f in synonyms_userFeatureSel:
     for s in synonyms_classification_verbs_with_data:
         for h in headers_label:
             sentences_fS_class.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + s + ' ' + h[0])
             list_target.append('userFeatureSelection classification')
+            break
 
 for f in synonyms_userFeatureSel:
     for s in synonyms_classification_verbs:
         for h in headers_label:
             sentences_fS_class.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + s)
             list_target.append('userFeatureSelection classification plot')
+            break
 
 for f in synonyms_userFeatureSel:
     for s in synonyms_classification_verbs_with_data:
         for h in headers_label:
             sentences_fS_class.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' +  s + ' ' + h[0])
             list_target.append('userFeatureSelection classification plot')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+            break
+print(len(sentences_fS_class), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_fS_class:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -443,37 +474,41 @@ for f in synonyms_userFeatureSel:
         for h in headers_label:
             sentences_fS_pred.append(f + ' ' +', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' '  + s)
             list_target.append('userFeatureSelection prediction')
+            break
 
 for f in synonyms_userFeatureSel:
     for s in synonyms_prediction_verbs_with_data:
         for h in headers_label:
             sentences_fS_pred.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + s + ' ' + h[0])
             list_target.append('userFeatureSelection prediction')
+            break
 
 for f in synonyms_userFeatureSel:
     for s in synonyms_prediction_verbs:
         for h in headers_label:
             sentences_fS_pred.append(f + ' ' + ', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' ' + s)
             list_target.append('userFeatureSelection prediction plot')
+            break
 #
 for f in synonyms_userFeatureSel:
     for s in synonyms_prediction_verbs_with_data:
         for h in headers_label:
             sentences_fS_pred.append(f + ' ' +', '.join(random.sample(h[1],random.randint(1,len(h[1]))))+ ' '  + s + ' ' + h[0])
             list_target.append('userFeatureSelection prediction plot')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+            break
+print(len(sentences_fS_pred), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_fS_pred:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
 
-'''
+
 
 sentences_classification = []
 list_target = []
@@ -481,19 +516,21 @@ list_target = []
 for s in synonyms_classification_verbs:
     sentences_classification.append(s)
     list_target.append('classification')
-#
+    break
+
 for s in synonyms_classification_verbs_with_data:
     for h in headers_label:
         sentences_classification.append(s + ' ' + h[0])
         list_target.append('classification')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+        break
+print(len(sentences_classification), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_classification:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -505,22 +542,24 @@ list_target = []
 for s in synonyms_prediction_verbs:
     sentences_prediction.append(s)
     list_target.append('prediction')
-#
+    break
 for s in synonyms_prediction_verbs_with_data:
     for h in headers_label:
         sentences_prediction.append(s + ' ' + h[0])
         list_target.append('prediction')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+        break
+print(len(sentences_prediction), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_prediction:
         f.write('\n')
         f.write(s)
-        #f.write('\n')
+        break
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
+        break
 
 
 sentences_classification = []
@@ -529,30 +568,33 @@ for v in verbs:
     for s in synonyms_classification:
         sentences_classification.append(v+' '+s)
         list_target.append('classification')
-#
+        break
+
 for v in verbs:
     for s in synonyms_classification_with_data:
         for h in headers_label:
             sentences_classification.append(v + ' ' + s + ' ' + h[0])
             list_target.append('classification')
-
+            break
 for v in plot_verbs:
     for s in synonyms_classification:
         sentences_classification.append(v+' '+s)
         list_target.append('classification plot')
+        break
 for v in plot_verbs:
     for s in synonyms_classification_with_data:
         for h in headers_label:
             sentences_classification.append(v + ' ' + s + ' ' + h[0])
             list_target.append('classification plot')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+            break
+print(len(sentences_classification), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_classification:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -563,30 +605,32 @@ for v in verbs:
     for s in synonyms_prediction:
         sentences_prediction.append(v+' '+s)
         list_target.append('prediction')
-
+        break
 for v in verbs:
     for s in synonyms_prediction_with_data:
         for h in headers_label:
             sentences_prediction.append(v + ' ' + s + ' ' + h[0])
             list_target.append('prediction')
-
+            break
 for v in plot_verbs:
     for s in synonyms_prediction:
         sentences_prediction.append(v+' '+s)
         list_target.append('prediction plot')
+        break
 for v in plot_verbs:
     for s in synonyms_prediction_with_data:
         for h in headers_label:
             sentences_prediction.append(v + ' ' + s + ' ' + h[0])
             list_target.append('prediction plot')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
+            break
+print(len(sentences_prediction), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
     for s in sentences_prediction:
         f.write('\n')
         f.write(s)
         #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
@@ -595,22 +639,24 @@ sentences_regression = []
 list_target = []
 for v in verbs:
     for s in synonyms_regression:
-        sentences_prediction.append(v+' '+s)
+        sentences_regression.append(v+' '+s)
         list_target.append('regression')
+        break
 
 for v in plot_verbs:
     for s in synonyms_regression:
-        sentences_prediction.append(v+' '+s)
+        sentences_regression.append(v+' '+s)
         list_target.append('regression plot')
-
-with open('../DSBot/wf/src-train2.txt','a') as f:
-    for s in sentences_prediction:
+        break
+print(len(sentences_regression), len(list_target))
+with open('../DSBot/wf/src-val.txt','a') as f:
+    for s in sentences_regression:
         f.write('\n')
         f.write(s)
-        #f.write('\n')
 
-with open('../DSBot/wf/tgt-train2.txt','a') as f:
+
+with open('../DSBot/wf/tgt-val.txt','a') as f:
     for s in list_target:
         f.write('\n')
         f.write(s)
-        '''
+

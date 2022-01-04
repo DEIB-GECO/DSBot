@@ -35,14 +35,18 @@ class Dataset:
             self.label = selected_label[0]
             self.hasLabel = True
             # If the label column is numeric and the values in the column are more than 5 then the label is not considered categorical
-            if not (len(pd.DataFrame(self.ds[self.label])._get_numeric_data().columns)==1 and len(set(self.ds[self.label]))>5):
+            if not (len(pd.DataFrame(self.ds[self.label])._get_numeric_data().columns)==1 and len(set(self.ds[self.label]))>0.3*len(self.ds)):
                 self.hasCategoricalLabel = True
             return True
         else:
             return False
 
     def strong_correlated_features(self):
-        corr = self.ds.corr().abs()
+        if self.hasLabel:
+            dataset = self.ds.drop(self.label, axis=1)
+        else:
+            dataset = self.ds
+        corr = dataset.corr().abs()
         s = corr.unstack()
         so = s.sort_values(kind="quicksort")
         correlated = []

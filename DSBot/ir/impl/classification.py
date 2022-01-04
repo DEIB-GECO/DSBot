@@ -197,6 +197,7 @@ class IRRandomForest(IRClassification):
                           if (d.v_type!='categorical' and d.possible_val==[])
                           else d.possible_val)
                        for p,d in self.parameters.items()}
+
         prod = reduce(lambda sub1, sub2: sub1 * sub2, map(len, random_grid.values()))
 
         rf_random = HalvingRandomSearchCV(estimator=self._model,
@@ -208,10 +209,11 @@ class IRRandomForest(IRClassification):
                                           min_resources=int(dataset.shape[0]/10),
                                           max_resources=int(dataset.shape[0]/2),
                                           n_candidates=int(prod/50))
-
+        print(np.array(labels).ravel())
         rf_random.fit(dataset, np.array(labels).ravel())
 
         for k,v in rf_random.best_params_.items():
+            print(k,v)
             self.parameters[k].value = v
 
         return rf_random

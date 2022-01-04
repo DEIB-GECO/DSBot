@@ -85,13 +85,20 @@ class IRAutoRegression(IRRegression):
             self.set_model(result)
         dataset = get_last_dataset(result)
         labels = result['labels'].values
+        print(labels)
         scores = {}
         for i in IRGenericRegression().all_models:
-            if i.name != 'autoRegression':
+            if i.name != 'autoRegression' and i.name!='linearRegression':
                 print('MODEL', i.name)
                 model = i
                 result_tuning = model.parameter_tune(result, dataset, labels)
                 scores[model.name] = {'model': model, 'parameters': result_tuning.best_params_,
+                                      'score': result_tuning.best_score_}
+            elif i.name=='linearRegression':
+                model = i
+
+                result_tuning = model.parameter_tune(result, dataset, labels)
+                scores[model.name] = {'model': model, 'parameters': None,
                                       'score': result_tuning.best_score_}
         # print(scores)
         max_v = 0
@@ -163,7 +170,12 @@ class IRLinearRegression(IRRegression):
         self._param_setted = False
 
     def parameter_tune(self, result, dataset, labels):
-        pass
+        acc = []
+        for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset, labels):
+            self._model.fit(dataset.values[train_index], np.array(labels[train_index]).ravel())
+            acc.append(accuracy_score(labels[test_index], self._model.predict(dataset.values[test_index])))
+        mean_acc = np.array(acc).mean()
+        return {"best_score_":mean_acc, "best_params_":None}
 
 class IRRidgeRegression(IRRegression):
     def __init__(self):
