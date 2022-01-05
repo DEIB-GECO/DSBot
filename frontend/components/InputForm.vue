@@ -53,6 +53,7 @@
           will be used in the analysis as well</v-alert
         >
         <v-data-table
+          height="500px"
           dense
           :items="jsonDataset"
           :headers="columnNamesDictionary"
