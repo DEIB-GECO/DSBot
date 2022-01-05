@@ -52,6 +52,36 @@ class IROneHotEncode(IRPreprocessing):
             f.write('dataset = pd.get_dummies(dataset, columns=list(set(cols) - set(num_cols)))\n')
             #f.write('dataset = pd.concat([cat_dataset, dataset[num_cols]], axis=1)\n')
 
+class IRRemoveFeatures(IRPreprocessing):
+    def __init__(self):
+        super(IRRemoveFeatures, self).__init__("removeFeatures")
+
+    def parameter_tune(self, dataset):
+        # TODO: implement
+        pass
+
+    def run(self, result, session_id, **kwargs):
+        sio = kwargs.get('socketio', None)
+        dataset = get_last_dataset(result)
+        descr_cols = result['original_dataset'].descr_col
+        to_drop = []
+        for c in descr_cols:
+            notify_user(f'Is {c} column useful for the analysis or can I remove it?',socketio=sio)
+            reply = ask_user_binary_option("Remove", "Keep", self.message_queue, socketio=sio)
+            print(reply)
+            if reply == 'Remove':
+                notify_user('Ok, I will remove it.', socketio=sio)
+                to_drop.append(c)
+            else:
+                notify_user('Ok, I will keep it. I advise you that it will require more computational time.', socketio=sio)
+
+        dataset = dataset.drop(to_drop, axis=1)
+        result['original_dataset'].cat_cols = [i for i in result['original_dataset'].cat_cols if i not in to_drop]
+        print(to_drop)
+        print(result['original_dataset'].cat_cols)
+        result['new_dataset'] = dataset
+        return result
+
 class IRLabelOperation(IROp):
     def __init__(self, name, parameters=None, model = None):
         super(IRLabelOperation, self).__init__(name, parameters if parameters is not None else [])
@@ -173,6 +203,7 @@ class IROutliersRemove(IRPreprocessing):
             dataset = result['original_dataset'].ds
 
         value_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+
         #print('len dataset', len(dataset))
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
         index_old = dataset.index.values
@@ -181,6 +212,7 @@ class IROutliersRemove(IRPreprocessing):
         if ds.shape[1]!=0 and ds.shape[0]!=0 and ds.shape[0]!=dataset.shape[0]:
             perc_outliers = ((len(dataset) - len(ds)) / len(dataset)) * 100
             notify_user(f'The {perc_outliers:.3f}% of the rows are outliers. I will remove them.', socketio=sio)
+            print(f'The {perc_outliers:.3f}% of the rows are outliers. I will remove them.')
             #print('len ds', ds.shape)
             result['new_dataset'] = ds
             if result['original_dataset'].hasLabel:
@@ -310,7 +342,8 @@ class IRGenericPreprocessing(IROpOptions):
                                                       IRStandardization(),
                                                       IRNormalization(),
                                                       IRZeroVarianceRemove(),
-                                                      IRCorrelatedFeaturesRemove()],
+                                                      IRCorrelatedFeaturesRemove(),
+                                                      IRRemoveFeatures()],
                                                      "labelRemove")
 
 

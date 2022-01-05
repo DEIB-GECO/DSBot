@@ -1,6 +1,7 @@
 import threading
 from functools import partial
 import asyncio
+import time
 
 from flask import Flask, jsonify, request, send_file, session
 from flask_cors import CORS
@@ -83,7 +84,7 @@ def receive_ds():
         uploaded_file.save('./temp/temp_' + str(session_id) + '/' + uploaded_file.filename)
         #try:
         dataset = pd.read_csv('./temp/temp_' + str(session_id) + '/' + str(uploaded_file.filename),
-                              header=has_columns_name, index_col=has_index, sep=sep, engine='python')
+                              header=has_columns_name, index_col=has_index, sep=sep, engine='python', on_bad_lines='skip')
         dataset.to_csv('./temp/temp_' + str(session_id) + '/' + uploaded_file.filename)
         dataset = Dataset(dataset)
         dataset.session = session_id
@@ -210,6 +211,7 @@ async def execute_algorithm_logic(ir, session_id):
         results = {'original_dataset': dataset, 'labels': dataset.label}
     else:
         results = {'original_dataset': dataset}
+    results['start_time']=time.time()
     run(ir, results, session_id, socketio=sio)
 
     app.logger.info('Exiting execute_algorithm function')
@@ -289,6 +291,8 @@ def on_execute_received(payload):
     #print(ir_tuning)
 
     data[session_id]['ir_tuning'] = ir_tuning
+
+    print('START TIME')
     execute_algorithm(ir_tuning, session_id)
 
 @sio.on('ask_results_again')

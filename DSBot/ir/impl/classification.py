@@ -89,7 +89,7 @@ class IRAutoClassification(IRClassification):
         pass
 
     def run(self, result, session_id):
-        start_time = time.time()
+
         if not self._param_setted:
             self.set_model(result)
 
@@ -160,7 +160,7 @@ class IRAutoClassification(IRClassification):
 
         acc = acc/5
         print('ACCURACY', acc)
-        print('TIME: ', time.time() - start_time)
+        print('TIME: ', time.time() - result['start_time'])
         #print(result['y_score'])
         #result['y_score'] = result['predicted_labels']
 

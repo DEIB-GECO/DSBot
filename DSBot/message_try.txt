@@ -2,3 +2,4 @@ My objective is  to classify COVID patients with 5 levels of severity (no sympth
 classify and extract important features
 select some features and then classify the data and then extract the most important ones
 divide data into groups
+create a model which tries predict if a patient has this disease or not

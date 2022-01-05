@@ -72,13 +72,15 @@ class Dataset:
             self.moreFeatures = self.more_features()
             self.strongCorrelatedFeatures, self.corr_feat = self.strong_correlated_features()
             self.tooManyFeatures = self.too_many_features()
+            self.hasFeaturesToRemove, self.descr_col = self.features_toRemove()
         print('mv',self.missingValues,
               'cat',self.categorical,
               'zv', self.zeroVariance,
               'mf',self.moreFeatures,
               'outliers', self.outliers,
               'scf', self.strongCorrelatedFeatures,
-              'tmf', self.tooManyFeatures)
+              'tmf', self.tooManyFeatures,
+              'df', self.hasFeaturesToRemove)
 
     def missing_values(self):
         return (self.ds.isnull().sum().sum())>0
@@ -100,9 +102,19 @@ class Dataset:
         if self.hasLabel:
             ds = df.drop(self.label,axis=1)
 
-        if len(df[((np.abs(df-df.mean()))<=(3*df.std())).sum(axis=1)<=0.9*df.shape[1]])< len(df):
+        if 0<len(df[((np.abs(df-df.mean()))<=(3*df.std())).sum(axis=1)>=0.9*df.shape[1]])<len(df):
             return True
-        return False
+        else:
+            return False
+
+    def features_toRemove(self):
+        descr_col = []
+        for c in self.cat_cols:
+            if len(set(self.ds[c].values))> 0.5*len(self.ds):
+                descr_col.append(c)
+        print(descr_col)
+
+        return len(descr_col)>0, descr_col
 
     def curse_of_dim(self):
         data = StandardScaler().fit_transform(self.ds)
@@ -125,8 +137,10 @@ class Dataset:
                       'moreFeatures',
                       'outliers',
                       'hasCategoricalLabel',
-                      'strongCorrelatedFeatures']
+                      'strongCorrelatedFeatures',
+                      'hasFeaturesToRemove']
         key = frozenset(filter(lambda x : getattr(self, x), properties))
+        print('CHARACTERISTICS DS: ', key)
         if len(key)==0:
             key=frozenset(['ds'])
         print('FILTERED KB')
