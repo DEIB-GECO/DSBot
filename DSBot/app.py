@@ -218,7 +218,7 @@ async def execute_algorithm_logic(ir, session_id):
     get_results(session_id)
 
 
-def re_execute_algorithm(ir, session_id):
+async def re_execute_algorithm(ir, session_id):
     data[session_id]['dataset'].name_plot = None
     threading.Thread(target=execute_algorithm, kwargs={'ir': ir, 'session_id': session_id}).start()
 

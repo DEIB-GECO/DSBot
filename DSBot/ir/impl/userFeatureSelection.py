@@ -36,6 +36,7 @@ class IRUserFeatureSelection(IROp):
 
     #TDB cosa deve restituire questa funzione?
     def run(self, result, session_id, **kwargs):
+        sio = kwargs.get('socketio', None)
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
         elif 'new_dataset' in result:
@@ -43,19 +44,7 @@ class IRUserFeatureSelection(IROp):
         else:
             dataset = result['original_dataset'].ds
 
-        ask_user('List the features you want to remove using a comma to separate them: '+ ','.join(dataset.columns))
-
-        self.message_queue.clean()
-        while True:
-            asyncio.sleep(100)
-            if self.message_queue.has_message():
-                reply = self.message_queue.pop()
-                break
-            if 'socketio' in kwargs:
-                kwargs['socketio'].sleep(0)
-        if 'socketio' in kwargs:
-            kwargs['socketio'].sleep(0)
-
+        reply = ask_user('List the features you want to remove using a comma to separate them: '+ ','.join(dataset.columns), self.message_queue, socketio=sio)
         reply = [x.strip() for x in reply.split(',')]
         for i in reply:
             if i in dataset:
