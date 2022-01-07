@@ -90,7 +90,7 @@ def get_field_from_path(path, field):
     return textual_description
 
 
-def clean_pipeline(pipeline):
+def clean_entire_pipeline(pipeline):
     element_nature = []
     for element in pipeline:
         element_path = get_term_path(element)
@@ -106,4 +106,25 @@ def clean_pipeline(pipeline):
                 pipeline[i] = 'userFeatureSelection'
             else:
                 pipeline.remove(pipeline[i])
+    return pipeline
+
+def clean_pipeline(pipeline):
+    element_nature = []
+    for element in pipeline:
+        element_path = get_term_path(element)
+        if len(element_path) == 0:
+            element_nature.append('wrong')
+
+        elif 'prediction' in element_path:
+            element_nature.append('prediction')
+        else:
+            element_nature.append('ok')
+
+    # clustering/associationRules/classification/regression
+    if element_nature[0] == 'wrong':
+        if len(set.intersection(set(['prediction', 'clustering', 'associationRules', 'regression', 'classification']), set(element_nature))) > 0:
+            pipeline[0] = 'userFeatureSelection'
+    for i in range(1, len(pipeline) - 1, 1):
+        if element_nature[i] == 'wrong':
+            pipeline.remove(pipeline[i])
     return pipeline
