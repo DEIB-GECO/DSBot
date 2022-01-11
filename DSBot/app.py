@@ -128,6 +128,7 @@ def receive_utterance():
             wf = f.readlines()[0].strip().split(' ')
 
         wf = clean_pipeline(wf)
+        print("WF pulito è: ", wf)
 
         comprehension_sentence = summary_producer(wf, data[session_id]['dataset'].label)
 

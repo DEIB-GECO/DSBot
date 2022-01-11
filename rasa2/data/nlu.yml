@@ -159,6 +159,7 @@ nlu:
       - Can you show me how it works?
       - How does it work?
       - how it works?
+      - What are they?
       - What does to [cluster]{"entity": "algorithm", "value":"clustering"} mean?
       - What happens if I [correlate]{"entity": "algorithm", "value":"correlation"}
       - What does to [predict]{"entity": "algorithm", "value":"prediction"} mean?
@@ -236,7 +237,6 @@ nlu:
       - I want the [classification model]{"entity": "algorithm", "value":"classification"}
       - I am more interested in [classifying]{"entity": "algorithm", "value":"prediction"} the value
       - I am more interested in [predicting]{"entity": "algorithm", "value":"prediction"} the values
-      - What are they?
       - Finding [direct relationships{"entity": "algorithm", "value":"correlation"}  between numerical columns
       - Finding [relationships]{"entity": "algorithm", "value":"correlation"}
       - I want [rules]{"entity": "algorithm", "value":"association_rules"} in the "if -> then" form that describe behaviours of more columns
@@ -251,6 +251,7 @@ nlu:
       - [correlation]{"entity": "algorithm", "value":"correlation"}
       - [linear dependence]{"entity": "algorithm", "value":"correlation"} between variables in your table.
       - I want [linear dependence]{"entity": "algorithm", "value":"correlation"} between variables in your table.
+      - [influencing factors]{"entity": "algorithm", "value":"features_importance"}
 
   - intent: mood_unhappy
     examples: |
