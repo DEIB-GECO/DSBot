@@ -11,8 +11,8 @@ overwrite: False
 # Corpus opts:
 data:
     corpus_1:
-        path_src: wf/src-train2.txt
-        path_tgt: wf/tgt-train2.txt
+        path_src: wf/src-train2-shuffle.txt
+        path_tgt: wf/tgt-train2-shuffle.txt
     valid:
         path_src: wf/src-val-kaggle.txt
         path_tgt: wf/tgt-val-kaggle.txt
