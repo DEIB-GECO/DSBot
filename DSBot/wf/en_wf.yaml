@@ -14,8 +14,8 @@ data:
         path_src: wf/src-train2.txt
         path_tgt: wf/tgt-train2.txt
     valid:
-        path_src: wf/src-val.txt
-        path_tgt: wf/tgt-val.txt
+        path_src: wf/src-val-kaggle.txt
+        path_tgt: wf/tgt-val-kaggle.txt
 # Vocabulary files that were just created
 src_vocab: wf/run/example.vocab.src
 tgt_vocab: wf/run/example.vocab.tgt
