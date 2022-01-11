@@ -471,5 +471,6 @@ class IRFeatureImportanceBarPlot(IRPlot):
 class IRGenericPlot(IROpOptions):
      def __init__(self):
          super(IRGenericPlot, self).__init__([IRScatterplot(), IRClustermap(), IRDistplot(), IRBoxplot(), IRBarplot(),
-                                              IRROC(), IRScatterAssociationRules(), IRTableAssociationRules(), IRLassoPlot(),
+                                              IRROC(),
+                                              IRScatterAssociationRules(), IRTableAssociationRules(), IRLassoPlot(),
                                               IRFeatureImportancePlot(), IRFeatureImportanceBarPlot(), IRTableRegression()], "scatterplot")

@@ -94,9 +94,7 @@ class IRAutoClassification(IRClassification):
             self.set_model(result)
 
         dataset = get_last_dataset(result)
-        dataset.to_csv('../../DSBot/example_datasets/agaricus_preprocessed.csv', sep=',')
         labels = result['labels'].values
-        pd.DataFrame(labels).to_csv('../../DSBot/example_datasets/labels_agaricus_preprocessed.csv')
 
         scores = {}
         for i in IRGenericClassification().all_models:

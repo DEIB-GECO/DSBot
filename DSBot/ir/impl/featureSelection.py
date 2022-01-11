@@ -103,7 +103,7 @@ class IRLasso(IRFeatureSelection):
         pos_filtered_indices = indices[importances[indices]>0.000001]
         neg_filtered_indices = indices[importances[indices]<-0.000001]
         selected_features = dataset.columns[filtered_indices]
-
+        result['transformed_ds'] = dataset[filtered_indices]
         result['feature_selection']=pd.DataFrame(importances[filtered_indices], index=selected_features)
 
 

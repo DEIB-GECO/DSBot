@@ -4,12 +4,36 @@ from ir.ir_parameters import IRNumPar
 import math
 import numpy as np
 import pandas as pd
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
 
 
 class IRPerformance(IROp):
     def __init__(self, name, parameters, model=None):
         super(IRPerformance, self).__init__(name, parameters)
         #self._model = model(**{v.name: v.value for v in parameters})
+
+class IRConfusionMatrix(IRPerformance):
+    def __init__(self):
+        super(IRConfusionMatrix, self).__init__("confusionMatrix",[], ConfusionMatrixDisplay)
+
+    def parameter_tune(self, dataset):
+        pass
+
+    def run(self, result, session_id):
+        n_classes = set(result['labels'].T.values[0])
+        pred = np.array(result['predicted_labels'])
+        y = result['y_test']
+        cm = confusion_matrix(y, pred, labels=n_classes)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels = n_classes)
+        plt.title('Confusion Matrix')
+        plt.savefig('./temp/temp_' + str(session_id) + '/confusionMatrix.png')
+        if 'plot' not in result:
+            result['plot'] = ['./temp/temp_' + str(session_id) + '/confusionMatrix.png']
+        else:
+            result['plot'].append('./temp/temp_' + str(session_id) + '/confusionMatrix.png')
+        result['original_dataset'].name_plot = './temp/temp_' + str(session_id) + '/confusionMatrix.png'
+        return result
 
 
 class IRRegressionPerformance(IRPerformance):
@@ -38,4 +62,4 @@ class IRRegressionPerformance(IRPerformance):
 
 class IRGenericPerformance(IROpOptions):
     def __init__(self):
-        super(IRGenericPerformance, self).__init__([IRRegressionPerformance()], "regressionPerformance")
+        super(IRGenericPerformance, self).__init__([IRRegressionPerformance(), IRConfusionMatrix()], "regressionPerformance")

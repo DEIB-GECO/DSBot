@@ -21,7 +21,8 @@
          "scatterAssociationRules":{},
          "tableRegression":{},
          "tableAssociationRules":{},
-         "lassoPlot":{}
+         "lassoPlot":{},
+         "roc": {}
       }
    },
    "prediction":{
@@ -88,12 +89,7 @@
          }
       }
    },
-   "trainTestSplit":{
-      "values":{
-         "trainTestSplit":{},
-         "kFold":{}
-      }
-   },
+
    "featureImportance":{
       "summary": "you want to see which are the most influencing features (columns of the table) in the final prediction.",
       "values":{
@@ -108,7 +104,8 @@
    "performance":{
       "values":{
          "roc":{},
-         "regressionPerformance":{}
+         "regressionPerformance":{},
+         "confusionMatrix": {}
       }
    }
 }

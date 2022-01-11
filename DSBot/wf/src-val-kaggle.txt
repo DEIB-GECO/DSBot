@@ -1,0 +1,107 @@
+create a model which tries predict if a patient has this disease or not
+Given clinical parameters about a patient, can we predict whether or not they have heart disease?
+predicting heart disease
+identify relationship between heart disease and various other features
+What causes Heart disease?
+find linear relations between features
+ classify the target variable
+ uncover key relationships between features and outcome
+ find interesting patterns
+Predicting student percentage
+Student Performance Correlation
+Which major factors contribute to test outcomes?
+Predicting student performance with the demographic and socioeconomic information.
+Predict the onset of diabetes based on diagnostic measures
+explain how different features have different effect on the prediction whether or not a patient has diabetes, based on certain diagnostic measurements.
+Predict the onset of diabetes based on diagnostic measures
+accurately predict whether or not the patients in the dataset have diabetes or not?
+to build a machine learning model to accurately predict whether or not the patients in the dataset have diabetes or not?
+to identify whether the patient has diabetes or not based on diagnostic measurements.
+To predict the onset of diabetes based on diagnostic measures.
+predict the number of suicides that may happen from population
+Using the Wisconsin breast cancer diagnostic data set for predictive analysis
+classifying suspected cells to Benign or Malignant
+to determine whether the tumor is benign or malignant in people diagnosed with breast cancer.
+classify mushrooms as poisonous or eatable.
+predict whether the mushroom is edible or poisonous.
+guess the type (edible or poisonous) of the species
+Which features are most indicative of a poisonous mushroom?
+to classify between edible (e) to poisonous (p) mushrooms
+mushrooms are classified as either edible or poisonous
+Perform Binary Classification on Edibility of Mushroom
+Finding traits of poisonous Mushroom
+To identify which features are most indicative of a poisonous mushroom
+predict whether a mushroom is edible or not
+predict the stroke probability
+predict whether or not an individual will suffer a stroke.
+what are the reasons that cause stroke to people
+see if we can succefully detect stroke on some features
+predict whether a patient is likely to get stroke
+Make a model to try to predict strokes
+PREDICT WHETHER A PERSON HAD A STROKE OR NOT
+predict the stroke probability
+ build the model which predicts the stroke
+ predict whether a patient is likely to get stroke
+implement a predictive model to determine whether an employee is going to quit or not.
+see if we can predict employee attrition
+What type of measures should the company take in order to retain their employees?
+What is the likelihood of an active employee leaving the company?
+What are the key indicators of an employee leaving the company?
+ predict potential attrition cases
+identify the individuals that are more likely to leave the organization
+try to predict the Attrition of IBM HR Analytics data.
+To predict if an employee is going to resign or not
+Why employees are getting laid off?
+which factor influences more towards attrition
+ predict housing prices
+check the usefulness of dependent variables.
+predict the house prices in that region
+predict housing prices
+to predict future home prices.
+ predict the sales price of houses in King County, Seattle.
+we want to predict house prices
+predict the price of houses.
+King County house price prediction
+predict the house prices
+ a model that could give us an approximation as to what will be the charges of the patient
+we must look for patterns in our data
+ predict individual medical costs billed by health insurance.
+Which Factors Influence the Price of Health Insurance?
+creating models that accurately predicts health care costs
+To determine if there is a relationship between attributes and medical costs.
+use patient data to estimate the average medical care expenses for such population segments
+predict whether a person will get affected by a Heart Attack or not
+likelihood of person deceasing in follow up period
+predicting, based on the data of a system, whether a customer will leave the credit card service or not
+understand what attributes(features) are making our clients to leave the organization.
+identify customers who are getting churned
+predict whether the Customer will Churn?
+predict, at least to some degree, how and when your customers will cancel
+to predict who want to leave credit card services
+predict whether a customer will leave the credit card company.
+predict who is most likely to get churned among the bank's customers;
+identify if a customer will churn or won't
+Build a solide model that can predict attrited customers
+Support the model with Machine Learning explaination tools to explain each prediction, and hence explain the basis that drives each decision.
+find out who is gonna leave the bank in future
+ find patterns in data
+summarize customer segments.
+perform customer segmentation
+summarize customer segments.
+Cluster the customers based on certain features and create customer profiles
+forecast whether a customer will accept the offer in the last campaign
+To form clusters of customers having similar characteristics
+clustering customers into segments using unsupervised learning on data from a marketing campaign
+figure if a given customer would accept / decline the offer.
+predict whether or not it will rain tomorrow in Australia
+Predict next-day rain in Australia
+predict whether or not it will rain tomorrow in Australia.
+predict if it will rain tomorrow
+Rainfall Prediction
+predict whether it will rain tomorrow or not based on the weather data for that day in major cities in Australia.
+predict whether it is going to rain in australia
+ predict rain on the next day
+did it rain the next day, Yes or No?
+IS IT WHETHER OR NOT GOING TO RAIN IN AUSTRALIA?
+Will it rain tomorrow?
+ predict if tomorrow there will be rain or not.
