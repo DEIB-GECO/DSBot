@@ -33,13 +33,13 @@ embeddings_type: "word2vec"
 #word_vec_size: 300
 
 # Train on a single GPU
-world_size: 1
+#world_size: 1
 #gpu_ranks: [0]
 
 # Where to save the checkpoints
 save_model: wf/run/model1
 save_checkpoint_steps: 1000
-train_steps: 10000
+train_steps: 100000
 valid_steps: 1000
 enc_layers: 1
 dec_layers: 1
