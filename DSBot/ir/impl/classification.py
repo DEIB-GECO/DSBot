@@ -46,7 +46,7 @@ class IRClassification(IROp):
             raise LabelsNotAvailable
         return self.labels
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         dataset = get_last_dataset(result)
         labels = result['labels'].values
 
@@ -88,7 +88,7 @@ class IRAutoClassification(IRClassification):
     def parameter_tune(self, result, dataset, labels):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
 
         if not self._param_setted:
             self.set_model(result)

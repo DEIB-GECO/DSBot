@@ -1,18 +1,19 @@
 from flask_socketio import emit
 import asyncio
 
-async def ask_user(question, message_queue, socketio=None):
+def ask_user(question, message_queue, socketio=None):
     message_queue.clean()
     emit('message_response', {'message': question, 'type': 'message'})
     if socketio is not None:
-        socketio.sleep(100)
+        socketio.sleep(0)
     while True:
         asyncio.sleep(100)
         if message_queue.has_message():
+            print('received')
             reply = message_queue.pop()
             break
         if socketio is not None:
-            socketio.sleep(100)
+            socketio.sleep(0)
     if socketio is not None:
         socketio.sleep(0)
 

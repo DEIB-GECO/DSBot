@@ -14,10 +14,10 @@ from tuning.types import Pipeline, PipelineCallback
 # Load the process description and kb from file.
 with open(Path(__file__).parent / 'mmcc_config' / 'process_desc.json', "r") as process_file:
     proc = json.loads(process_file.read())
-    logging.getLogger(__name__).debug('Reading process_desc file')
+    logging.getLogger(__name__).info('Reading process_desc file')
 with open(Path(__file__).parent / 'mmcc_config' / 'process_kb.json', "r") as process_file:
     kb = json.loads(process_file.read())
-    logging.getLogger(__name__).debug('Reading process_kb file')
+    logging.getLogger(__name__).info('Reading process_kb file')
 
 
 def get_framework(pipeline: Pipeline, result: str, start_work: PipelineCallback) -> Framework:
@@ -83,7 +83,7 @@ class MyRasaNlu(NluAdapter):
         if response["intent"]["name"] is None:
             return {"intent": ""}
         res = self.dict(response["intent"]["name"], {item['entity']: item["value"] for item in response["entities"]})
-        logging.getLogger(__name__).debug('Detected intent: %s', res)
+        logging.getLogger(__name__).info('Detected intent: %s', res)
         return res
 
     @staticmethod

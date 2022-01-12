@@ -73,14 +73,7 @@ class Dataset:
             self.strongCorrelatedFeatures, self.corr_feat = self.strong_correlated_features()
             self.tooManyFeatures = self.too_many_features()
             self.hasFeaturesToRemove, self.descr_col = self.features_toRemove()
-        print('mv',self.missingValues,
-              'cat',self.categorical,
-              'zv', self.zeroVariance,
-              'mf',self.moreFeatures,
-              'outliers', self.outliers,
-              'scf', self.strongCorrelatedFeatures,
-              'tmf', self.tooManyFeatures,
-              'df', self.hasFeaturesToRemove)
+
 
     def missing_values(self):
         return (self.ds.isnull().sum().sum())>0
@@ -143,7 +136,4 @@ class Dataset:
         print('CHARACTERISTICS DS: ', key)
         if len(key)==0:
             key=frozenset(['ds'])
-        print('FILTERED KB')
-        print(kb[key])
-        print('------------')
         return kb[key]

@@ -11,7 +11,7 @@ def run(ir, dataset, session_id, **kwargs):
     if len(ir) == 1:
         return ir[0].run(dataset, session_id, **kwargs)
     else:
-        return run(ir[1:], ir[0].run(dataset, session_id, **kwargs), session_id)
+        return run(ir[1:], ir[0].run(dataset, session_id, **kwargs), session_id, **kwargs)
 
 
 def create_IR(pipeline, message_queue):

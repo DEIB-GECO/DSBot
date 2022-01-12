@@ -71,7 +71,6 @@ creating models that accurately predicts health care costs
 To determine if there is a relationship between attributes and medical costs.
 use patient data to estimate the average medical care expenses for such population segments
 predict whether a person will get affected by a Heart Attack or not
-likelihood of person deceasing in follow up period
 predicting, based on the data of a system, whether a customer will leave the credit card service or not
 understand what attributes(features) are making our clients to leave the organization.
 identify customers who are getting churned

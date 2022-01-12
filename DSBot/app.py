@@ -205,8 +205,8 @@ def execute_algorithm(ir, session_id):
 
 
 async def execute_algorithm_logic(ir, session_id):
-    app.logger.debug('Entering execute_algorithm function')
-    app.logger.info('Executing pipeline:', [i for i in ir])
+    app.logger.info('Entering execute_algorithm function')
+    #app.logger.info('Executing pipeline:', [i for i in ir])
     dataset = data[session_id]['dataset']
     if hasattr(dataset, 'label'):
         results = {'original_dataset': dataset, 'labels': dataset.label}
@@ -298,7 +298,6 @@ def on_execute_received(payload):
 
 @sio.on('ask_results_again')
 def send_results_again(payload):
-    print('Qui rimanderemo i results', payload)
     get_results(session_id)
 
 app.register_blueprint(simple_page, url_prefix=base_url)

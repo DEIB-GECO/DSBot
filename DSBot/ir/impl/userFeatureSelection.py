@@ -4,13 +4,9 @@ import numpy as np
 import pandas as pd
 from ir.ir_exceptions import LabelsNotAvailable, ClassifierNotAvailable
 from ir.ir_operations import IROp, IROpOptions
-from ir.ir_parameters import IRNumPar
-from ir.modules.laplace import Laplace
-from sklearn.feature_selection import VarianceThreshold
-from sklearn.feature_selection import SelectKBest, SelectPercentile
-from utils import ask_user
+from utils import ask_user, notify_user
 from difflib import SequenceMatcher
-import asyncio
+
 
 class IRUserFeatureSelection(IROp):
     def __init__(self, name, parameters=None, model = None):
@@ -44,7 +40,10 @@ class IRUserFeatureSelection(IROp):
         else:
             dataset = result['original_dataset'].ds
 
-        reply = ask_user('List the features you want to remove using a comma to separate them: '+ ','.join(dataset.columns), self.message_queue, socketio=sio)
+        reply = ask_user('List the features you want to remove using a comma to separate them: '+ ','.join(dataset.columns),
+                         self.message_queue,
+                         socketio=sio)
+        print(f"Uscita: {reply}")
         reply = [x.strip() for x in reply.split(',')]
         for i in reply:
             if i in dataset:
@@ -53,6 +52,8 @@ class IRUserFeatureSelection(IROp):
                 for c in dataset.columns:
                     if SequenceMatcher(None, c.strip().lower(), i.strip().lower()).ratio() > 0.75:
                         dataset = dataset.drop(c, axis=1)
+        notify_user(f"Ok, I will consider only columns {','.join(dataset.columns)}")
+        print(dataset)
         result['transformed_ds'] = dataset
         return result
 

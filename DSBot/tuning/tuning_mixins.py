@@ -22,7 +22,7 @@ from tuning.types import Pipeline
 
 # Load the tuning kb data from file.
 with open(Path(__file__).parent / 'tuning_kb.json', 'r') as tuning_kb_file:
-    logging.getLogger(__name__).debug('Reading tuning_kb file')
+    logging.getLogger(__name__).info('Reading tuning_kb file')
     tuning_kb = json.loads(tuning_kb_file.read())
 
 
@@ -51,7 +51,7 @@ class TuningOpMixin:
         try:
             return tuning_kb[self.name]['name']
         except KeyError:
-            logging.getLogger(__name__).warning('Missing pretty name for module: %s', self.name)
+            logging.getLogger(__name__).info('Missing pretty name for module: %s', self.name)
         return self.name
 
     @property
@@ -146,9 +146,9 @@ class TuningParMixin:
         try:
             return self._get_param_data()['name']
         except IncorrectKbError as e:
-            logging.getLogger(__name__).warning(e)
+            logging.getLogger(__name__).info(e)
         except KeyError:
-            logging.getLogger(__name__).warning('Missing pretty name for param: %s; module: %s', self.name, self.module)
+            logging.getLogger(__name__).info('Missing pretty name for param: %s; module: %s', self.name, self.module)
         return self.name
 
     @property
@@ -158,9 +158,9 @@ class TuningParMixin:
         try:
             return self._get_param_data()['desc']
         except IncorrectKbError as e:
-            logging.getLogger(__name__).warning(e)
+            logging.getLogger(__name__).info(e)
         except KeyError:
-            logging.getLogger(__name__).warning('Missing description for param: %s; module: %s', self.name, self.module)
+            logging.getLogger(__name__).info('Missing description for param: %s; module: %s', self.name, self.module)
         return ''
 
     def _get_param_data(self):
@@ -235,7 +235,7 @@ class TuningParMixin:
 def update_pipeline(pipeline: Pipeline, relevant_params: List[Tuple[str, str]]) -> Pipeline:
     """Updates the highlight property for this pipeline, relevant parameters must be as `module.parameter`."""
     data = {}
-    logging.getLogger(__name__).debug("Relevant parameters: %s", relevant_params)
+    logging.getLogger(__name__).info("Relevant parameters: %s", relevant_params)
     for param in relevant_params:
         if param[0] in data:
             data[param[0]].append(param[1])
