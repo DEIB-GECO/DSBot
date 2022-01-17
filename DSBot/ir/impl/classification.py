@@ -221,7 +221,8 @@ class IRRandomForest(IRClassification):
 class IRLogisticRegression(IRClassification):
     def __init__(self):
         super(IRLogisticRegression, self).__init__("logisticRegression",
-                                                   [IRNumPar('C', 1e-4, 'float', possible_val = [1e-4, 1e-3, 1e-2, 1e-1, 0.5, 1., 5., 10., 25.])],
+                                                   [IRNumPar('C', 1e-4, 'float', possible_val = [1e-4, 1e-3, 1e-2, 1e-1, 0.5, 1., 5., 10., 25.]),
+                                                    IRCatPar('solver','sag',['sag'])],
                                                    LogisticRegression)
         self._param_setted = False
 
@@ -292,7 +293,6 @@ class IRAdaBoostClassifier(IRClassification):
         super(IRAdaBoostClassifier, self).__init__("adaBoostClassifier",
                                                    [IRNumPar("n_estimators", 100, "int", 10, 110, 10),
                                                     IRCatPar('base_estimator', DecisionTreeClassifier(), [DecisionTreeClassifier(),
-                                                                                                          LogisticRegression(),
                                                                                                           ExtraTreeClassifier(),
                                                                                                           SVC(probability=True , kernel='linear')])],  # TODO: if I want to pass a list of values?
                                                    AdaBoostClassifier)
