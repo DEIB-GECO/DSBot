@@ -61,14 +61,14 @@
         ></v-data-table>
         <v-flex xs7>
           <v-flex xs5>
-            <v-select
+            <v-autocomplete
               v-model="label"
               :items="labelsDictionary"
               :item-text="'text'"
               :item-value="'value'"
               :error="separatorError"
               label="Label"
-            ></v-select>
+            ></v-autocomplete>
           </v-flex>
         </v-flex>
         <v-btn color="primary" @click="sendData"> Continue </v-btn>
