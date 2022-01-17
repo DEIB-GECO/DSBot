@@ -40,7 +40,7 @@ class IROutliersDetection(IROp):
         return self.labels
 
     #TDB cosa deve restituire questa funzione?
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if not self._param_setted:
             self.set_model(result)
 

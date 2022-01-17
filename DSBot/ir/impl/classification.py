@@ -61,7 +61,7 @@ class IRClassification(IROp):
         for train_index, test_index in StratifiedKFold(5, shuffle=True).split(dataset,labels):
             result['predicted_labels'] += list(self._model.fit(dataset.values[train_index], np.array(labels[train_index]).ravel()).predict(dataset.values[test_index]))
             result['y_score'] += list(self._model.predict_proba(dataset.values[test_index]))
-            result['y_test'] += labels[test_index]
+            result['y_test'] += np.array(labels[train_index]).ravel()
         result['classifier'] = self._model
         self._param_setted = False
         return result
@@ -181,9 +181,10 @@ class IRRandomForest(IRClassification):
     def set_parameters(self, dataset, labels = None):
         n_row = dataset.shape[0]
         n_col = dataset.shape[1]
-        self.parameters['n_estimators'].max_v = int((n_row*n_col)**.5)
-        self.parameters['min_samples_split'].max_v = int((n_row*3/2)**.5)
-        self.parameters['max_depth'].possible_val = [2, int(n_col**.5), int(n_col/2), None]
+        self.parameters['n_estimators'].max_v = min(max(int((n_row*n_col)**.5),50),500)
+        self.parameters['min_samples_split'].max_v = min(int((n_row*3/2)**.5),100)
+        self.parameters['max_depth'].possible_val = [x for x in [2, int(n_col**.5), int(n_col/2), None]
+                                                     if x==None or x>0]
 
 
     def parameter_tune(self, result, dataset, labels):
@@ -300,7 +301,7 @@ class IRAdaBoostClassifier(IRClassification):
     def set_parameters(self, dataset, labels = None):
         n_row = dataset.shape[0]
         n_col = dataset.shape[1]
-        self.parameters['n_estimators'].max_v = int((n_row*n_col)**.5)
+        self.parameters['n_estimators'].max_v = min(max(50, int((n_row*n_col)**.5)),500)
 
     def parameter_tune(self, result, dataset, labels):
         self.set_parameters(dataset)

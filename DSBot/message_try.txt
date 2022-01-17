@@ -3,3 +3,6 @@ classify and extract important features
 select some features and then classify the data and then extract the most important ones
 divide data into groups
 create a model which tries predict if a patient has this disease or not
+select age, sex and gender, then classify the patients for their disease
+extract x y and z then predict the label
+filter the age and xhz, compute the correlation among the other features

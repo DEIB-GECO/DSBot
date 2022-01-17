@@ -20,7 +20,7 @@ class IRAssociationRules(IRRules):
 
 
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
         elif 'new_dataset' in result:

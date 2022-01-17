@@ -118,6 +118,16 @@ def receive_utterance():
     args = parser.parse_args()
     session_id = args['session_id']
     if session_id in data:
+
+        header = data[session_id]['dataset'].ds.columns.values
+        l = []
+        for i, h in enumerate(header):
+            l.append((h, f'feature{i + 1 if i < 9 else "N"}'))
+        for w, r in l:
+            args['message'] = args['message'].replace(f' {w} ', f' {r} ')
+            args['message'] = args['message'].replace(f' {w},', f' {r},')
+            args['message'] = args['message'].replace(f' {w}.', f' {r}.')
+
         with open(f'./temp/temp_{session_id}/message{session_id}.txt', 'w') as f:
             f.write(args['message'])
 

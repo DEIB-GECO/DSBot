@@ -52,7 +52,7 @@ class IRPlot(IROp):
         return self.labels
 
     #TDB cosa deve restituire questa funzione?
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         #AV = AutoViz_Class()
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
@@ -83,7 +83,7 @@ class IRScatterplot(IRPlot):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'labels' not in result:
             raise LabelsNotAvailable
         else:
@@ -119,7 +119,7 @@ class IRScatterAssociationRules(IRPlot):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'associationRules' not in result:
             raise RulesNotAvailable
         else:
@@ -159,7 +159,7 @@ class IRTableAssociationRules(IRPlot):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'associationRules' not in result:
             raise RulesNotAvailable
         else:
@@ -189,7 +189,7 @@ class IRTableRegression(IRPlot):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'regressionPerformance' not in result:
             raise PerformanceNotAvailable
         else:
@@ -220,7 +220,7 @@ class IRLassoPlot(IRPlot):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         df = result['feature_selection']
         fig = plt.figure(figsize=(15, 10))
         plt.barh(df.index.values, np.absolute(df[0].values))
@@ -341,7 +341,7 @@ class IRClustermap(IRPlot):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'correlation' not in result:
             raise CorrelationNotAvailable
         else:
@@ -374,7 +374,7 @@ class IRROC(IRPlot):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         n_classes = set(result['labels'].T.values[0])
         pred = np.array(result['y_score'])
         y = result['y_test']#[x for array in result['y_test'] for elem in array for x in elem]
@@ -427,7 +427,7 @@ class IRFeatureImportancePlot(IRPlot):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         fig=px.bar_polar(result['feature_importance'], r="FI", theta="Cols",
                            color="Cols", template="plotly_dark",
                            color_discrete_sequence=px.colors.sequential.Plasma_r)
@@ -451,7 +451,7 @@ class IRFeatureImportanceBarPlot(IRPlot):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         df = result['feature_importance'].sort_values(by='FI', ascending=1)
         plt.figure(figsize=(12, 8))
         plt.title('Feature Importances')

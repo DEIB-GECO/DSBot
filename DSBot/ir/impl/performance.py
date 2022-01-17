@@ -20,12 +20,18 @@ class IRConfusionMatrix(IRPerformance):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         n_classes = set(result['labels'].T.values[0])
-        pred = np.array(result['predicted_labels'])
-        y = result['y_test']
-        cm = confusion_matrix(y, pred, labels=n_classes)
-        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels = n_classes)
+        inv_map = {v: k for k, v in result['encoded_labels'].items()}
+        pred = np.array([inv_map[e] for e in result['predicted_labels']])
+        print(pred)
+        y = np.array([inv_map[e] for e in np.array(result['y_test']).ravel()])
+        print(y)
+
+        cm = confusion_matrix(y, pred, labels=list(result['encoded_labels'].keys()), normalize='true')
+        print(cm)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels = list(result['encoded_labels'].keys()))
+        disp.plot()
         plt.title('Confusion Matrix')
         plt.savefig('./temp/temp_' + str(session_id) + '/confusionMatrix.png')
         if 'plot' not in result:
@@ -42,7 +48,7 @@ class IRRegressionPerformance(IRPerformance):
 
 
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         def flatten(L):
             for item in L:
                 try:

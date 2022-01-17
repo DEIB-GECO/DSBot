@@ -274,6 +274,7 @@
       [
          "labelRemove",
          "standardization",
+         "lasso",
          "autoClassification",
          "roc"
       ],
@@ -1208,52 +1209,17 @@
          "labelRemove",
          "standardization",
          "outliersRemove",
-         "autoClassification",
-         "roc"
-      ],
-      [
-         "labelRemove",
-         "standardization",
-         "outliersRemove",
-         "autoClassification",
-         "featureImportance",
-         "featureImportancePlot"
-      ],
-      [
-         "labelRemove",
-         "outliersRemove",
-         "randomForest",
-         "roc"
-      ],
-      [
-         "labelRemove",
-         "outliersRemove",
-         "randomForest",
-         "featureImportance",
-         "featureImportancePlot"
-      ],
-      [
-         "labelRemove",
-         "standardization",
-         "outliersRemove",
-         "logisticRegression",
-         "roc"
-      ],
-      [
-         "labelRemove",
-         "standardization",
-         "outliersRemove",
-         "logisticRegression",
-         "featureImportance",
-         "featureImportancePlot"
-      ],
-      [
-         "labelRemove",
-         "standardization",
-         "outliersRemove",
          "lasso",
          "autoClassification",
-         "roc"
+         "confusionMatrix"
+      ],
+      [
+         "labelRemove",
+         "standardization",
+         "outliersRemove",
+         "autoClassification",
+         "featureImportance",
+         "featureImportancePlot"
       ],
       [
          "labelRemove",

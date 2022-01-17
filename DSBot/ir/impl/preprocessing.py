@@ -135,7 +135,10 @@ class IRLabelRemove(IRLabelOperation):
         #print(type(label))
         if result['original_dataset'].hasCategoricalLabel:
             if len(set(label.values))>2:
-                label = LabelEncoder().fit_transform(label)
+                le = LabelEncoder()
+                label = le.fit_transform(label)
+                result['encoded_labels'] = dict(zip(le.classes_, range(len(le.classes_))))
+                print(result['encoded_labels'])
                 #print('encoded', type(label))
             else:
                 label = label.replace(list(set(label))[0],0).replace(list(set(label))[1],1)

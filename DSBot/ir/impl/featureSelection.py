@@ -8,7 +8,7 @@ from ir.ir_parameters import IRNumPar
 from ir.modules.laplace import Laplace
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.feature_selection import SelectKBest, SelectPercentile
-from sklearn.linear_model import Lasso
+from sklearn.linear_model import LassoCV
 from sklearn.model_selection import GridSearchCV, KFold
 
 class IRFeatureSelection(IROp):
@@ -34,7 +34,7 @@ class IRFeatureSelection(IROp):
         return self.labels
 
     #TDB cosa deve restituire questa funzione?
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
         elif 'new_dataset' in result:
@@ -56,8 +56,8 @@ class IRFeatureSelection(IROp):
 class IRLasso(IRFeatureSelection):
     def __init__(self):
         super(IRLasso, self).__init__("lasso",
-                                      [IRNumPar('alpha', 1, "float", 0, 10, 0.1)],  # TODO: what are minimum and maximum?
-                                      Lasso)
+                                      [],  # TODO: what are minimum and maximum?
+                                      LassoCV)
 
     def set_model(self, result):
         if 'transformed_ds' in result:
@@ -73,16 +73,10 @@ class IRLasso(IRFeatureSelection):
             self._model.__setattr__(p, self.parameters[p].value)
         self._param_setted = True
 
-    def parameter_tune(self,result, dataset, labels):
-        search = GridSearchCV(self._model,
-                     {'alpha': np.arange(0.1, 10, 0.1)},
-                      scoring="neg_mean_squared_error", verbose=3,
-                              cv=KFold(5, shuffle=True))
-        search.fit(dataset, labels)
-        for k, v in search.best_params_.items():
-            self.parameters[k].value = v
+    def parameter_tune(self, result, dataset, labels):
+        pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         print('param', self.parameters)
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
@@ -103,9 +97,8 @@ class IRLasso(IRFeatureSelection):
         pos_filtered_indices = indices[importances[indices]>0.000001]
         neg_filtered_indices = indices[importances[indices]<-0.000001]
         selected_features = dataset.columns[filtered_indices]
-        result['transformed_ds'] = dataset[filtered_indices]
+        result['transformed_ds'] = dataset[selected_features]
         result['feature_selection']=pd.DataFrame(importances[filtered_indices], index=selected_features)
-
 
         return result
 
@@ -130,7 +123,7 @@ class IRSelectKBest(IRFeatureSelection):
         self.parameters['k'].value = int(0.5 * dataset.shape[1])
         self.parameters['k'].max_v = dataset.shape[1]
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         print('param', self.parameters)
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
@@ -196,7 +189,7 @@ class IRLaplace(IRFeatureSelection):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         print('param', self.parameters)
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
@@ -252,7 +245,7 @@ class IRFeatureImportanceOp(IROp):
             raise LabelsNotAvailable
         return self.labels
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         pass
 
 
@@ -265,7 +258,7 @@ class IRFeatureImportance(IRFeatureImportanceOp):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
         elif 'new_dataset' in result:

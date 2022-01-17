@@ -33,7 +33,7 @@ class IRClustering(IROp):
         #return self.labels
 
     #TDB cosa deve restituire questa funzione?
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         print('clustering')
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']

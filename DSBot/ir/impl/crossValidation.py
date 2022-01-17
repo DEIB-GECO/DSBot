@@ -41,7 +41,7 @@ class IRCrossValidation(IROp):
         return self.labels
 
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         pass
 
 
@@ -56,7 +56,7 @@ class IRTrainTest(IRCrossValidation):
         pass
 
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
         elif 'new_dataset' in result:
@@ -89,7 +89,7 @@ class IRStratifiedKFold(IRCrossValidation):
         #print(self.parameters)
 
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if not self._param_setted:
             self.set_model(result)
 
