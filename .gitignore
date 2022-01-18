@@ -152,3 +152,7 @@ rasa2/models/
 DSBot/wf/run/model_step_50000.pt
 
 DSBot/wf/run/model1_step_50000.pt
+
+example_datasets/agaricus_preprocessed.csv
+
+example_datasets/labels_agaricus_preprocessed.csv

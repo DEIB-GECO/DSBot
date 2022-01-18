@@ -47,7 +47,7 @@
       </v-btn>
 
       <v-card v-if="showSecondPart" flat>
-        Here is a preview of your data, (limited to 30 elements)
+        {{ previewSentence }}
         <v-alert v-if="!hasColumnNames" type="warning" color="grey"
           >The first line of the CSV has been omitted in the preview, but it
           will be used in the analysis as well</v-alert
@@ -103,6 +103,8 @@ export default {
       columnNamesArray: [],
       showSecondPart: false,
       labelsDictionary: [],
+      previewSentence:
+        'Here is a preview of your data, (limited to 30 elements)',
     }
   },
   computed: {},
@@ -134,24 +136,31 @@ export default {
         complete: function (results) {
           this.columnNamesDictionary = []
           let i = 0
-          for (const name in results.meta.fields) {
+          const fieldsNames = []
+          const cap = Math.min(results.meta.fields.length, 30)
+
+          for (i = 0; i < cap; i++) {
+            const name = results.meta.fields[i]
             const objectino = {
-              text: this.hasColumnNames ? results.meta.fields[name] : i,
-              value: results.meta.fields[name],
+              text: this.hasColumnNames ? results.meta.fields[i] : i,
+              value: results.meta.fields[i],
             }
             this.columnNamesDictionary.push(objectino)
-            i++
+            fieldsNames.push(name)
           }
-          this.columnNamesArray = results.meta.fields
-          this.labelsDictionary = [...this.columnNamesDictionary]
+          this.columnNamesArray = fieldsNames
+          // this.labelsDictionary = [...this.columnNamesDictionary]
+          this.labelsDictionary = results.meta.fields
           this.labelsDictionary.unshift({
             text: '(None)',
             value: '',
           })
           this.jsonDataset = results.data
-          // this.parsed = true;
           this.separator = results.meta.delimiter
-          console.log('Delimiter is', results.meta.delimiter)
+          if (results.meta.fields.length > 30) {
+            this.previewSentence +=
+              '. We show only the first 30 columns, but all the data will be used in the analysis'
+          }
           this.showSecondPart = true
         }.bind(this),
       })
