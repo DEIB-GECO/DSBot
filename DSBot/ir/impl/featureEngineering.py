@@ -30,7 +30,7 @@ class IRFeatureEngineering(IROp):
         return self.labels
 
     #TDB cosa deve restituire questa funzione?
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
         elif 'new_dataset' in result:
@@ -85,7 +85,7 @@ class IRFeatureEngineeringForViz(IROp):
         return self.labels
 
     #TDB cosa deve restituire questa funzione?
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
         elif 'new_dataset' in result:
@@ -122,7 +122,7 @@ class IRMDS2(IRFeatureEngineeringForViz):
     def parameter_tune(self, dataset):
         pass
 
-    def run(self, result, session_id):
+    def run(self, result, session_id, **kwargs):
         if 'transformed_ds' in result:
             dataset = result['transformed_ds']
         elif 'new_dataset' in result:
