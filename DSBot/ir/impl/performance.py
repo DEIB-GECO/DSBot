@@ -4,8 +4,9 @@ from ir.ir_parameters import IRNumPar
 import math
 import numpy as np
 import pandas as pd
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
 import matplotlib.pyplot as plt
+from utils import *
 
 
 class IRPerformance(IROp):
@@ -21,16 +22,37 @@ class IRConfusionMatrix(IRPerformance):
         pass
 
     def run(self, result, session_id, **kwargs):
+        sio = kwargs.get('socketio', None)
         n_classes = set(result['labels'].T.values[0])
         inv_map = {v: k for k, v in result['encoded_labels'].items()}
         pred = np.array([inv_map[e] for e in result['predicted_labels']])
         print(pred)
         y = np.array([inv_map[e] for e in np.array(result['y_test']).ravel()])
         print(y)
-
         cm = confusion_matrix(y, pred, labels=list(result['encoded_labels'].keys()), normalize='true')
         print(cm)
         disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels = list(result['encoded_labels'].keys()))
+        cr = classification_report(y, pred, target_names=list(result['encoded_labels'].keys()),output_dict=True)
+        max_rec = 0
+        min_rec = 1
+        for i in cr.keys():
+            if i in list(result['encoded_labels'].keys()):
+                if cr[i]['recall'] >= max_rec:
+                    max_rec = cr[i]['recall']
+                    max_lab = i
+                if cr[i]['recall']< min_rec:
+                    min_rec = cr[i]['recall']
+                    min_lab = i
+        min_lab_index = result['encoded_labels'][min_lab]
+        min_lab_confused = cm[min_lab_index]
+        new_list = set(min_lab_confused)
+        new_list.remove(max(min_lab_confused))
+        second_max = inv_map[np.where(min_lab_confused==max(new_list))[0][0]]
+
+        # removing the largest element from temp list
+        new_list.remove(max(new_list))
+        notify_user(f'With this analysis, the best predicted class is {max_lab}. '
+                        f'We noticed that the worst predicted class is {min_lab}. It is often confused with {second_max}',socketio=sio)
         disp.plot()
         plt.title('Confusion Matrix')
         plt.savefig('./temp/temp_' + str(session_id) + '/confusionMatrix.png')
