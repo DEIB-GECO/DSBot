@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 import json
 from http.client import HTTPConnection
 from pathlib import Path
+from utils.kb_helper import get_field_from_path, get_term_path
+
 from typing import Dict, Any
 
 algorithm_modules = ['clustering', 'classification', 'correlation', 'associationRules', 'regression']
@@ -42,7 +44,7 @@ def parse(utterance: str):
 
 
 def prepare_standard_response(message, state, pipeline):
-    #new_pipeline_string = pipeline_array_to_string(pipeline)
+    # new_pipeline_string = pipeline_array_to_string(pipeline)
     response = {'message': message, 'comprehension_state': state, 'comprehension_pipeline': pipeline}
     print("prepared response is", str(response))
     return response
@@ -101,15 +103,23 @@ class Reformulation(ComprehensionConversationState):
             return prepare_standard_response('I did not understand, sorry', 'reformulation', pipeline_array)
 
     def help(self, pipeline_array):
+        sentence = ""
+        for module in pipeline_array:
+            term_path = get_term_path(module)
+            sentence += get_field_from_path(term_path, 'explanation')
+            print("questo help:", sentence)
+        """ 
         for module in pipeline_array:
             module_family = retrieve_family(module)
             if module_family in algorithm_modules:
                 explanation = retrieve_message(module_family, 'explanation').capitalize() + ' Have I understood ' \
                                                                                             'correctly your ' \
-                                                                                            'request? '
+                                                                                            'request? '                                                               
                 return prepare_standard_response(explanation, 'reformulation', pipeline_array)
-        return prepare_standard_response('I was not able to reformulate you analysis, do you want to continue anyway?',
-                                         'reformulation', pipeline_array)
+                """
+        return prepare_standard_response(sentence.capitalize() + ' Have I understood correctly your request? ', 'reformulation', pipeline_array)
+        # return prepare_standard_response('I was not able to reformulate you analysis, do you want to continue anyway?',
+        #                                 'reformulation', pipeline_array)
 
     def example(self, pipeline_array):
         for module in pipeline_array:
@@ -264,8 +274,8 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
                 return next_state.generate(pipeline_array, dataset)
             else:
                 return prepare_standard_response('I am sorry, I did not understand what you prefer. Can you repeat it, '
-                                          'using different words?',
-                                          'algorithm_verification_clustering', pipeline_array)
+                                                 'using different words?',
+                                                 'algorithm_verification_clustering', pipeline_array)
         elif user_message_parsed['intent']['name'] == 'affirm':
             return prepare_standard_response('Ok, we will proceed with clustering analysis!', 'comprehension_end',
                                              ['clustering'])
@@ -424,9 +434,12 @@ class LabelRequestIfNotInsertedBefore(ComprehensionConversationState):
         label_name = user_message_parsed['text']
         is_label_settled = dataset.set_label(label_name)
         if is_label_settled:
-            return prepare_standard_response("Perfect, we can proceed with your analysis!", "comprehension_end", ['prediction'])
+            return prepare_standard_response("Perfect, we can proceed with your analysis!", "comprehension_end",
+                                             ['prediction'])
         else:
-            return prepare_standard_response("Sorry, I was not able to understand the column name, please send me a message containing only the column name.", "label_request", pipeline_array)
+            return prepare_standard_response(
+                "Sorry, I was not able to understand the column name, please send me a message containing only the column name.",
+                "label_request", pipeline_array)
 
 
 switcher = {
