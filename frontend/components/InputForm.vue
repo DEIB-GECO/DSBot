@@ -2,7 +2,7 @@
   <div>
     <v-card
       class="mb-12"
-      :height="jsonDataset == null ? '240px' : '840px'"
+      :height="jsonDataset == null ? '240px' : '850px'"
       flat
     >
       <v-file-input
@@ -40,8 +40,8 @@
       <v-btn
         v-if="!showSecondPart"
         color="primary"
-        @click="parse"
         :disabled="dataset == null"
+        @click="parse"
       >
         Upload Dataset
       </v-btn>
@@ -160,6 +160,9 @@ export default {
           if (results.meta.fields.length > 30) {
             this.previewSentence +=
               '. We show only the first 30 columns, but all the data will be used in the analysis'
+          } else {
+            this.previewSentence +=
+              'Here is a preview of your data, (limited to 30 elements)'
           }
           this.showSecondPart = true
         }.bind(this),
