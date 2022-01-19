@@ -123,9 +123,9 @@ class Reformulation(ComprehensionConversationState):
 
     def example(self, pipeline_array):
         for module in pipeline_array:
-            module_family = retrieve_family(module)
-            if module_family in algorithm_modules:
-                explanation = retrieve_message(module_family, 'example').capitalize() + ' Is this what you want?'
+            module_path = get_term_path(module)
+            if len(set.intersection(set(algorithm_modules), set(module_path))) > 0:
+                explanation = get_field_from_path(module_path, 'example').capitalize() + ' Is this what you want?'
                 return prepare_standard_response(explanation, 'reformulation', pipeline_array)
         return prepare_standard_response('ciaooo', 'reformulation', pipeline_array)
 
