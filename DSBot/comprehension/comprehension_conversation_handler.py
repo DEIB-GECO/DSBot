@@ -7,6 +7,7 @@ from utils.kb_helper import get_field_from_path, get_term_path
 from typing import Dict, Any
 
 algorithm_modules = ['clustering', 'classification', 'correlation', 'associationRules', 'regression']
+feature_selection_modules = ['featuresSelection', 'userFeatureSelection']
 
 """
 Utility function to retireve the family of a module
@@ -87,8 +88,11 @@ class Reformulation(ComprehensionConversationState):
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
         if user_message_parsed['intent']['name'] == 'affirm':
-            response = prepare_standard_response('ok, we can proceed', 'comprehension_end', pipeline_array)
-            return response
+            if len(set.intersection(set(feature_selection_modules), set(pipeline_array))) > 0:
+                next_state = FeatureSelectionChoice()
+            else:
+                next_state = FeatureSelectionVerification()
+            return next_state.generate(pipeline_array, dataset)
         elif user_message_parsed['intent']['name'] == 'deny':
             next_state = AlgorithmVerificationPrediction()
             response = next_state.generate(pipeline_array, dataset)
@@ -117,7 +121,8 @@ class Reformulation(ComprehensionConversationState):
                                                                                             'request? '                                                               
                 return prepare_standard_response(explanation, 'reformulation', pipeline_array)
                 """
-        return prepare_standard_response(sentence.capitalize() + ' Have I understood correctly your request? ', 'reformulation', pipeline_array)
+        return prepare_standard_response(sentence.capitalize() + ' Have I understood correctly your request? ',
+                                         'reformulation', pipeline_array)
         # return prepare_standard_response('I was not able to reformulate you analysis, do you want to continue anyway?',
         #                                 'reformulation', pipeline_array)
 
@@ -155,11 +160,11 @@ class AlgorithmVerificationPrediction(ComprehensionConversationState):
 
     def help(self, pipeline_array, dataset):
         base_sentence = "Predicting a value means training an algorithm to predict a target value -  the value " \
-                        "contained in the \"label\" column - starting from the other data. "
+                        "contained in the \"label\"  column - starting from the other data. "
         end_sentence = "Do you want to perform this kind of analysis? "
         if dataset.hasCategoricalLabel:
-            label_sentence = "Since the column you indicated as label seems to describe categories, I suggest to use a " \
-                             "classification algorithm. "
+            label_sentence = "Since the column you indicated as label seems to describe categories, I suggest to use a" \
+                             " classification algorithm. "
             show = "classification"
         else:
             label_sentence = "Since the column you indicated as label seems to describe a value, I suggest to use a " \
@@ -277,8 +282,8 @@ class AlgorithmVerificationClustering(ComprehensionConversationState):
                                                  'using different words?',
                                                  'algorithm_verification_clustering', pipeline_array)
         elif user_message_parsed['intent']['name'] == 'affirm':
-            return prepare_standard_response('Ok, we will proceed with clustering analysis!', 'comprehension_end',
-                                             ['clustering'])
+            next_state = FeatureSelectionVerification()
+            return next_state.generate(['clustering'], dataset)
         elif user_message_parsed['intent']['name'] in ['don_t_know', 'clarification_request']:
             return self.help(pipeline_array, dataset)
         elif user_message_parsed['intent']['name'] == 'example':
@@ -370,15 +375,21 @@ class FeatureImportanceOrNot(ComprehensionConversationState):
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
         user_entities = retrieve_entities_values(user_message_parsed['entities'])
-        print("USer entities", str(user_entities))
+        next_state = FeatureSelectionVerification()
         if len(user_entities) > 0:
             if user_entities[0] in ['first', '1', 'prediction', 'classification', 'regression']:
-                return prepare_standard_response("Ok, we can proceed!", "comprehension_end", pipeline_array)
+                return next_state.generate(pipeline_array, dataset)
+                # return prepare_standard_response("Ok, we can proceed!", "comprehension_end", pipeline_array)
             elif user_entities[0] in ['second', '2', 'features_importance', 'last']:
                 pipeline_array.append('featureImportance')
-                return prepare_standard_response(
-                    "Ok, we will perform a Feature Importance analysis, to highlight which are the most important " \
-                    "factors in the prediction outcome", "comprehension_end", pipeline_array)
+                response = next_state.generate(pipeline_array, dataset)
+                print(response)
+                response['message'] = "Ok, we will perform a Feature Importance analysis, to highlight which are the " \
+                                      "most important factors in the prediction outcome" + response['message']
+                return response
+                # return prepare_standard_response(
+                #    "Ok, we will perform a Feature Importance analysis, to highlight which are the most important " \
+                #    "factors in the prediction outcome", "comprehension_end", pipeline_array)
         return prepare_standard_response('I am sorry, I did not understand what you prefer. Can you repeat it, '
                                          'using different words?', 'feature_importance_or_not', pipeline_array)
 
@@ -405,15 +416,14 @@ class CorrelationOrAssociationRules(ComprehensionConversationState):
             user_interest = retrieve_entities_values(user_message_parsed['entities'])
             if len(user_interest) > 0:
                 if user_interest[0] in ['correlation', 'first', '1']:
-                    return prepare_standard_response('Ok, we will proceed with correlation analysis!',
-                                                     'comprehension_end', ['correlation'])
+                    next_state = FeatureSelectionVerification()
+                    return next_state.generate(['correlation'], dataset)
                 elif user_interest[0] in ['association_rules', 'second', '2']:
-                    return prepare_standard_response('Ok, we will proceed with association rules analysis!',
-                                                     'comprehension_end', [
-                                                         'associationRules'])
+                    next_state = FeatureSelectionVerification()
+                    return next_state.generate(['associationRules'], dataset)
 
         return prepare_standard_response(
-            'I am sorry, I did not understand what you prefer. Can you repeat it, using different words?', \
+            'I am sorry, I did not understand what you prefer. Can you repeat it, using different words?',
             'correlation_or_association_rules', pipeline_array)
 
 
@@ -434,12 +444,54 @@ class LabelRequestIfNotInsertedBefore(ComprehensionConversationState):
         label_name = user_message_parsed['text']
         is_label_settled = dataset.set_label(label_name)
         if is_label_settled:
-            return prepare_standard_response("Perfect, we can proceed with your analysis!", "comprehension_end",
-                                             ['prediction'])
+            next_state= FeatureSelectionVerification()
+            return next_state.generate(['prediction'], dataset)
         else:
             return prepare_standard_response(
                 "Sorry, I was not able to understand the column name, please send me a message containing only the column name.",
                 "label_request", pipeline_array)
+
+
+class FeatureSelectionVerification(ComprehensionConversationState):
+
+    def generate(self, pipeline_array, dataset):
+        columns = dataset.ds.columns
+        if len(columns) > 3:
+            message = "I need one last piece of information: do you want to use all the columns in your dataset or do " \
+                      "you want to use only a subset of them? "
+            return prepare_standard_response(message, "feature_selection_verification", pipeline_array)
+        else:
+            return prepare_standard_response("Ok, we can proceed!", "comprehension_end", pipeline_array)
+
+    def handle(self, user_message_parsed, pipeline_array, dataset):
+        pipeline_array = list(set(pipeline_array)-set(feature_selection_modules))
+        if user_message_parsed['intent']['name'] == 'preference':
+            user_interest = retrieve_entities_values(user_message_parsed['entities'])
+            if len(user_interest) > 0:
+                if user_interest[0] in ['entire_dataset', 'first', '1']:
+                    return prepare_standard_response('Ok, we will use the whole dataset',
+                                                     'comprehension_end', pipeline_array)
+            else:
+                next_state = FeatureSelectionChoice
+                return next_state.generate(pipeline_array, dataset)
+        return prepare_standard_response(
+            'I am sorry, I did not understand what you prefer. Can you repeat it, using different words?',
+            'feature_selection_verification', pipeline_array)
+
+
+class FeatureSelectionChoice(ComprehensionConversationState):
+
+    def generate(self, pipeline_array, dataset):
+        message = "Perfect! Do you want me to select the columns manually?"
+        return prepare_standard_response(message, "feature_selection_choice", pipeline_array)
+
+    def handle(self, user_message_parsed, pipeline_array, dataset):
+        if user_message_parsed['intent']['name'] == 'affirm':
+            return prepare_standard_response("Ok, let's go!", "comprehension_end",
+                                             ['userFeatureSelection'] + pipeline_array)
+        else:
+            return prepare_standard_response("Ok, I will choose them for you. Let's go!", "comprehension_end",
+                                             ['featureSelection'] + pipeline_array)
 
 
 switcher = {
@@ -451,7 +503,9 @@ switcher = {
     'regression_or_classification': RegressionOrClassification,
     'correlation_or_association_rules': CorrelationOrAssociationRules,
     'feature_importance_or_not': FeatureImportanceOrNot,
-    'label_request': LabelRequestIfNotInsertedBefore
+    'label_request': LabelRequestIfNotInsertedBefore,
+    'feature_selection_verification': FeatureSelectionVerification,
+    'feature_selection_choice': FeatureSelectionChoice
 }
 
 
