@@ -482,7 +482,7 @@ class FeatureSelectionVerification(ComprehensionConversationState):
 class FeatureSelectionChoice(ComprehensionConversationState):
 
     def generate(self, pipeline_array, dataset):
-        message = "Perfect! Do you want me to select the columns manually?"
+        message = "Perfect! Do you want me to select the columns automatically?"
         return prepare_standard_response(message, "feature_selection_choice", pipeline_array)
 
     def handle(self, user_message_parsed, pipeline_array, dataset):

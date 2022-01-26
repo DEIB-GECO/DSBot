@@ -263,8 +263,14 @@ nlu:
       - The [entire dataset]{"entity": "algorithm", "value": "entire_dataset"}
       - I want [all the columns]{"entity": "algorithm", "value": "entire_dataset"}
       - I [don't want to filter]{"entity": "algorithm", "value": "entire_dataset"} my dataset
-      - [all the dataset]{"entity": "algorithm", "value": "entire_dataset"}
+      - [all{"entity": "algorithm", "value": "entire_dataset"} the dataset]
       - The [entire dataset]{"entity": "algorithm", "value": "entire_dataset"}
+      - [The whole dataset]{"entity": "algorithm", "value": "entire_dataset"}
+      - I think I will use [everything]{"entity": "algorithm", "value": "entire_dataset"}
+      - I want [manually select]{"entity": "algorithm", "value": "subset"} the columns
+      - I want to do it [manually]{"entity": "algorithm", "value": "subset"}
+      - [Manual selection]{"entity": "algorithm", "value": "subset"}
+      - I want to select [by myself]{"entity": "algorithm", "value": "subset"}
 
   - intent: mood_unhappy
     examples: |
