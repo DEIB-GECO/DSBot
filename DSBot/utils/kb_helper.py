@@ -72,12 +72,12 @@ def get_field_from_path(path, field):
             # print("A")
             element = path.pop(0)
             retrieved_string = get_field_from_path_helper(path, field, knowledge_base[element]["values"])
-            # print("fatto, la sringa è ", retrieved_string, "l'elemento ", element, knowledge_base)
+            print("fatto, la sringa è ", retrieved_string, "l'elemento ", element, knowledge_base)
             if retrieved_string == "" and field in knowledge_base[element]:
                 retrieved_string = knowledge_base[element][field]
-            elif field in knowledge_base[path[0]]:
-                # print("B", knowledge_base)
-                retrieved_string = knowledge_base[path[0]][field]
+        elif len(path)==1 and field in knowledge_base[path[0]]:
+            # print("B", knowledge_base)
+            retrieved_string = knowledge_base[path[0]][field]
         else:
             # print("C", knowledge_base)
             retrieved_string = ""

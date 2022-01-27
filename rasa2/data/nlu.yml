@@ -267,10 +267,10 @@ nlu:
       - The [entire dataset]{"entity": "algorithm", "value": "entire_dataset"}
       - [The whole dataset]{"entity": "algorithm", "value": "entire_dataset"}
       - I think I will use [everything]{"entity": "algorithm", "value": "entire_dataset"}
-      - I want [manually select]{"entity": "algorithm", "value": "subset"} the columns
-      - I want to do it [manually]{"entity": "algorithm", "value": "subset"}
-      - [Manual selection]{"entity": "algorithm", "value": "subset"}
-      - I want to select [by myself]{"entity": "algorithm", "value": "subset"}
+      - I want use a [subset]{"entity": "algorithm", "value": "subset"}
+      - [subset]{"entity": "algorithm", "value": "subset"}
+      - I want [only some]{"entity": "algorithm", "value": "subset"} columns
+      - I want [only part]{"entity": "algorithm", "value": "subset"} of the data
 
   - intent: mood_unhappy
     examples: |

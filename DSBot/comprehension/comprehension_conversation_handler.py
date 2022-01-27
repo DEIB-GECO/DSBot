@@ -471,9 +471,9 @@ class FeatureSelectionVerification(ComprehensionConversationState):
                 if user_interest[0] in ['entire_dataset', 'first', '1']:
                     return prepare_standard_response('Ok, we will use the whole dataset',
                                                      'comprehension_end', pipeline_array)
-            else:
-                next_state = FeatureSelectionChoice
-                return next_state.generate(pipeline_array, dataset)
+                else:
+                    next_state = FeatureSelectionChoice()
+                    return next_state.generate(pipeline_array, dataset)
         return prepare_standard_response(
             'I am sorry, I did not understand what you prefer. Can you repeat it, using different words?',
             'feature_selection_verification', pipeline_array)
@@ -517,9 +517,9 @@ def pipeline_array_to_string(pipeline_array):
 
 
 def comprehension_conversation_handler(user_payload, dataset):
-    print("invocata su ", user_payload)
+    # print("invocata su ", user_payload)
     user_message_parsed = parse(user_payload['message'])
-    # print("user intent is:" + str(user_message_parsed))
+    print("user intent is:" + str(user_message_parsed))
     user_utterance = user_payload['message']
     conversation_state = user_payload['comprehension_state']
     pipeline_array = user_payload['comprehension_pipeline']
