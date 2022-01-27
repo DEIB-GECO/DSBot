@@ -486,8 +486,8 @@ class FeatureSelectionChoice(ComprehensionConversationState):
         return prepare_standard_response(message, "feature_selection_choice", pipeline_array)
 
     def handle(self, user_message_parsed, pipeline_array, dataset):
-        if user_message_parsed['intent']['name'] == 'affirm':
-            return prepare_standard_response("Ok, let's go!", "comprehension_end",
+        if user_message_parsed['intent']['name'] == 'deny':
+            return prepare_standard_response("Ok, I'll ask you the columns later on. Let's proceed!", "comprehension_end",
                                              ['userFeatureSelection'] + pipeline_array)
         else:
             return prepare_standard_response("Ok, I will choose them for you. Let's go!", "comprehension_end",
