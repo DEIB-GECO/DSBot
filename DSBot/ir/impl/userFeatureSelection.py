@@ -39,8 +39,8 @@ class IRUserFeatureSelection(IROp):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-
-        reply = ask_user('List the features you want to remove using a comma to separate them: '+ ','.join(dataset.columns),
+        ds = dataset.drop(result['original_dataset'].label, axis=1)
+        reply = ask_user('List the features you want to remove using a comma to separate them: '+ ','.join(ds.columns),
                          self.message_queue,
                          socketio=sio)
         print(f"Uscita: {reply}")

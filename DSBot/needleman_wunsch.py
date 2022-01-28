@@ -60,7 +60,10 @@ def NW(s1,s2,voc,match = 3,mismatch = -1, gap = -2):
     all = []
     i=m-1
     j=n-1
-    all.append(s2[j - 1])
+    if len(s2)>j-1:
+        all.append(s2[j - 1])
+    else:
+        all.append(s2[-1])
     while j>1:
         if p_mat[i,j]=='D':
             all.append(s2[j-2])

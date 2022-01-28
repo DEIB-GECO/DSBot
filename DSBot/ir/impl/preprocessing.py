@@ -204,8 +204,8 @@ class IROutliersRemove(IRPreprocessing):
             dataset = result['new_dataset']
         else:
             dataset = result['original_dataset'].ds
-
-        value_dataset = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
+        cat_cols = [i for i in result['original_dataset'].cat_cols if i in dataset.columns]
+        value_dataset = dataset.drop(list(cat_cols), axis=1)
 
         #print('len dataset', len(dataset))
         #df = dataset.drop(list(result['original_dataset'].cat_cols), axis=1)
@@ -216,7 +216,7 @@ class IROutliersRemove(IRPreprocessing):
             perc_outliers = ((len(dataset) - len(ds)) / len(dataset)) * 100
             notify_user(f'The {perc_outliers:.3f}% of the rows are outliers. I will remove them.', socketio=sio)
             print(f'The {perc_outliers:.3f}% of the rows are outliers. I will remove them.')
-            #print('len ds', ds.shape)
+            #print('len ds', ds.shape)c
             result['new_dataset'] = ds
             if result['original_dataset'].hasLabel:
                 label = pd.DataFrame(result['labels'])

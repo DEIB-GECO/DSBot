@@ -509,3 +509,4 @@ def update_kb(new_feat, new_op):
     kb_df.to_excel('kb.xlsx', header=None, index=None)
 
 #update_kb('hasDescriptiveFeatures','removeDescriptiveFeatures')
+
