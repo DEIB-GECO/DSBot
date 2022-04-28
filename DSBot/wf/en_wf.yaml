@@ -37,7 +37,7 @@ embeddings_type: "word2vec"
 #gpu_ranks: [0]
 
 # Where to save the checkpoints
-save_model: wf/run/model1
+save_model: wf/run/model_ieee
 save_checkpoint_steps: 1000
 train_steps: 100000
 valid_steps: 1000
