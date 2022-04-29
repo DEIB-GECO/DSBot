@@ -76,7 +76,7 @@ params:
   learning_rate: 1.0
 
   # (optional) If set, overrides all dropout values configured in the model definition.
-  dropout: 0.3
+  #dropout: 0.3
 
   # (optional) List of layer to not optimize.
   #freeze_layers:
@@ -84,30 +84,30 @@ params:
   #  - "decoder/output_layer"
 
   # (optional) Weights regularization penalty (default: null).
-  regularization:
-    type: l2  # can be "l1", "l2", "l1_l2" (case-insensitive).
-    scale: 1e-4  # if using "l1_l2" regularization, this should be a YAML list.
+ # regularization:
+ #   type: l2  # can be "l1", "l2", "l1_l2" (case-insensitive).
+  #  scale: 1e-4  # if using "l1_l2" regularization, this should be a YAML list.
 
   # (optional) Average loss in the time dimension in addition to the batch dimension
   # (default: true when using "tokens" batch type, false otherwise).
-  average_loss_in_time: false
+  #average_loss_in_time: false
   # (optional) High training loss values considered as outliers will be masked (default: false).
-  mask_loss_outliers: false
+  #mask_loss_outliers: false
 
   # (optional) The type of learning rate decay (default: null). See:
   #  * https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/schedules
   #  * https://opennmt.net/OpenNMT-tf/package/opennmt.schedules.html
   # This value may change the semantics of other decay options. See the documentation
   # or the code.
-  decay_type: NoamDecay
+  #decay_type: NoamDecay
   # (optional unless decay_type is set) Decay parameters.
-  decay_params:
-    model_dim: 512
-    warmup_steps: 4000
+  #decay_params:
+   # model_dim: 512
+  #  warmup_steps: 4000
   # (optional) The number of training steps that make 1 decay step (default: 1).
-  decay_step_duration: 1
+  #decay_step_duration: 1
   # (optional) After how many steps to start the decay (default: 0).
-  start_decay_steps: 50000
+  #start_decay_steps: 50000
 
   # (optional) The learning rate minimum value (default: 0).
   minimum_learning_rate: 0.0001
@@ -198,7 +198,7 @@ train:
   save_summary_steps: 100
 
   # (optional) Maximum training step. If not set, train forever.
-  max_step: 1000
+  max_step: 100
   # (optional) If true, makes a single pass over the training data (default: false).
   single_pass: false
 
@@ -213,7 +213,7 @@ train:
 
   # (optional) The number of elements from which to sample during shuffling (default: 500000).
   # Set 0 or null to disable shuffling, -1 to match the number of training examples.
-  sample_buffer_size: 1000
+  sample_buffer_size: 100
 
   # (optional) Moving average decay. Reasonable values are close to 1, e.g. 0.9999, see
   # https://www.tensorflow.org/api_docs/python/tf/train/ExponentialMovingAverage
