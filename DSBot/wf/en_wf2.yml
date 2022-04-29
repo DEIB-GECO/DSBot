@@ -315,9 +315,9 @@ world_size: 1
 
 # Where to save the checkpoints
 save_model: wf/run/model_ieee
-save_checkpoint_steps: 500
-train_steps: 1000
-valid_steps: 500
+save_checkpoint_steps: 100
+train_steps: 100
+valid_steps: 50
 
 # Optimization
 #model_dtype: "fp32"
